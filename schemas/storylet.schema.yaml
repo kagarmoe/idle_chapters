@@ -219,3 +219,27 @@ examples:
           requires_storylets: []
           blocks_storylets: []
           related_storylets: []
+
+# TODO:
+# ### 2.0 Decide the v1 Storylet contract (one-time decisions)
+
+# These decisions keep the code simple and testable:
+
+# - **Binding**: v1 storylets are place-bound (use `place_id`, not `zone_id`).
+# - **Choices**: every storylet returns **exactly 3** choices.
+# - **Determinism**: every generation step accepts an optional `seed`.
+# - **Debugability**: every generated storylet includes `debug` metadata (seed + templates + constraint notes).
+
+# ### 2.1 Confirm/adjust `storylet.schema.yaml` for generated storylets
+
+# File: `schemas/storylet.schema.yaml`
+
+# Add (or confirm) support for:
+
+# - a `debug` object (optional) with freeform string fields (seed, template_id, notes)
+# - simple `conditions` structure usable by both authored and generated storylets
+# - `choices[*].effects` structure compatible with reducer functions
+
+# Acceptance check:
+
+# - a generated storylet can validate without requiring fully authored prose
