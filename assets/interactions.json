@@ -1,0 +1,2310 @@
+{
+  "interactions": [
+    {
+      "interaction_id": "human_ambient_weather_01",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Light's changing.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 8,
+        "variant_group_id": "human_ambient_weather",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["tone_quiet", "generic"],
+      "notes": "Generic ambient acknowledgment; safe anywhere."
+    },
+    {
+      "interaction_id": "human_ambient_weather_02",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Feels like it might rain.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 7,
+        "variant_group_id": "human_ambient_weather",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["tone_quiet", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "human_ambient_routine_01",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Same as yesterday, more or less.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "human_ambient_routine",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["tone_plain", "generic"],
+      "notes": "Once-per-day variation to avoid repetition spam."
+    },
+    {
+      "interaction_id": "human_micro_offer_seat_01",
+      "npc_kind": "human",
+      "interaction_type": "micro_offer",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If you want the chair, it's free.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "human_micro_offer_seat",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.4,
+        "time_is_soft": 1.1
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["micro_offer", "generic"],
+      "notes": "Choice handling lives in game logic; this is the offer line only."
+    },
+    {
+      "interaction_id": "human_micro_offer_tea_01",
+      "npc_kind": "human",
+      "interaction_type": "micro_offer",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Tea?",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "human_micro_offer_tea",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["micro_offer", "generic"],
+      "notes": "Shortest possible micro-offer; avoids implication."
+    },
+    {
+      "interaction_id": "human_ritual_greeting_01",
+      "npc_kind": "human",
+      "interaction_type": "ritual",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Oh—there you are.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "human_ritual_greeting",
+        "priority": 0
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.3
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["ritual", "generic"],
+      "notes": "Ritual greeting; should remain non-evaluative."
+    },
+    {
+      "interaction_id": "human_ritual_greeting_02",
+      "npc_kind": "human",
+      "interaction_type": "ritual",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Still here? Good.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 3,
+        "variant_group_id": "human_ritual_greeting",
+        "priority": 0
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.6
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["ritual", "generic"],
+      "notes": "Use sparingly; 'Good' must not read as judgment (tone contract governs)."
+    },
+    {
+      "interaction_id": "human_light_request_chamomile_01",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If you pass the hedge, chamomile grows there.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "human_light_request_botanical",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.1
+      },
+      "directional_guidance": {
+        "target_item_id": "chamomile",
+        "target_tag": null,
+        "hint_place_id": "meadow_path"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "calming",
+        "adjust_affinity": 0,
+        "set_flags": ["learned_chamomile_hint"]
+      },
+      "tags": ["directional_guidance", "generic", "item_hint"],
+      "notes": "Directional guidance: optional, non-exhaustive."
+    },
+    {
+      "interaction_id": "human_light_request_botanical_02",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Look for the small flowers that smell like rest.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "human_light_request_botanical",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.1
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "calming",
+        "hint_place_id": "meadow_path"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "calming",
+        "adjust_affinity": 0,
+        "set_flags": null
+      },
+      "tags": ["directional_guidance", "generic", "item_hint"],
+      "notes": "Tag-driven hint; no specific ingredient required."
+    },
+    {
+      "interaction_id": "human_light_request_botanical_03",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Through the hedge, you'll find something gentle.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "human_light_request_botanical",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.1
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "gentle",
+        "hint_place_id": "meadow_path"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "gentle",
+        "adjust_affinity": 0,
+        "set_flags": null
+      },
+      "tags": ["directional_guidance", "generic", "item_hint"],
+      "notes": "Keeps your earlier 'through the hedge' pattern; stays non-directive."
+    },
+    {
+      "interaction_id": "human_light_request_botanical_04",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If you want something for sleep, pick what smells like quiet.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": ["evening", "night"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "human_light_request_botanical",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.2,
+        "stay_is_normal": 1.1
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "sleep",
+        "hint_place_id": "meadow"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "sleep",
+        "adjust_affinity": 0,
+        "set_flags": null
+      },
+      "tags": ["directional_guidance", "generic", "item_hint"],
+      "notes": null
+    },
+    {
+      "interaction_id": "human_light_request_stone_water_01",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Stone from the water is fine. Any will do.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "human_light_request_stone",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.1
+      },
+      "directional_guidance": {
+        "target_item_id": "water_stone",
+        "target_tag": null,
+        "hint_place_id": "forest_waterfall"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "element_water",
+        "adjust_affinity": 0,
+        "set_flags": ["learned_water_stone_hint"]
+      },
+      "tags": ["directional_guidance", "generic", "item_hint"],
+      "notes": "Uses 'any will do' to avoid optimization tone."
+    },
+    {
+      "interaction_id": "human_threshold_adjacent_01",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Some paths keep their own time.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "human_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.4,
+        "time_is_soft": 1.3
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["threshold", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "human_threshold_adjacent_02",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "It'll be there.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "human_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.5
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["threshold", "generic"],
+      "notes": "Avoids readiness framing."
+    },
+    {
+      "interaction_id": "human_threshold_adjacent_03",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If a door is quiet, listen first.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "human_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.3,
+        "pause_is_valid": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["threshold", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "human_threshold_adjacent_04",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Some places open easier when you're not in a hurry.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "human_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "time_is_soft": 1.4,
+        "pause_is_valid": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["threshold", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "human_threshold_adjacent_05",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "You can come back to it later. It won't sulk.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 3,
+        "variant_group_id": "human_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.2,
+        "time_is_soft": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["threshold", "generic"],
+      "notes": "Keeps the tone light; no readiness framing."
+    },
+    {
+      "interaction_id": "human_threshold_adjacent_06",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If you lose track of time, that's normal here.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 3,
+        "variant_group_id": "human_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.3,
+        "time_is_soft": 1.5,
+        "stay_is_normal": 1.1
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["threshold", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "animal_observed_pause_01",
+      "npc_kind": "animal",
+      "interaction_type": "ambient_ack",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "The animal pauses, listening, as if the air changed.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 8,
+        "variant_group_id": "animal_observed_pause",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.4
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["observed", "generic"],
+      "notes": "Non-dialogue description for animals."
+    },
+    {
+      "interaction_id": "animal_observed_circle_01",
+      "npc_kind": "animal",
+      "interaction_type": "ritual",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "The animal makes a small circle, then settles.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "animal_observed_rest",
+        "priority": 0
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["observed", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "animal_hint_ground_01",
+      "npc_kind": "animal",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "observed",
+        "primary": "The animal noses at something half-hidden in the grass.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 7,
+        "variant_group_id": "animal_hint_ground",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "trinket",
+        "hint_place_id": null
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "shiny",
+        "adjust_affinity": 0,
+        "set_flags": null
+      },
+      "tags": ["observed", "generic", "item_hint"],
+      "notes": "Generic animal 'find' behavior; actual spawn handled by system."
+    },
+    {
+      "interaction_id": "animal_threshold_adjacent_01",
+      "npc_kind": "animal",
+      "interaction_type": "threshold_adjacent",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "The animal stops at the edge of the path and waits, unbothered.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "animal_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.3
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["observed", "threshold", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "animal_threshold_adjacent_02",
+      "npc_kind": "animal",
+      "interaction_type": "threshold_adjacent",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "The animal stops at a seam in the path, then sits like it's keeping watch.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "animal_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.3,
+        "between_lives": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["observed", "threshold", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "animal_threshold_adjacent_03",
+      "npc_kind": "animal",
+      "interaction_type": "threshold_adjacent",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "The animal edges forward, then waits—patient, as if timing matters.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "animal_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "time_is_soft": 1.3,
+        "pause_is_valid": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["observed", "threshold", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "animal_threshold_adjacent_04",
+      "npc_kind": "animal",
+      "interaction_type": "threshold_adjacent",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "The animal turns in a slow circle at the edge of the path, then chooses to stay.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": null,
+        "place_id": null,
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 3,
+        "variant_group_id": "animal_threshold_adjacent",
+        "priority": 0
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.2,
+        "between_lives": 1.1
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["observed", "threshold", "generic"],
+      "notes": null
+    },
+    {
+      "interaction_id": "elin_shop_greeting_01",
+      "npc_kind": "human",
+      "interaction_type": "ritual",
+      "capability": "shop",
+      "text": {
+        "kind": "spoken",
+        "primary": "Morning. Want something warm?",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_baker_elin",
+        "place_id": "town_bakery",
+        "zone_id": null,
+        "time_of_day": ["morning"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 10,
+        "variant_group_id": "elin_shop_greeting",
+        "priority": 1
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["elin", "shop", "ritual"],
+      "notes": "Elin-specific shop greeting."
+    },
+    {
+      "interaction_id": "elin_hint_threshold_01",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Some ingredients behave better when you don't stare at them.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_baker_elin",
+        "place_id": "town_bakery",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 1,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "elin_threshold_aside",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.2,
+        "time_is_soft": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["elin", "threshold"],
+      "notes": "Subtle threshold-adjacent line; no readiness framing."
+    },
+    {
+      "interaction_id": "elin_micro_offer_pastry_01",
+      "npc_kind": "human",
+      "interaction_type": "micro_offer",
+      "capability": "shop",
+      "text": {
+        "kind": "spoken",
+        "primary": "I made extra. If you want one, take it.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_baker_elin",
+        "place_id": "town_bakery",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 2,
+        "requires_seen": null,
+        "cooldown_days": 3,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 3,
+        "variant_group_id": "elin_micro_offer",
+        "priority": 0
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.2
+      },
+      "directional_guidance": null,
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "comfort",
+        "adjust_affinity": 0,
+        "set_flags": ["elin_offered_pastry"]
+      },
+      "tags": ["elin", "micro_offer"],
+      "notes": "Actual item grant handled by game logic (e.g., gift pool) if you want."
+    },
+    {
+      "interaction_id": "saoirse_hint_substitution_01",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If you can't find one herb, choose another that smells like ease.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_herbalist_saoirse",
+        "place_id": "town_vendor",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 7,
+        "variant_group_id": "saoirse_substitution",
+        "priority": 1
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.2
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "calming",
+        "hint_place_id": "meadow_path"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "calming",
+        "adjust_affinity": 0,
+        "set_flags": ["learned_substitution_calming"]
+      },
+      "tags": ["saoirse", "item_hint", "substitution"],
+      "notes": "Substitution guidance; avoids ruley tone."
+    },
+    {
+      "interaction_id": "saoirse_direction_mint_01",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Mint likes the edges—where people walk, but not too often.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_herbalist_saoirse",
+        "place_id": "town_vendor",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "saoirse_direction",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": {
+        "target_item_id": "mint",
+        "target_tag": null,
+        "hint_place_id": "meadow_path"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "balancing",
+        "adjust_affinity": 0,
+        "set_flags": ["learned_mint_hint"]
+      },
+      "tags": ["saoirse", "directional_guidance", "item_hint"],
+      "notes": null
+    },
+    {
+      "interaction_id": "marcel_hint_crystal_01",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Some stones like pockets. Some like windowsills.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_curio_marcel",
+        "place_id": "town_vendor",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "marcel_stones",
+        "priority": 0
+      },
+      "premise_bias": {
+        "time_is_soft": 1.1
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["marcel", "curio", "hint"],
+      "notes": "Curio flavor; non-directive."
+    },
+    {
+      "interaction_id": "marcel_threshold_adjacent_01",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If you find a door that isn't there tomorrow, don't argue with it.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_curio_marcel",
+        "place_id": "town_vendor",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 1,
+        "requires_seen": null,
+        "cooldown_days": 3,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 3,
+        "variant_group_id": "marcel_threshold",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.4
+      },
+      "directional_guidance": null,
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "portal",
+        "adjust_affinity": 0,
+        "set_flags": ["heard_marcel_door_line"]
+      },
+      "tags": ["marcel", "threshold"],
+      "notes": "Borderline surreal; ensure tone_contract permits 'door' language."
+    },
+    {
+      "interaction_id": "iones_ambient_afternoon_01",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "You're dry enough. That's something.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_caretaker_iones",
+        "place_id": "cottage_home",
+        "zone_id": null,
+        "time_of_day": ["afternoon"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "iones_cottage",
+        "priority": 1
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.3
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["iones", "cottage", "tone_plain"],
+      "notes": "Matter-of-fact, not evaluative."
+    },
+    {
+      "interaction_id": "iones_direction_firewood_01",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If you want dry kindling, check the shed—back left.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_caretaker_iones",
+        "place_id": "cottage_home",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": ["rain"],
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "iones_direction",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": {
+        "target_item_id": "kindling",
+        "target_tag": null,
+        "hint_place_id": "cottage_home"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "warm",
+        "adjust_affinity": 0,
+        "set_flags": ["learned_kindling_hint"]
+      },
+      "tags": ["iones", "directional_guidance"],
+      "notes": "Only triggers if weather includes 'rain' (string match in your engine)."
+    },
+    {
+      "interaction_id": "alen_direction_clearing_01",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Past the fallen log, the ground flattens out. Good for finding things.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_woodcutter_alen",
+        "place_id": "forest",
+        "zone_id": null,
+        "time_of_day": ["morning"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "alen_direction",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "botanical",
+        "hint_place_id": "forest"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "resilience",
+        "adjust_affinity": 0,
+        "set_flags": ["learned_forest_clearing_hint"]
+      },
+      "tags": ["alen", "directional_guidance"],
+      "notes": null
+    },
+    {
+      "interaction_id": "mirela_ambient_trail_01",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "This part always smells different after wind.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_walker_mirela",
+        "place_id": "forest_trail",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": ["wind"],
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "mirela_trail",
+        "priority": 0
+      },
+      "premise_bias": {
+        "time_is_soft": 1.1
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["mirela", "forest_trail"],
+      "notes": "Weather token 'wind' must match your engine."
+    },
+    {
+      "interaction_id": "tamsin_threshold_castle_01",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Old places keep quiet rules. Mostly about patience.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_restorer_tamsin",
+        "place_id": "forest_castle",
+        "zone_id": null,
+        "time_of_day": ["afternoon"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "tamsin_castle",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.2,
+        "pause_is_valid": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["tamsin", "threshold", "forest_castle"],
+      "notes": null
+    },
+    {
+      "interaction_id": "rowan_ritual_meadow_01",
+      "npc_kind": "human",
+      "interaction_type": "ritual",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If the grass is moving, things are fine.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_shepherd_rowan",
+        "place_id": "meadow",
+        "zone_id": null,
+        "time_of_day": ["midday"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 7,
+        "variant_group_id": "rowan_meadow",
+        "priority": 0
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["rowan", "meadow", "ritual"],
+      "notes": null
+    },
+    {
+      "interaction_id": "elinor_direction_meadow_path_01",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "The path stays kind if you keep to the edges.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_wayfinder_elinor",
+        "place_id": "meadow_path",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "elinor_path",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.1
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "botanical",
+        "hint_place_id": "meadow_path"
+      },
+      "effects": null,
+      "tags": ["elinor", "directional_guidance"],
+      "notes": "Guidance is metaphorical; still optional."
+    },
+    {
+      "interaction_id": "bened_ambient_view_01",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "You can see the whole day from here.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_watchman_bened",
+        "place_id": "meadow_hill",
+        "zone_id": null,
+        "time_of_day": ["evening"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "bened_hill",
+        "priority": 0
+      },
+      "premise_bias": {
+        "time_is_soft": 1.3
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["bened", "meadow_hill"],
+      "notes": null
+    },
+    {
+      "interaction_id": "anwen_threshold_shrine_01",
+      "npc_kind": "human",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "This is one of those places where the air listens back.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_keeper_anwen",
+        "place_id": "meadow_shrine",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "anwen_shrine",
+        "priority": 1
+      },
+      "premise_bias": {
+        "between_lives": 1.4
+      },
+      "directional_guidance": null,
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "portal",
+        "adjust_affinity": 0,
+        "set_flags": ["learned_shrine_thin_place"]
+      },
+      "tags": ["anwen", "threshold", "meadow_shrine"],
+      "notes": "Place-specific threshold line."
+    },
+    {
+      "interaction_id": "silas_direction_shells_01",
+      "npc_kind": "human",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "After a rough tide, look where the foam ends.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_beachcomber_silas",
+        "place_id": "beach",
+        "zone_id": null,
+        "time_of_day": ["morning"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "silas_beach",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "trinket",
+        "hint_place_id": "beach"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "element_water",
+        "adjust_affinity": 0,
+        "set_flags": ["learned_beach_foam_hint"]
+      },
+      "tags": ["silas", "directional_guidance", "beach"],
+      "notes": null
+    },
+    {
+      "interaction_id": "lio_ambient_boardwalk_01",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "The boards remember footsteps.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_musician_lio",
+        "place_id": "beach_boardwalk",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 1,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "lio_boardwalk",
+        "priority": 0
+      },
+      "premise_bias": {
+        "time_is_soft": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["lio", "beach_boardwalk"],
+      "notes": "Quietly poetic; keep sparse."
+    },
+    {
+      "interaction_id": "maeve_hint_tidepools_01",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "If you stand still, you'll see the small things move.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_observer_maeve",
+        "place_id": "beach_tidepools",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "maeve_tidepools",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.3
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["maeve", "beach_tidepools"],
+      "notes": null
+    },
+    {
+      "interaction_id": "orik_ambient_pier_01",
+      "npc_kind": "human",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "spoken",
+        "primary": "Water looks different when you don't need anything from it.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_fisher_orik",
+        "place_id": "beach_pier",
+        "zone_id": null,
+        "time_of_day": ["evening"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "orik_pier",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.2,
+        "time_is_soft": 1.1
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["orik", "beach_pier"],
+      "notes": null
+    },
+    {
+      "interaction_id": "moss_hint_stoop_01",
+      "npc_kind": "animal",
+      "interaction_type": "ritual",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "Moss threads between your feet, then sits on the stoop like it was always theirs.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_cat_moss",
+        "place_id": "town_bakery_stoop",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 10,
+        "variant_group_id": "moss_stoop",
+        "priority": 1
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.3
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["moss", "observed", "companion"],
+      "notes": null
+    },
+    {
+      "interaction_id": "moss_find_thread_01",
+      "npc_kind": "animal",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "observed",
+        "primary": "Moss pats at a loose thread until it catches the light.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_cat_moss",
+        "place_id": "town_bakery_stoop",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 1,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "moss_finds",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "trinket",
+        "hint_place_id": "town_bakery_stoop"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "thread",
+        "adjust_affinity": 0,
+        "set_flags": ["moss_found_thread_once"]
+      },
+      "tags": ["moss", "observed", "item_hint"],
+      "notes": "Pairs well with Moss gift pools."
+    },
+    {
+      "interaction_id": "moss_find_thread_02",
+      "npc_kind": "animal",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "observed",
+        "primary": "Moss nudges a small button from under the step, then pretends it was nothing.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_cat_moss",
+        "place_id": "town_bakery_stoop",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 1,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "moss_finds",
+        "priority": 0
+      },
+      "premise_bias": null,
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "trinket",
+        "hint_place_id": "town_bakery_stoop"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "button",
+        "adjust_affinity": 0,
+        "set_flags": ["moss_found_button_once"]
+      },
+      "tags": ["moss", "observed", "item_hint"],
+      "notes": null
+    },
+    {
+      "interaction_id": "moss_find_thread_03",
+      "npc_kind": "animal",
+      "interaction_type": "light_request",
+      "capability": "hint",
+      "text": {
+        "kind": "observed",
+        "primary": "Moss taps at a ribbon end until it slides into view.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_cat_moss",
+        "place_id": "town_bakery_stoop",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 1,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "moss_finds",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.1
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "trinket",
+        "hint_place_id": "town_bakery_stoop"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "ribbon",
+        "adjust_affinity": 0,
+        "set_flags": ["moss_found_ribbon_once"]
+      },
+      "tags": ["moss", "observed", "item_hint"],
+      "notes": null
+    },
+    {
+      "interaction_id": "ink_messenger_scrap_01",
+      "npc_kind": "animal",
+      "interaction_type": "ritual",
+      "capability": "messenger",
+      "text": {
+        "kind": "observed",
+        "primary": "Ink drops a folded scrap beside you and hops back, as if to say: that's all.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_crow_ink",
+        "place_id": "town_clocktree",
+        "zone_id": null,
+        "time_of_day": ["morning"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "ink_messages",
+        "priority": 1
+      },
+      "premise_bias": {
+        "between_lives": 1.1
+      },
+      "directional_guidance": null,
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "note",
+        "adjust_affinity": 0,
+        "set_flags": ["ink_delivered_scrap"]
+      },
+      "tags": ["ink", "observed", "messenger"],
+      "notes": "Supports crow-as-messenger behavior without dialogue."
+    },
+    {
+      "interaction_id": "ink_messenger_scrap_02",
+      "npc_kind": "animal",
+      "interaction_type": "ritual",
+      "capability": "messenger",
+      "text": {
+        "kind": "observed",
+        "primary": "Ink lands, drops a bright coin, and tilts their head like it's a joke.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_crow_ink",
+        "place_id": "town_clocktree",
+        "zone_id": null,
+        "time_of_day": ["morning"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "ink_messages",
+        "priority": 1
+      },
+      "premise_bias": null,
+      "directional_guidance": null,
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "currency",
+        "adjust_affinity": 0,
+        "set_flags": ["ink_dropped_coin"]
+      },
+      "tags": ["ink", "observed", "messenger"],
+      "notes": null
+    },
+    {
+      "interaction_id": "ink_messenger_scrap_03",
+      "npc_kind": "animal",
+      "interaction_type": "ritual",
+      "capability": "messenger",
+      "text": {
+        "kind": "observed",
+        "primary": "Ink leaves a feather where you can't miss it, then disappears into the branches.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_crow_ink",
+        "place_id": "town_clocktree",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 3,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "ink_messages",
+        "priority": 1
+      },
+      "premise_bias": {
+        "time_is_soft": 1.1
+      },
+      "directional_guidance": null,
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "feather",
+        "adjust_affinity": 0,
+        "set_flags": ["ink_left_feather"]
+      },
+      "tags": ["ink", "observed", "messenger"],
+      "notes": null
+    },
+    {
+      "interaction_id": "bram_lead_water_01",
+      "npc_kind": "animal",
+      "interaction_type": "micro_offer",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "Bram looks back once, then trots toward the waterline at an easy pace.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_dog_bram",
+        "place_id": "town_docks_gate",
+        "zone_id": null,
+        "time_of_day": ["evening"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 1,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 7,
+        "variant_group_id": "bram_leads",
+        "priority": 1
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.2
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "element_water",
+        "hint_place_id": "beach"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "element_water",
+        "adjust_affinity": 0,
+        "set_flags": ["bram_invited_walk"]
+      },
+      "tags": ["bram", "observed", "companion", "directional_guidance"],
+      "notes": "Animal micro-offer: invitation without obligation."
+    },
+    {
+      "interaction_id": "bram_lead_water_02",
+      "npc_kind": "animal",
+      "interaction_type": "micro_offer",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "Bram bumps your hand once, then heads for the gate like he's offering company.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_dog_bram",
+        "place_id": "town_docks_gate",
+        "zone_id": null,
+        "time_of_day": ["evening"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 1,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "bram_leads",
+        "priority": 1
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.1
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "element_water",
+        "hint_place_id": "beach"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "element_water",
+        "adjust_affinity": 0,
+        "set_flags": ["bram_offered_company"]
+      },
+      "tags": ["bram", "observed", "companion", "directional_guidance"],
+      "notes": null
+    },
+    {
+      "interaction_id": "bram_lead_water_03",
+      "npc_kind": "animal",
+      "interaction_type": "micro_offer",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "Bram waits until you look up, then starts walking—slow enough to follow or not.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_dog_bram",
+        "place_id": "town_docks_gate",
+        "zone_id": null,
+        "time_of_day": ["evening"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 1,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "bram_leads",
+        "priority": 1
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.2
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "element_water",
+        "hint_place_id": "beach"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "calm",
+        "adjust_affinity": 0,
+        "set_flags": ["bram_slow_walk_invite"]
+      },
+      "tags": ["bram", "observed", "companion", "directional_guidance"],
+      "notes": "Explicitly non-obligating pacing."
+    },
+    {
+      "interaction_id": "sable_forest_edge_01",
+      "npc_kind": "animal",
+      "interaction_type": "ambient_ack",
+      "capability": "hint",
+      "text": {
+        "kind": "observed",
+        "primary": "Sable stands at the treeline for a breath, then disappears into green.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_deer_sable",
+        "place_id": "forest",
+        "zone_id": null,
+        "time_of_day": ["morning", "dusk"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 5,
+        "variant_group_id": "sable_forest",
+        "priority": 0
+      },
+      "premise_bias": {
+        "time_is_soft": 1.2
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["sable", "observed", "forest"],
+      "notes": null
+    },
+    {
+      "interaction_id": "marl_trail_point_01",
+      "npc_kind": "animal",
+      "interaction_type": "light_request",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "Marl pauses beside a flat stone, then waits as if it matters.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_tortoise_marl",
+        "place_id": "forest_trail",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 8,
+        "variant_group_id": "marl_trail",
+        "priority": 0
+      },
+      "premise_bias": {
+        "pause_is_valid": 1.3
+      },
+      "directional_guidance": {
+        "target_item_id": "water_stone",
+        "target_tag": null,
+        "hint_place_id": "forest_trail"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "grounding",
+        "adjust_affinity": 0,
+        "set_flags": null
+      },
+      "tags": ["marl", "observed", "companion", "item_hint"],
+      "notes": "Tortoise as 'slow pointer' to ground items."
+    },
+    {
+      "interaction_id": "vesper_feather_drop_01",
+      "npc_kind": "animal",
+      "interaction_type": "threshold_adjacent",
+      "capability": "hint",
+      "text": {
+        "kind": "observed",
+        "primary": "Vesper shifts in the rafters. A feather drifts down without hurry.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_owl_vesper",
+        "place_id": "forest_castle",
+        "zone_id": null,
+        "time_of_day": ["dusk", "night"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 2,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 4,
+        "variant_group_id": "vesper_castle",
+        "priority": 0
+      },
+      "premise_bias": {
+        "between_lives": 1.2
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "trinket",
+        "hint_place_id": "forest_castle"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "feather",
+        "adjust_affinity": 0,
+        "set_flags": ["vesper_dropped_feather"]
+      },
+      "tags": ["vesper", "observed", "threshold", "item_hint"],
+      "notes": "Animal threshold-adjacent: slow, optional."
+    },
+    {
+      "interaction_id": "pip_waterfall_rhythm_01",
+      "npc_kind": "animal",
+      "interaction_type": "ritual",
+      "capability": "hint",
+      "text": {
+        "kind": "observed",
+        "primary": "Pip answers the waterfall with a steady croak, as if keeping time.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_frog_pip",
+        "place_id": "forest_waterfall",
+        "zone_id": null,
+        "time_of_day": null,
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 1,
+        "once_per_day": true
+      },
+      "selection": {
+        "weight": 6,
+        "variant_group_id": "pip_waterfall",
+        "priority": 0
+      },
+      "premise_bias": {
+        "time_is_soft": 1.3
+      },
+      "directional_guidance": null,
+      "effects": null,
+      "tags": ["pip", "observed", "forest_waterfall"],
+      "notes": null
+    },
+    {
+      "interaction_id": "luna_meadow_follow_01",
+      "npc_kind": "animal",
+      "interaction_type": "micro_offer",
+      "capability": "companion",
+      "text": {
+        "kind": "observed",
+        "primary": "Luna hops a few paces ahead, then waits with a polite stillness.",
+        "secondary": null
+      },
+      "conditions": {
+        "npc_id": "npc_rabbit_luna",
+        "place_id": "meadow",
+        "zone_id": null,
+        "time_of_day": ["morning", "midday"],
+        "weather": null,
+        "season": null,
+        "affinity_min": 0,
+        "requires_seen": null,
+        "cooldown_days": 0,
+        "once_per_day": false
+      },
+      "selection": {
+        "weight": 7,
+        "variant_group_id": "luna_meadow",
+        "priority": 0
+      },
+      "premise_bias": {
+        "stay_is_normal": 1.1
+      },
+      "directional_guidance": {
+        "target_item_id": null,
+        "target_tag": "botanical",
+        "hint_place_id": "meadow"
+      },
+      "effects": {
+        "give_item_id": null,
+        "spawn_item_tag": "color",
+        "adjust_affinity": 0,
+        "set_flags": null
+      },
+      "tags": ["luna", "observed", "companion", "directional_guidance"],
+      "notes": "Rabbit as gentle invitation to wander; not a directive."
+    }
+  ]
+}

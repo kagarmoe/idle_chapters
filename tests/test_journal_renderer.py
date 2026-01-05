@@ -1,7 +1,6 @@
 from pathlib import Path
+import json
 from types import SimpleNamespace
-
-import yaml
 from jsonschema import validate
 
 
@@ -16,7 +15,7 @@ def _minimal_repo() -> SimpleNamespace:
 def test_render_journal_page_validates_schema(repo_root: Path) -> None:
     from app.domain.journal_renderer import render_journal_page
 
-    schema = yaml.safe_load((repo_root / "schemas" / "journal_page.schema.yaml").read_text())
+    schema = json.loads((repo_root / "schemas" / "journal_page.schema.json").read_text())
     repo = _minimal_repo()
 
     storylet = {

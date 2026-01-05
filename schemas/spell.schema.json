@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$title": "Spell Recipe Schema",
+  "type": "object",
+  "required": ["spell_recipes"],
+  "properties": {
+    "spell_recipes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["spell_id", "display_name", "incantation_style", "incantation", "narrative_purpose", "target_need", "place_affinity", "ingredients", "ritual_steps", "tone", "repeatable", "output"],
+        "properties": {
+          "spell_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "display_name": { "type": "string", "minLength": 1 },
+          "spell_type": {
+            "type": "string",
+            "enum": ["ritual", "portal", "charm", "ward", "reveal", "soothe", "bond"],
+            "default": "ritual",
+            "description": "High-level category; used for validation and gameplay routing."
+          },
+          "incantation_style": {
+            "type": "string",
+            "enum": ["whisper", "note_in_margin", "spoken_softly", "silent_intent", "hum"]
+          },
+          "incantation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["meter", "form", "lines"],
+            "properties": {
+              "meter": {
+                "type": "string",
+                "enum": ["rhymed_couplet", "free_verse", "haiku", "chant"],
+                "default": "rhymed_couplet",
+                "description": "Poetic meter/form label. Default is rhymed_couplet (comic, folk-ish rhyming couplets)."
+              },
+              "form": {
+                "type": "string",
+                "enum": ["couplets", "quatrain", "stanzaic", "single_line"],
+                "default": "couplets",
+                "description": "Structural form. For rhymed_couplet, couplets are typical."
+              },
+              "style_flag": {
+                "type": "string",
+                "enum": ["knittel_like", "rough_couplet", "cudgel_verse"],
+                "default": "knittel_like",
+                "description": "Generator-facing stylistic flag for bouncy, comic, folk-ish couplets."
+              },
+              "masculine_or_feminine_endings_ok": {
+                "type": "boolean",
+                "default": true,
+                "description": "Allow the closing cadence to vary (extra trailing syllable or clipped ending) for comic timing."
+              },
+              "lines": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 8,
+                "items": { "type": "string", "minLength": 1 },
+                "description": "Incantation text, line-broken as spoken/sung."
+              },
+              "rhyme_intent": {
+                "type": ["string", "null"],
+                "enum": ["couplet_rhyme", "approx_rhyme", "none", null],
+                "default": "couplet_rhyme",
+                "description": "Intent flag for generators; deeper rhyme validation happens in lexicon/lint tooling."
+              },
+              "delivery": {
+                "type": ["string", "null"],
+                "default": null,
+                "description": "Optional performance note (whispered, sung, breathy, laughing, etc.)."
+              }
+            }
+          },
+          "narrative_purpose": { "type": "string", "minLength": 1, "description": "Reveal, bond, soothe, transition, accept, notice..." },
+          "target_need": { "type": "string", "minLength": 1 },
+          "place_affinity": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^[a-z0-9_]+$" }
+          },
+          "element_affinity": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["fire", "water", "air", "earth"] },
+            "default": []
+          },
+          "ingredients": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 7,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["ingredient_ref", "symbolic_role"],
+              "properties": {
+                "ingredient_ref": { "type": "string", "description": "collectible_id OR substitution token any:... (e.g., any:item_type=Crystal&usable_in=portal)." },
+                "symbolic_role": { "type": "string", "enum": ["anchor", "offering", "focus", "bridge", "blessing", "memory", "comfort"] },
+                "place_requirement": { "type": ["string", "null"], "pattern": "^[a-z0-9_]+$", "default": null }
+              }
+            }
+          },
+          "ritual_steps": {
+            "type": "array",
+            "minItems": 3,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "tone": { "type": "string", "enum": ["calm", "tender", "wonder", "reverent", "playful", "nostalgic"] },
+          "repeatable": { "type": "string", "enum": ["Always", "Limited", "Once"] },
+          "cooldown_hint": { "type": ["string", "null"], "default": null },
+          "output": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "effect_summary", "state_changes"],
+            "properties": {
+              "type": { "type": "string", "enum": ["journal_entry", "place_shift", "npc_bond", "unlock_hint", "mood_soften", "dream_fragment"] },
+              "effect_summary": { "type": "string", "minLength": 1 },
+              "state_changes": { "type": "object", "description": "Flags/stats/inventory deltas (cozy-safe)", "additionalProperties": true }
+            }
+          },
+          "notes": { "type": ["string", "null"], "default": null }
+        }
+      }
+    }
+  },
+  "$comment": "Incantation generation guidance (rhymed couplet default): Write 2-6 lines as rhyming couplets (AABB...). Keep an accentual feel (about 4 strong beats per line); syllable count may vary slightly. Allow the final line of each couplet to vary in length or cadence (extra syllable or clipped ending) for comic timing. Tone should match the spell's tone and narrative_purpose. MUST pass lexicon validation: avoid any disallowed terms from the project's not_allowed_lexicon; follow house-style constraints. Keep language cozy-safe (no graphic harm, threats, or unsafe instructions)."
+}

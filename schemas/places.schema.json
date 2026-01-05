@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$title": "Cozy Game World Schema (Zones + Places)",
+  "$id": "https://example.com/schemas/world.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["zones", "places"],
+  "properties": {
+    "zones": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/zone"
+      }
+    },
+    "places": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/place"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "nonempty_string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "zone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["zone_id", "display_name", "mood"],
+      "properties": {
+        "zone_id": {
+          "$ref": "#/$defs/id",
+          "description": "Top-level traversal/generation bucket (forest, meadow, beach, town, cottage)."
+        },
+        "display_name": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "mood": {
+          "$ref": "#/$defs/nonempty_string",
+          "description": "Zone-level mood label (used for ambience + generation)."
+        },
+        "notes": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "default": null
+        }
+      }
+    },
+    "place": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["place_id", "display_name", "zone_id", "mood", "profile"],
+      "properties": {
+        "place_id": {
+          "$ref": "#/$defs/id",
+          "description": "Primary key for sublocations referenced by items, recipes, NPCs, quests."
+        },
+        "display_name": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "zone_id": {
+          "$ref": "#/$defs/id",
+          "description": "Which zone this place belongs to (must match a zones[*].zone_id)."
+        },
+        "parent_place_id": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ],
+          "default": null,
+          "description": "Optional containment (e.g., forest_trail parent=forest)."
+        },
+        "is_threshold": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this place is a liminal threshold where crossings (e.g. portals) are possible."
+        },
+        "mood": {
+          "$ref": "#/$defs/nonempty_string",
+          "description": "Place-level mood tag; can override or refine the zone mood."
+        },
+        "notes": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "default": null
+        },
+        "profile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["meaning", "sensory_focus", "social_level", "time_sensitivity", "weather_sensitivity", "emotional_range", "player_need_satisfied"],
+          "properties": {
+            "meaning": {
+              "$ref": "#/$defs/nonempty_string"
+            },
+            "sensory_focus": {
+              "type": "array",
+              "items": { "type": "string" },
+              "default": []
+            },
+            "social_level": {
+              "oneOf": [
+                { "type": "string", "enum": ["None", "Low", "Medium", "Low-Medium", "High"] },
+                { "type": "null" }
+              ]
+            },
+            "time_sensitivity": {
+              "oneOf": [
+                { "type": "string", "enum": ["None", "Low", "Medium", "High"] },
+                { "type": "null" }
+              ]
+            },
+            "weather_sensitivity": {
+              "oneOf": [
+                { "type": "string", "enum": ["None", "Low", "Medium", "High"] },
+                { "type": "null" }
+              ]
+            },
+            "emotional_range": {
+              "$ref": "#/$defs/nonempty_string"
+            },
+            "player_need_satisfied": {
+              "$ref": "#/$defs/nonempty_string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

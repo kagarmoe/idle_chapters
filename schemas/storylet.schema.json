@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$title": "Cozy Game Storylet Schema",
+  "$id": "https://example.com/schemas/storylet.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["storylet_id", "place_id", "entry_type", "choices"],
+  "properties": {
+    "storylet_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "place_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "entry_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "prompt": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "need_hint": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "mood_hint": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "conditions": {
+      "type": "object",
+      "additionalProperties": true,
+      "default": {}
+    },
+    "choices": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/choice" }
+    },
+    "debug": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "choice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["choice_id", "label", "effects"],
+      "properties": {
+        "choice_id": {
+          "type": "string",
+          "enum": ["1", "2", "3"]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "effects": { "$ref": "#/$defs/effects" }
+      }
+    },
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "add_items": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "remove_items": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "set_flags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "clear_flags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "move_to": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "default": {}
+    }
+  }
+}

@@ -1,0 +1,4 @@
+# For Linux/macOS
+export PYTHONPATH=$PWD
+# For Windows PowerShell
+$env:PYTHONPATH = $PWD

@@ -1,73 +1,166 @@
-# TODO
-#
-# ### 1.3 Build ContentRepo + indices
+from __future__ import annotations
 
-# - `ContentProvider` (file-based in V1; loads YAML from the repo)
-# - Later (optional): `MongoContentProvider` (only if we need live editing / multi-pack serving)
+from collections import defaultdict
+from pathlib import Path
+from typing import Any, Iterable
 
-# File: `app/content/repo.py`
+from app.content.loader import load_json
+from app.content.manifest import ContentManifest
 
-# **V1 decision:** load all validated *asset content* into memory at process start, then serve lookups from indices.
-# MongoDB is reserved for *runtime data* (sessions, state, journal pages), not static world content.
 
-# Why this is the right default for V1:
-# - **Simplicity**: no migrations, no content database bootstrapping, no dual-source-of-truth.
-# - **Speed**: after startup, content access is pure in-process dict lookup.
-# - **Fail-fast validation**: schema + cross-file checks run once at boot and crash loudly if broken.
-# - **Git-native workflow**: edit YAML → run tests → commit. No admin UI required.
-# - **Determinism & testability**: generator behavior depends on versioned content, not mutable DB rows.
+def _index_by_id(items: Iterable[dict[str, Any]], id_key: str, source: str) -> dict[str, dict[str, Any]]:
+    index: dict[str, dict[str, Any]] = {}
+    for item in items:
+        if id_key not in item:
+            raise ValueError(f"Missing {id_key} in {source}")
+        item_id = str(item[id_key])
+        if item_id in index:
+            raise ValueError(f"Duplicate {id_key} in {source}: {item_id}")
+        index[item_id] = item
+    return index
 
-# Tradeoffs and when Mongo-backed content becomes worth it:
-# - **Pros of putting content in Mongo**
-#   - Live editing via UI (non-dev authoring)
-#   - Hot reload without process restart
-#   - Serving multiple content packs or per-tenant worlds from a single service
-#   - Potentially less startup time for very large content sets (at the cost of runtime queries)
-# - **Cons (and why we avoid it in V1)**
-#   - Introduces migrations/versioning problems for content
-#   - Requires seeding and environment coordination (dev/stage/prod drift)
-#   - Adds runtime dependency and query paths for every generation step unless carefully cached
-#   - Makes debugging harder (“why did this happen?” can become “which version of content was in DB?”)
 
-# **Design for future flexibility (without paying the cost now):**
-# - Keep `ContentProvider` as the abstraction boundary.
-# - `ContentRepo` is an in-memory cache + index layer; it should not care where the raw docs came from.
-# - If we ever add `MongoContentProvider`, it should still produce the same validated in-memory structures
-#   (and ideally the same indices) to keep the engine unchanged.
+class ContentRepo:
+    def __init__(self, root: Path | str | None = None, manifest: ContentManifest | None = None) -> None:
+        self.root = Path(root) if root else Path(__file__).resolve().parents[2]
+        self.manifest = manifest or ContentManifest()
 
-# #### Indices built by ContentRepo
+        self.places_by_id: dict[str, dict[str, Any]] = {}
+        self.zones_by_id: dict[str, dict[str, Any]] = {}
+        self.collectibles_by_id: dict[str, dict[str, Any]] = {}
+        self.npcs_by_id: dict[str, dict[str, Any]] = {}
+        self.interactions_by_id: dict[str, dict[str, Any]] = {}
+        self.interactions_by_npc_kind: dict[str, list[dict[str, Any]]] = {}
+        self.interactions_by_place_id: dict[str, list[dict[str, Any]]] = {}
+        self.tea_by_id: dict[str, dict[str, Any]] = {}
+        self.spells_by_id: dict[str, dict[str, Any]] = {}
+        self.storylets_by_id: dict[str, dict[str, Any]] = {}
+        self.storylets_by_place_id: dict[str, list[dict[str, Any]]] = {}
+        self.journal_templates_by_entry_type: dict[str, list[dict[str, Any]]] = {}
+        self.lexicon_by_key: dict[str, dict[str, Any]] = {}
 
-# Load all validated assets into memory and build indices:
+        self._load_all()
 
-# - places_by_id
-# - zones_by_id (if needed)
-# - collectibles_by_id
-# - npcs_by_id
-# - interactions_by_id
-# - interactions_by_npc_kind
-# - interactions_by_place_id
-# - tea_by_id
-# - spells_by_id
-# - storylets_by_id (placeholder until file exists)
-# - storylets_by_place_id (when authored anchors are added)
-# - journal_templates_by_entry_type
-# - lexicon_by_key
+    def _load_all(self) -> None:
+        self._load_places()
+        self._load_collectibles()
+        self._load_npcs()
+        self._load_interactions()
+        self._load_tea()
+        self._load_spells()
+        self._load_storylets()
+        self._load_journal_templates()
+        self._load_lexicons()
 
-# Implementation notes (practical):
-# - Normalize IDs to strings and enforce uniqueness per file (fail fast).
-# - Consider storing `source_file`/`source_line` metadata for better validation errors (optional but very helpful).
-# - Indices should be plain dicts/DefaultDicts—keep them boring and transparent.
+    def _load_places(self) -> None:
+        path = self.root / self.manifest.assets["places"]
+        schema = self.root / self.manifest.schemas["places"]
+        data = load_json(path, schema_path=schema) or {}
+        places = data.get("places", [])
+        zones = data.get("zones", [])
+        self.places_by_id = _index_by_id(places, "place_id", "places")
+        self.zones_by_id = _index_by_id(zones, "zone_id", "zones")
 
-# ### 2.6 Add storylets to ContentRepo (authored anchors)
+    def _load_collectibles(self) -> None:
+        path = self.root / self.manifest.assets["collectibles"]
+        schema = self.root / self.manifest.schemas["collectibles"]
+        data = load_json(path, schema_path=schema) or {}
+        collectibles = []
+        for item in data.get("collectibles", []):
+            item_id = item.get("item_id")
+            if item_id is not None and "collectible_id" not in item:
+                item = dict(item)
+                item["collectible_id"] = item_id
+            collectibles.append(item)
+        self.collectibles_by_id = _index_by_id(collectibles, "collectible_id", "collectibles")
 
-# File: `app/content/repo.py`
+    def _load_npcs(self) -> None:
+        path = self.root / self.manifest.assets["npcs"]
+        schema = self.root / self.manifest.schemas["npcs"]
+        data = load_json(path, schema_path=schema) or {}
+        self.npcs_by_id = _index_by_id(data.get("npcs", []), "npc_id", "npcs")
 
-# - Load and index authored storylets if `assets/storylets.yaml` exists.
-# - Index by `place_id`.
+    def _load_interactions(self) -> None:
+        path = self.root / self.manifest.assets["interactions"]
+        schema = self.root / self.manifest.schemas["interactions"]
+        data = load_json(path, schema_path=schema) or {}
+        interactions = data.get("interactions", [])
+        self.interactions_by_id = _index_by_id(interactions, "interaction_id", "interactions")
 
-# ### 3.1 Confirm journal template loading
+        by_npc_kind: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        by_place_id: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for interaction in interactions:
+            npc_kind = interaction.get("npc_kind")
+            if npc_kind:
+                by_npc_kind[str(npc_kind)].append(interaction)
+            conditions = interaction.get("conditions") or {}
+            place_id = conditions.get("place_id")
+            if place_id:
+                by_place_id[str(place_id)].append(interaction)
 
-# File: `app/content/repo.py`
+        self.interactions_by_npc_kind = dict(by_npc_kind)
+        self.interactions_by_place_id = dict(by_place_id)
 
-# - load `journal_templates.yaml`
-# - index templates by entry_type (and optionally by tags)
+    def _load_tea(self) -> None:
+        path = self.root / self.manifest.assets["tea"]
+        schema = self.root / self.manifest.schemas["tea"]
+        data = load_json(path, schema_path=schema) or {}
+        recipes = []
+        for recipe in data.get("tea_recipes", []):
+            recipe_id = recipe.get("recipe_id")
+            if recipe_id is not None and "tea_id" not in recipe:
+                recipe = dict(recipe)
+                recipe["tea_id"] = recipe_id
+            recipes.append(recipe)
+        self.tea_by_id = _index_by_id(recipes, "tea_id", "tea_recipes")
+
+    def _load_spells(self) -> None:
+        path = self.root / self.manifest.assets["spells"]
+        schema = self.root / self.manifest.schemas["spells"]
+        data = load_json(path, schema_path=schema) or {}
+        spells = []
+        for spell in data.get("spell_recipes", []):
+            spell_id = spell.get("spell_id")
+            if spell_id is not None and "spell_id" not in spell:
+                spell = dict(spell)
+            spells.append(spell)
+        self.spells_by_id = _index_by_id(spells, "spell_id", "spell_recipes")
+
+    def _load_storylets(self) -> None:
+        path = self.root / self.manifest.assets["storylets"]
+        if not path.exists():
+            self.storylets_by_id = {}
+            self.storylets_by_place_id = {}
+            return
+
+        data = load_json(path) or {}
+        storylets = data.get("storylets", []) if isinstance(data, dict) else data
+        storylets = storylets or []
+        self.storylets_by_id = _index_by_id(storylets, "storylet_id", "storylets")
+
+        by_place: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for storylet in storylets:
+            place_id = storylet.get("place_id")
+            if place_id:
+                by_place[str(place_id)].append(storylet)
+        self.storylets_by_place_id = dict(by_place)
+
+    def _load_journal_templates(self) -> None:
+        path = self.root / self.manifest.assets["journal_templates"]
+        data = load_json(path) or {}
+        templates = data.get("templates", [])
+        by_entry_type: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for template in templates:
+            entry_type = template.get("entry_type")
+            if entry_type:
+                by_entry_type[str(entry_type)].append(template)
+        self.journal_templates_by_entry_type = dict(by_entry_type)
+
+    def _load_lexicons(self) -> None:
+        schema = self.root / self.manifest.schemas["lexicon"]
+        lexicon_entries: list[dict[str, Any]] = []
+        for path in self.manifest.lexicons.values():
+            data = load_json(self.root / path, schema_path=schema) or {}
+            lexicon_entries.extend(data.get("lexicon", []))
+
+        self.lexicon_by_key = _index_by_id(lexicon_entries, "key", "lexicons")
