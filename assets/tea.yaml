@@ -1,0 +1,89 @@
+tea_recipes:
+- recipe_id: chamomile_simple
+  display_name: Chamomile Tea
+  intent: comfort
+  target_need: Permission to rest
+  allowed_times:
+  - Evening
+  - Night
+  base_liquid: water
+  ingredients:
+  - ingredient_ref: chamomile_flower
+    role: base
+    amount_hint: "1 tbsp dried flowers"
+  - ingredient_ref: honey
+    role: sweetener
+    amount_hint: "to taste"
+  steps:
+  - "Bring water just to a boil."
+  - "Steep chamomile for 5-7 minutes."
+  - "Strain, sweeten gently, and drink while warm."
+  sensory_prompt: "Soft floral steam, golden color, gentle warmth in the chest."
+  outcome_tags:
+  - calming
+  - soothing
+  serves: 1
+  repeatable: Always
+  notes: "A classic evening tea for winding down."
+
+- recipe_id: meadow_calm
+  display_name: Meadow Calm Tea
+  intent: relaxation
+  target_need: Ease nervous tension
+  allowed_times:
+  - Afternoon
+  - Evening
+  base_liquid: water
+  ingredients:
+  - ingredient_ref: chamomile_flower
+    role: base
+    amount_hint: "1 tbsp dried flowers"
+  - ingredient_ref: lemon_balm
+    role: support
+    amount_hint: "1 tsp dried leaves"
+  - ingredient_ref: lavender
+    role: note
+    amount_hint: "a small pinch"
+  steps:
+  - "Heat water until steaming but not boiling."
+  - "Steep all herbs together for 6 minutes."
+  - "Strain carefully to keep the lavender subtle."
+  sensory_prompt: "Light floral notes with soft citrus; a feeling of the shoulders dropping."
+  outcome_tags:
+  - calming
+  - grounding
+  - gentle
+  serves: 1
+  repeatable: Always
+  notes: "Balanced relaxation without heaviness."
+
+- recipe_id: bright_step
+  display_name: Bright Step Herbal Tea
+  intent: clarity
+  target_need: Gentle energy and focus
+  allowed_times:
+  - Morning
+  - Afternoon
+  base_liquid: water
+  ingredients:
+  - ingredient_ref: peppermint
+    role: base
+    amount_hint: "1 tbsp dried leaves"
+  - ingredient_ref: ginger
+    role: focus
+    amount_hint: "3-4 thin slices"
+  - ingredient_ref: lemon_peel
+    role: note
+    amount_hint: "a few strips"
+  steps:
+  - "Simmer ginger gently for 5 minutes."
+  - "Remove from heat and add peppermint and lemon peel."
+  - "Steep for 3-4 minutes, then strain."
+  sensory_prompt: "Bright, clean aroma with warmth rising through the chest and throat."
+  outcome_tags:
+  - energizing
+  - clarifying
+  - warming
+  serves: 1
+  repeatable: Always
+  notes: "An alert but non-jittery herbal tea."

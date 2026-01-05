@@ -1,0 +1,118 @@
+schema_id: interactions
+schema_version: 0.2
+type: object
+additionalProperties: false
+required: [interactions]
+properties:
+  interactions:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required:
+      - interaction_id
+      - npc_kind
+      - interaction_type
+      - text
+      - conditions
+      - selection
+      properties:
+        interaction_id: { type: string }
+        npc_kind: { type: string, enum: [human, animal] }
+
+        interaction_type:
+          type: string
+          enum: [ambient_ack, micro_offer, ritual, light_request, threshold_adjacent]
+
+        capability:
+          type: [string, "null"]
+          default: null
+          enum: [shop, trade, gift, quest_giver, companion, messenger, hint, null]
+
+        text:
+          type: object
+          additionalProperties: false
+          required: [primary, kind]
+          properties:
+            primary: { type: string }
+            secondary: { type: [string, "null"], default: null }
+            kind:
+              type: string
+              enum: [spoken, observed]
+              default: spoken
+
+        conditions:
+          type: object
+          additionalProperties: false
+          properties:
+            npc_id: { type: [string, "null"], default: null }
+            place_id: { type: [string, "null"], default: null }
+            zone_id: { type: [string, "null"], default: null }
+            time_of_day:
+              type: [array, "null"]
+              default: null
+              items: { type: string }
+            weather:
+              type: [array, "null"]
+              default: null
+              items: { type: string }
+            season:
+              type: [array, "null"]
+              default: null
+              items: { type: string }
+            affinity_min: { type: integer, minimum: 0, default: 0 }
+            requires_seen:
+              type: [array, "null"]
+              default: null
+              items: { type: string }
+            cooldown_days: { type: integer, minimum: 0, default: 0 }
+            once_per_day: { type: boolean, default: false }
+
+        selection:
+          type: object
+          additionalProperties: false
+          required: [weight, variant_group_id, priority]
+          properties:
+            weight: { type: integer, minimum: 1, default: 10 }
+            variant_group_id: { type: [string, "null"], default: null }
+            priority: { type: integer, minimum: 0, default: 0 }
+
+        premise_bias:
+          type: [object, "null"]
+          default: null
+          description: facet_id -> multiplier
+          additionalProperties:
+            type: number
+            minimum: 0.0
+            maximum: 5.0
+
+        directional_guidance:
+          type: [object, "null"]
+          default: null
+          additionalProperties: false
+          properties:
+            target_item_id: { type: [string, "null"], default: null }
+            target_tag: { type: [string, "null"], default: null }
+            hint_place_id: { type: [string, "null"], default: null }
+
+        effects:
+          type: [object, "null"]
+          default: null
+          additionalProperties: false
+          properties:
+            give_item_id: { type: [string, "null"], default: null }
+            spawn_item_tag: { type: [string, "null"], default: null }
+            adjust_affinity: { type: integer, default: 0 }
+            set_flags:
+              type: [array, "null"]
+              default: null
+              items: { type: string }
+
+        tags:
+          type: [array, "null"]
+          default: null
+          items: { type: string }
+
+        notes:
+          type: [string, "null"]
+          default: null

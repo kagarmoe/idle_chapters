@@ -1,0 +1,74 @@
+substitutions:
+- token: any:tag=calming&category=Botanical
+  selector:
+    match_all:
+    - tags: calming
+    - category: Botanical
+    match_any: []
+    exclude: []
+  description: Any calming Botanical (for sleep, easing, unwinding).
+  constraints:
+    category: Botanical
+    tags:
+    - calming
+    place_policy: any_place
+    max_results: 10
+  fallback: lemon_balm
+- token: any:tag=memory&category=Botanical
+  selector:
+    match_all:
+    - tags: memory
+    - category: Botanical
+    match_any: []
+    exclude: []
+  description: Any Botanical associated with memory or remembrance.
+  constraints:
+    category: Botanical
+    tags:
+    - memory
+    place_policy: any_place
+    max_results: 10
+  fallback: forget_me_not
+- token: any:tag=warm
+  selector:
+    match_all:
+    - tags: warm
+    match_any: []
+    exclude: []
+  description: Anything that reads as warm/cozy (spice, Botanical, crystal).
+  constraints:
+    category: null
+    tags:
+    - warm
+    place_policy: any_place
+    max_results: 12
+  fallback: cinnamon
+- token: any:element=water
+  selector:
+    match_all:
+    - tags: element_water
+    match_any: []
+    exclude: []
+  description: Any ingredient aligned with water places (shoreline, flow, reflection).
+  constraints:
+    category: null
+    tags:
+    - element_water
+    place_policy: any_place
+    max_results: 12
+  fallback: aquamarine
+- token: any:place=beach_tidepools&tag=wonder
+  selector:
+    match_all:
+    - place_id: beach_tidepools
+    - tags: wonder
+    match_any: []
+    exclude: []
+  description: A wonder-leaning ingredient found specifically at the tidepools.
+  constraints:
+    category: null
+    tags:
+    - wonder
+    place_policy: same_place
+    max_results: 10
+  fallback: labradorite
