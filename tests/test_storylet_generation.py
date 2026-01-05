@@ -1,7 +1,7 @@
+import json
 from pathlib import Path
 
 import pytest
-import yaml
 from jsonschema import validate
 
 
@@ -16,8 +16,8 @@ def _storylet_to_dict(storylet):
 
 
 def _load_not_allowed_words(repo_root: Path) -> set[str]:
-    lexicon_path = repo_root / "lexicons" / "not_allowed_lexicon.yaml"
-    data = yaml.safe_load(lexicon_path.read_text())
+    lexicon_path = repo_root / "lexicons" / "not_allowed_lexicon.json"
+    data = json.loads(lexicon_path.read_text())
     words = set()
     for entry in data.get("lexicon", []):
         words.update(word.lower() for word in entry.get("words", []))
@@ -84,7 +84,7 @@ def test_generator_validates_against_schema(repo_root: Path) -> None:
     from app.domain.state import PlayerState
     from app.domain.storylet_generator import generate_storylet
 
-    schema = yaml.safe_load((repo_root / "schemas" / "storylet.schema.yaml").read_text())
+    schema = json.loads((repo_root / "schemas" / "storylet.schema.json").read_text())
 
     repo = ContentRepo()
     state = PlayerState(

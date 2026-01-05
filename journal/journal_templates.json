@@ -1,0 +1,34 @@
+{
+  "templates": [
+    {
+      "template_id": "tea_reflection_v1",
+      "entry_type": "tea",
+      "prompt": "What softened today? What can wait until tomorrow?",
+      "structure": [
+        "A small sensory detail from the place.",
+        "Why I chose these ingredients.",
+        "What I want to carry forward (one sentence)."
+      ]
+    },
+    {
+      "template_id": "spell_intent_v1",
+      "entry_type": "spell",
+      "prompt": "Name a feeling gently. Give it a home. Let it change shape.",
+      "structure": [
+        "Where I am (place).",
+        "What I am asking for (without urgency).",
+        "A small closing blessing."
+      ]
+    },
+    {
+      "template_id": "field_note_v1",
+      "entry_type": "field_note",
+      "prompt": "What did I notice that I would have missed yesterday?",
+      "structure": [
+        "One tiny observation.",
+        "One quiet connection.",
+        "One question to revisit later."
+      ]
+    }
+  ]
+}

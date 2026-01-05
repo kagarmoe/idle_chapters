@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 """
-Generate a cozy journal page that pulls from ingredients.yaml.
+Generate a cozy journal page that pulls from ingredients.json.
 
 Usage:
-  python generate_journal_page.py --ingredients ./lexicons/ingredients.yaml --places ./assets/places.yaml --place beach_tidepools --entry_type tea
+  python generate_journal_page.py --ingredients ./lexicons/ingredients.json --places ./assets/places.json --place beach_tidepools --entry_type tea
 
 Outputs Markdown to stdout (or --out path).
 """
 
 from __future__ import annotations
-import argparse, datetime, random, sys
-import yaml
+import argparse, datetime, json, random, sys
 
-def load_yaml(path: str) -> dict:
+
+def load_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
+        return json.load(f)
 
 
 def build_place_zone_index(places_data: dict) -> dict[str, str]:
-    """Return mapping of place_id -> zone_id from assets/places.yaml-style data."""
+    """Return mapping of place_id -> zone_id from assets/places.json-style data."""
     idx: dict[str, str] = {}
     for p in places_data.get("places", []) or []:
         pid = p.get("place_id")
@@ -160,8 +160,8 @@ def build_page(place_id: str, entry_type: str, picks: list[dict]) -> str:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ingredients", required=True, help="Path to ingredients.yaml")
-    ap.add_argument("--places", default=None, help="Path to assets/places.yaml (optional; enables same_zone selection)")
+    ap.add_argument("--ingredients", required=True, help="Path to ingredients.json")
+    ap.add_argument("--places", default=None, help="Path to assets/places.json (optional; enables same_zone selection)")
     ap.add_argument("--place", required=True, help="place_id")
     ap.add_argument("--entry_type", default="tea", choices=["tea","spell","field_note","dream_fragment"])
     ap.add_argument("--n", type=int, default=3, help="How many ingredients to include")
@@ -172,10 +172,10 @@ def main():
     if args.seed is not None:
         random.seed(args.seed)
 
-    data = load_yaml(args.ingredients)
+    data = load_json(args.ingredients)
     place_to_zone = None
     if args.places:
-        places_data = load_yaml(args.places)
+        places_data = load_json(args.places)
         place_to_zone = build_place_zone_index(places_data)
     all_ingredients = data.get("ingredients", [])
     if not all_ingredients:

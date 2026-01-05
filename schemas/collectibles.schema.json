@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$title": "Collectibles Schema",
+  "type": "object",
+  "required": ["collectibles"],
+  "properties": {
+    "collectibles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item_id", "display_name", "item_type", "symbolic_meaning", "cozy_association", "tags", "origin_scope", "player_need_satisfied", "safety_category", "usable_in", "stock_behavior"],
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$",
+            "description": "Stable identifier used by recipes, inventory, and events."
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "item_type": {
+            "type": "string",
+            "enum": ["Botanical", "TeaBase", "Crystal", "Tool", "Currency", "Trinket", "Food"]
+          },
+          "botanical_kind": {
+            "type": ["string", "null"],
+            "enum": ["Flower", "Herb", "Leaf", "Root", "Bark", "Blend", null],
+            "default": null,
+            "description": "Only used when item_type=Botanical."
+          },
+          "symbolic_meaning": {
+            "type": "string"
+          },
+          "cozy_association": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 0
+          },
+          "origin_scope": {
+            "type": "string",
+            "enum": ["global", "zone", "npc", "quest", "starting", "craft"],
+            "description": "How the world produces this item (used by procedural generation)."
+          },
+          "origin_ref": {
+            "type": ["string", "null"],
+            "default": null,
+            "description": "Meaning depends on origin_scope (e.g., zone id, npc_id, quest_id). Use null for global items."
+          },
+          "lore_place_hint": {
+            "type": ["string", "null"],
+            "default": null,
+            "description": "Optional narrative hint about where the item is associated (not used for generation)."
+          },
+          "player_need_satisfied": {
+            "type": "string"
+          },
+          "notes": {
+            "type": ["string", "null"],
+            "default": null
+          },
+          "safety_category": {
+            "type": "string",
+            "enum": ["generally_safe", "caution_humans", "pet_unsafe", "toxic", "non_ingestible"]
+          },
+          "usable_in": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": ["tea", "spell", "portal", "gift", "quest"]
+            }
+          },
+          "stock_behavior": {
+            "type": "string",
+            "enum": ["finite", "infinite", "key_item"],
+            "description": "Controls inventory depletion rules."
+          },
+          "starting_quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Quantity present at game start. Use with stock_behavior=infinite or finite."
+          },
+          "max_stack": {
+            "type": ["integer", "null"],
+            "minimum": 1,
+            "default": null,
+            "description": "Optional cap for finite items; null means uncapped."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,22 +1,58 @@
-# TODO:
-# ### 1.4 Cross-file integrity checks
+from __future__ import annotations
 
-# File: `app/content/validators.py`
+from typing import Iterable
 
-# Validate at load time:
 
-# - every place_id reference exists
-# - every npc_id reference exists
-# - collectible origin_ref points to a real place (when origin_scope indicates place)
-# - interactions dependencies reference real npc/place/time tokens
-# - tea/spell ingredient_ref resolves to:
-#   - a collectible_id OR
-#   - an any: substitution token (allowed)
-# - lexicon scope:
-#   - Global OR place_id that exists
+def _ensure_refs_exist(refs: Iterable[str], valid_ids: set[str], label: str) -> None:
+    for ref in refs:
+        if ref not in valid_ids:
+            raise ValueError(f"Missing {label} reference: {ref}")
 
-# ### Acceptance criteria
 
-# - Running a single command loads everything and prints “OK”
-# - Any missing place_id/npc_id/item_id fails fast with a clear message
-# - Unit tests exist for loader + validators
+def _ingredient_ref_valid(ingredient_ref: str, collectible_ids: set[str]) -> bool:
+    if ingredient_ref.startswith("any:"):
+        return True
+    return ingredient_ref in collectible_ids
+
+
+def validate_cross_file_integrity(repo) -> None:
+    place_ids = set(repo.places_by_id.keys())
+    npc_ids = set(repo.npcs_by_id.keys())
+    collectible_ids = set(repo.collectibles_by_id.keys())
+
+    for npc in repo.npcs_by_id.values():
+        home_location_id = npc.get("home_location_id")
+        if home_location_id:
+            _ensure_refs_exist([home_location_id], place_ids, "place_id")
+
+    for collectible in repo.collectibles_by_id.values():
+        origin_scope = collectible.get("origin_scope")
+        origin_ref = collectible.get("origin_ref")
+        if origin_scope == "place" and origin_ref:
+            _ensure_refs_exist([origin_ref], place_ids, "place_id")
+
+    for interaction in repo.interactions_by_id.values():
+        conditions = interaction.get("conditions") or {}
+        npc_id = conditions.get("npc_id")
+        place_id = conditions.get("place_id")
+        if npc_id:
+            _ensure_refs_exist([npc_id], npc_ids, "npc_id")
+        if place_id:
+            _ensure_refs_exist([place_id], place_ids, "place_id")
+
+    for recipe in repo.tea_by_id.values():
+        for ingredient in recipe.get("ingredients", []):
+            ingredient_ref = ingredient.get("ingredient_ref")
+            if ingredient_ref and not _ingredient_ref_valid(ingredient_ref, collectible_ids):
+                raise ValueError(f"Missing ingredient_ref: {ingredient_ref}")
+
+    for spell in repo.spells_by_id.values():
+        for ingredient in spell.get("ingredients", []):
+            ingredient_ref = ingredient.get("ingredient_ref")
+            if ingredient_ref and not _ingredient_ref_valid(ingredient_ref, collectible_ids):
+                raise ValueError(f"Missing ingredient_ref: {ingredient_ref}")
+
+    for entry in repo.lexicon_by_key.values():
+        scope = entry.get("scope")
+        if scope and scope != "Global":
+            _ensure_refs_exist([scope], place_ids, "place_id")

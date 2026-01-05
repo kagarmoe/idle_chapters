@@ -12,8 +12,6 @@ Produce a working v1 that is demoable via FastAPI:
 
 This plan is intentionally granular: file names, milestones, and acceptance criteria.
 
----
-
 ## Milestone 0 — Repo organization (1 pass)
 
 ### Create/confirm directories

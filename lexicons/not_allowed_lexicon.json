@@ -1,0 +1,123 @@
+{
+  "lexicon": [
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "threat_language",
+      "scope": "Global",
+      "words": ["danger", "threat", "risk", "peril", "unsafe", "warning", "alarm"],
+      "notes": "No fear or urgency"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "violence_language",
+      "scope": "Global",
+      "words": ["blood", "weapon", "attack", "fight", "kill", "wound"],
+      "notes": "No violence in cozy tone"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "predator_language",
+      "scope": "Global",
+      "words": ["stalk", "hunt", "prey", "snarl", "fangs"],
+      "notes": "Prevent animal menace"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "urgency_language",
+      "scope": "Global",
+      "words": ["hurry", "rush", "deadline", "must", "urgent", "immediately"],
+      "notes": "No time pressure"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "failure_language",
+      "scope": "Global",
+      "words": ["fail", "mistake", "wrong choice", "consequence"],
+      "notes": "No evaluative stakes"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "conflict_language",
+      "scope": "Global",
+      "words": ["argument", "confrontation", "dispute", "tension"],
+      "notes": "No interpersonal stress"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "judgement_language",
+      "scope": "Global",
+      "words": ["judged", "watched", "embarrassed", "ashamed"],
+      "notes": "Preserve emotional safety"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "authority_language",
+      "scope": "Global",
+      "words": ["rule", "order", "enforcement", "punishment"],
+      "notes": "No coercive structures"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "scarcity_language",
+      "scope": "Global",
+      "words": ["empty", "lacking", "shortage", "last one"],
+      "notes": "Avoid anxiety"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "permanent_loss_language",
+      "scope": "Global",
+      "words": ["lost forever", "gone", "broken beyond repair"],
+      "notes": "No permanent loss framing"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "harsh_sound_language",
+      "scope": "Global",
+      "words": ["screech", "clang", "crash", "shriek"],
+      "notes": "Preserve soft soundscape"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "harsh_touch_language",
+      "scope": "Global",
+      "words": ["sharp", "jagged", "cutting", "abrasive"],
+      "notes": "Avoid bodily discomfort"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "extreme_weather_language",
+      "scope": "Global",
+      "words": ["gale", "freezing", "scorching"],
+      "notes": "Weather should be mostly gentle"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "abstraction_language",
+      "scope": "Global",
+      "words": ["meaning of life", "existential", "fate"],
+      "notes": "Keep grounded"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "analysis_language",
+      "scope": "Global",
+      "words": ["evaluate", "calculate", "optimize", "strategy"],
+      "notes": "No optimization mindset"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "bakery_work_stress",
+      "scope": "town_bakery",
+      "words": ["workload", "behind schedule", "rush hour"],
+      "notes": "Bakery is comfort, not labor"
+    },
+    {
+      "lexicon_type": "Not_Allowed",
+      "key": "tidepools_fragility_threat",
+      "scope": "beach_tidepools",
+      "words": ["crushed", "stepped on", "dying"],
+      "notes": "Protect gentleness"
+    }
+  ]
+}

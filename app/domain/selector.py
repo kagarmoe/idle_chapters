@@ -1,18 +1,32 @@
-# TODO:
+from __future__ import annotations
 
-# 2.4 Implement storylet candidate selection (generated + authored)
+import random
+from typing import Iterable
 
-# File: `app/domain/selector.py`
+from app.domain.storylet_generator import generate_storylet
 
-# - Add a function `generate_candidates(state, repo, seed, n=3)`.
-# - Add a function `merge_with_authored(candidates, authored)`.
-# - Add selection:
-#   - deterministic selection by seed
-#   - prefer authored anchors if explicitly “pinned” (optional later)
 
-# ### 4.3 Implement storylet selector
+def generate_candidates(state, repo, seed: int | None, n: int = 3) -> list[dict]:
+    rng = random.Random(seed)
+    candidates = []
+    for _ in range(n):
+        candidate_seed = rng.randint(0, 1_000_000) if seed is not None else None
+        candidate = generate_storylet(state=state, repo=repo, seed=candidate_seed)
+        candidates.append(candidate.to_dict() if hasattr(candidate, "to_dict") else candidate)
+    return candidates
 
-# File: `app/domain/selector.py`
 
-# - eligible_storylets(state, repo) -> list[Storylet]
-# - choose_storylet(storylets, seed) -> Storylet
+def merge_with_authored(candidates: Iterable[dict], authored: Iterable[dict]) -> list[dict]:
+    merged = list(authored) + list(candidates)
+    return merged
+
+
+def eligible_storylets(state, repo) -> list[dict]:
+    return list(repo.storylets_by_place_id.get(state.current_place_id, []))
+
+
+def choose_storylet(storylets: list[dict], seed: int | None = None) -> dict:
+    if not storylets:
+        raise ValueError("No eligible storylets")
+    rng = random.Random(seed)
+    return rng.choice(storylets)
