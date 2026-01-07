@@ -3,8 +3,8 @@ import textwrap
 from pathlib import Path
 
 from app.ui.text import PADDING, fill_width, print_block
-from texts.inventory import load_inventory, save_inventory
-from texts.welcome import save_player
+from app.scenes.inventory import load_inventory, save_inventory
+from app.scenes.welcome import save_player
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]

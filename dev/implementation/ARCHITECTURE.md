@@ -76,6 +76,13 @@ Stored as JSON instance files and validated with JSON Schemas.
 
 Schemas live under schemas/ and are used to validate asset/lexicon instances at load time.
 
+### Scene Code vs Scene Assets
+
+- `assets/scenes/` holds authored JSON scene graphs (data).
+- `app/scenes/` holds Python scene flow for the CLI (runtime behavior).
+
+Keep these separate: assets are validated and immutable at runtime, while `app/scenes/` can change behavior and rendering.
+
 ### Domain Layer (engine)
 
 Pure Python modules that:
