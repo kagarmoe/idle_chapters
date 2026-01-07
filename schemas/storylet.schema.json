@@ -7,12 +7,10 @@
   "required": ["storylet_id", "place_id", "entry_type", "choices"],
   "properties": {
     "storylet_id": {
-      "type": "string",
-      "pattern": "^[a-z0-9_]+$"
+      "$ref": "common.schema.json#/$defs/id"
     },
     "place_id": {
-      "type": "string",
-      "pattern": "^[a-z0-9_]+$"
+      "$ref": "common.schema.json#/$defs/id"
     },
     "entry_type": {
       "type": "string",
@@ -20,13 +18,13 @@
     },
     "title": {
       "oneOf": [
-        { "type": "string", "minLength": 1 },
+        { "$ref": "common.schema.json#/$defs/nonempty_string" },
         { "type": "null" }
       ]
     },
     "prompt": {
       "oneOf": [
-        { "type": "string", "minLength": 1 },
+        { "$ref": "common.schema.json#/$defs/nonempty_string" },
         { "type": "null" }
       ]
     },
@@ -37,13 +35,13 @@
     },
     "need_hint": {
       "oneOf": [
-        { "type": "string", "minLength": 1 },
+        { "$ref": "common.schema.json#/$defs/nonempty_string" },
         { "type": "null" }
       ]
     },
     "mood_hint": {
       "oneOf": [
-        { "type": "string", "minLength": 1 },
+        { "$ref": "common.schema.json#/$defs/nonempty_string" },
         { "type": "null" }
       ]
     },
@@ -73,41 +71,10 @@
           "type": "string",
           "enum": ["1", "2", "3"]
         },
-        "label": {
-          "type": "string",
-          "minLength": 1
-        },
-        "effects": { "$ref": "#/$defs/effects" }
+        "label": { "$ref": "common.schema.json#/$defs/nonempty_string" },
+        "effects": { "$ref": "common.schema.json#/$defs/effects" }
       }
     },
-    "effects": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "add_items": {
-          "type": "object",
-          "additionalProperties": { "type": "integer" }
-        },
-        "remove_items": {
-          "type": "object",
-          "additionalProperties": { "type": "integer" }
-        },
-        "set_flags": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "clear_flags": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "move_to": {
-          "oneOf": [
-            { "type": "string" },
-            { "type": "null" }
-          ]
-        }
-      },
-      "default": {}
-    }
+    "effects": { "$ref": "common.schema.json#/$defs/effects" }
   }
 }

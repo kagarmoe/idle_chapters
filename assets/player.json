@@ -1,2 +1,12 @@
 {
+    "address": {
+        "display_name": "Ruby",
+        "pronouns": "ze_hir"
+    },
+    "player_id": "e386851dbb094e70a22f192d125a1cca",
+    "state": {
+        "inventory": [
+            "journal"
+        ]
+    }
 }

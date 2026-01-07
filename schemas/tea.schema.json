@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$title": "Tea Recipe Schema",
+  "$id": "https://example.com/schemas/tea.schema.json",
   "type": "object",
   "required": ["tea_recipes"],
   "properties": {
@@ -13,21 +14,17 @@
         "required": ["recipe_id", "display_name", "intent", "target_need", "allowed_times", "base_liquid", "ingredients", "steps", "serves", "repeatable"],
         "properties": {
           "recipe_id": {
-            "type": "string",
-            "pattern": "^[a-z0-9_]+$"
+            "$ref": "common.schema.json#/$defs/id"
           },
           "display_name": {
-            "type": "string",
-            "minLength": 1
+            "$ref": "common.schema.json#/$defs/nonempty_string"
           },
           "intent": {
-            "type": "string",
-            "minLength": 1,
+            "$ref": "common.schema.json#/$defs/nonempty_string",
             "description": "Narrative intent (comfort, clarity, calm, gratitude...)"
           },
           "target_need": {
-            "type": "string",
-            "minLength": 1,
+            "$ref": "common.schema.json#/$defs/nonempty_string",
             "description": "Player_Need_Satisfied phrasing"
           },
           "allowed_times": {
@@ -60,8 +57,7 @@
                   "enum": ["base", "note", "sweetener", "garnish", "focus", "support"]
                 },
                 "amount_hint": {
-                  "type": "string",
-                  "minLength": 1
+                  "$ref": "common.schema.json#/$defs/nonempty_string"
                 }
               }
             }
@@ -75,12 +71,14 @@
             "type": "array",
             "minItems": 2,
             "items": {
-              "type": "string",
-              "minLength": 1
+              "$ref": "common.schema.json#/$defs/nonempty_string"
             }
           },
           "sensory_prompt": {
-            "type": ["string", "null"],
+            "oneOf": [
+              { "$ref": "common.schema.json#/$defs/nonempty_string" },
+              { "type": "null" }
+            ],
             "default": null
           },
           "outcome_tags": {
@@ -103,7 +101,10 @@
             "default": []
           },
           "notes": {
-            "type": ["string", "null"],
+            "oneOf": [
+              { "$ref": "common.schema.json#/$defs/nonempty_string" },
+              { "type": "null" }
+            ],
             "default": null
           }
         }

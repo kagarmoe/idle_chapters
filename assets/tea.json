@@ -31,6 +31,31 @@
       "notes": "A classic evening tea for winding down."
     },
     {
+      "recipe_id": "black_tea_simple",
+      "display_name": "Black Tea",
+      "intent": "steadying",
+      "target_need": "A gentle start to the day",
+      "allowed_times": ["Morning", "Afternoon"],
+      "base_liquid": "water",
+      "ingredients": [
+        {
+          "ingredient_ref": "black_tea",
+          "role": "base",
+          "amount_hint": "1 tsp loose leaf"
+        }
+      ],
+      "steps": [
+        "Heat water until it is just steaming.",
+        "Steep the tea for 3-4 minutes.",
+        "Pour and sip while warm."
+      ],
+      "sensory_prompt": "A warm, rounded aroma and a soft, steady warmth.",
+      "outcome_tags": ["steadying", "warming"],
+      "serves": 1,
+      "repeatable": "Always",
+      "notes": "A simple cup that feels familiar and grounding."
+    },
+    {
       "recipe_id": "meadow_calm",
       "display_name": "Meadow Calm Tea",
       "intent": "relaxation",

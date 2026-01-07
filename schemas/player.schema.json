@@ -1,8 +1,12 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$title": "Player Schema",
+  "$id": "https://example.com/schemas/player.schema.json",
   "schema_id": "player",
   "schema_version": "0.1",
   "description": "Defines how the player is addressed and reflected in the world. This schema intentionally avoids fixed identity, backstory, demographics, or narrative trajectory.",
-  "required": [],
+  "type": "object",
+  "additionalProperties": false,
   "properties": {
     "address": {
       "type": "object",
@@ -10,13 +14,15 @@
       "required": [],
       "properties": {
         "display_name": {
-          "type": "string",
-          "nullable": true,
+          "oneOf": [
+            { "$ref": "common.schema.json#/$defs/nonempty_string" },
+            { "type": "null" }
+          ],
           "description": "Optional name or nickname used in rare, low-pressure address. If unset, the game defaults to second-person (\"you\")."
         },
         "pronouns": {
           "type": "string",
-          "enum": ["unspecified", "they_them", "she_her", "he_him"],
+          "enum": ["unspecified", "they_them", "she_her", "he_him", "ze_hir", "you_your"],
           "default": "unspecified",
           "description": "Preferred pronouns for third-person references. If unset or unspecified, the game defaults to second-person or neutral constructions."
         }
@@ -37,9 +43,10 @@
           "description": "Weighted facet map (facet_id -> weight). Facets describe conditions of play, not outcomes."
         },
         "last_bias_update": {
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ],
           "description": "Timestamp of the last premise bias adjustment (for debugging only)."
         }
       }
@@ -50,12 +57,40 @@
       "required": [],
       "properties": {
         "current_location": {
-          "type": "string",
-          "nullable": true
+          "oneOf": [
+            { "$ref": "common.schema.json#/$defs/id" },
+            { "type": "null" }
+          ]
         },
         "inventory": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": { "$ref": "common.schema.json#/$defs/id" },
+          "default": [],
+          "description": "Derived list for display only; canonical counts live in inventory_counts."
+        },
+        "inventory_counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 },
+          "default": {}
+        },
+        "visit_counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 },
+          "default": {}
+        },
+        "seen_interactions": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              { "type": "integer", "minimum": 0 },
+              { "type": "string", "minLength": 1 }
+            ]
+          },
+          "default": {}
+        },
+        "flags": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/nonempty_string" },
           "default": []
         },
         "relationships": {

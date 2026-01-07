@@ -1,0 +1,103 @@
+{
+  "actions": [
+    {
+      "action_id": "cottage_wake",
+      "label": "Wake in the cottage",
+      "when": { "location": "cottage_home" },
+      "result": "The cottage rests in a quiet countryside, with a thatched roof, whitewashed walls, and a garden of cheerful blooms. Inside, a soft fire glows, wood furniture adds warmth, and small, familiar details make the space feel lived-in. You wake here, calm and well-rested, with time to ease into the day.",
+      "intent_signature": {
+        "keywords": ["wake", "morning"],
+        "phrases": ["wake up", "start the day"]
+      }
+    },
+    {
+      "action_id": "rest_longer",
+      "label": "Rest a bit longer",
+      "when": { "location": "cottage_home" },
+      "result": "You stay tucked into the comfort of your cottage. Light drifts through the curtains, and the outdoors hums in a gentle hush. You breathe slowly, enjoying the stillness, and let yourself settle back into a quiet pause.",
+      "intent_signature": {
+        "keywords": ["rest", "linger", "stay"],
+        "phrases": ["rest longer", "stay a while"]
+      }
+    },
+    {
+      "action_id": "look_around",
+      "label": "Look around",
+      "when": { "location": "cottage_home" },
+      "result": "You rise from the bed and take in the cottage's cozy glow. Outside, the garden brightens with color and soft birdsong. The air feels fresh and welcoming, and you take a moment to enjoy the simple calm before choosing what comes next.",
+      "intent_signature": {
+        "keywords": ["look", "around", "explore"],
+        "phrases": ["look around", "have a look"]
+      },
+      "effects": {
+        "add_items": {
+          "bag": 1,
+          "water_bottle": 1,
+          "water": 1,
+          "mirror": 1
+        }
+      }
+    },
+    {
+      "action_id": "make_tea",
+      "label": "Make a cup of tea",
+      "when": {
+        "location": "cottage_home",
+        "flags_not_set": ["made_tea"]
+      },
+      "result": "You fill the kettle and set it on to warm. While it hums, you choose your tea, set out a favorite cup, and let the morning settle around you. When the water is ready, you pour slowly and watch the steam curl up, soft and fragrant. You take your time with the first sip, hands wrapped around the warmth, and let the quiet of the cottage keep you company.",
+      "intent_signature": {
+        "keywords": ["tea", "kettle", "brew"],
+        "phrases": ["make tea", "cup of tea"]
+      },
+      "effects": {
+        "add_items": {
+          "chamomile_flower": 1,
+          "black_tea": 1,
+          "biscuits": 1
+        },
+        "set_flags": ["made_tea"]
+      }
+    },
+    {
+      "action_id": "pick_up_journal",
+      "label": "Pick up your journal",
+      "when": {
+        "location": "cottage_home",
+        "flags_not_set": ["journal_available"]
+      },
+      "result": "You lift the journal from the table. Its cover is thick and soft, the kind that warms under your hands. The pages are a gentle cream, with a faint tooth to the paper that invites slow, steady writing. A ribbon marker rests between the sheets, and the corners are rounded from careful use. It feels like a quiet companion, waiting for small observations and kind reflections.",
+      "intent_signature": {
+        "keywords": ["journal", "write", "notes"],
+        "phrases": ["pick up journal", "take journal"]
+      },
+      "effects": {
+        "add_items": { "journal": 1 },
+        "set_flags": ["journal_available"]
+      }
+    },
+    {
+      "action_id": "head_to_town",
+      "label": "Head to town for a snack",
+      "when": { "location": "cottage_home" },
+      "result": "With your things gathered, you step toward town for a gentle bite to eat.",
+      "intent_signature": {
+        "keywords": ["town", "snack", "peckish", "leave"],
+        "phrases": ["head to town", "leave for town"]
+      },
+      "effects": {
+        "add_items": {
+          "journal": 1,
+          "bag": 1,
+          "water_bottle": 1,
+          "water": 1,
+          "mirror": 1,
+          "chamomile_flower": 1,
+          "black_tea": 1,
+          "biscuits": 1
+        },
+        "set_flags": ["left_cottage_first"]
+      }
+    }
+  ]
+}

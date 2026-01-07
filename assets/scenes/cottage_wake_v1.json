@@ -1,0 +1,37 @@
+{
+  "scene_id": "cottage_wake_v1",
+  "place_id": "cottage_home",
+  "entry_node": "cottage_wake",
+  "nodes": [
+    {
+      "node_id": "cottage_wake",
+      "action_ref": "cottage_wake",
+      "choices": ["rest_longer", "look_around"]
+    },
+    {
+      "node_id": "rest_longer",
+      "action_ref": "rest_longer",
+      "choices": ["look_around"]
+    },
+    {
+      "node_id": "look_around",
+      "action_ref": "look_around",
+      "choices": ["make_tea", "pick_up_journal", "head_to_town"]
+    },
+    {
+      "node_id": "make_tea",
+      "action_ref": "make_tea",
+      "choices": ["look_around", "head_to_town"]
+    },
+    {
+      "node_id": "pick_up_journal",
+      "action_ref": "pick_up_journal",
+      "choices": ["make_tea", "head_to_town"]
+    },
+    {
+      "node_id": "head_to_town",
+      "action_ref": "head_to_town",
+      "choices": []
+    }
+  ]
+}
