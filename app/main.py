@@ -1,7 +1,7 @@
 from app.ui.text import print_block
-from scenes.cottage import run_cottage
-from scenes.inventory import load_inventory, save_inventory
-from scenes.welcome import player_menu, save_player, welcome
+from app.scenes.cottage import run_cottage
+from app.scenes.inventory import load_inventory, save_inventory
+from app.scenes.welcome import player_menu, save_player, welcome
 
 def add_collectible(player, item_id) -> bool:
     player_id = player.get("player_id")
