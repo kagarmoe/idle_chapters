@@ -22,28 +22,20 @@
     }
   },
   "$defs": {
-    "id": {
-      "type": "string",
-      "pattern": "^[a-z0-9_]+$"
-    },
-    "nonempty_string": {
-      "type": "string",
-      "minLength": 1
-    },
     "zone": {
       "type": "object",
       "additionalProperties": false,
       "required": ["zone_id", "display_name", "mood"],
       "properties": {
         "zone_id": {
-          "$ref": "#/$defs/id",
+          "$ref": "common.schema.json#/$defs/id",
           "description": "Top-level traversal/generation bucket (forest, meadow, beach, town, cottage)."
         },
         "display_name": {
-          "$ref": "#/$defs/nonempty_string"
+          "$ref": "common.schema.json#/$defs/nonempty_string"
         },
         "mood": {
-          "$ref": "#/$defs/nonempty_string",
+          "$ref": "common.schema.json#/$defs/nonempty_string",
           "description": "Zone-level mood label (used for ambience + generation)."
         },
         "notes": {
@@ -61,19 +53,19 @@
       "required": ["place_id", "display_name", "zone_id", "mood", "profile"],
       "properties": {
         "place_id": {
-          "$ref": "#/$defs/id",
+          "$ref": "common.schema.json#/$defs/id",
           "description": "Primary key for sublocations referenced by items, recipes, NPCs, quests."
         },
         "display_name": {
-          "$ref": "#/$defs/nonempty_string"
+          "$ref": "common.schema.json#/$defs/nonempty_string"
         },
         "zone_id": {
-          "$ref": "#/$defs/id",
+          "$ref": "common.schema.json#/$defs/id",
           "description": "Which zone this place belongs to (must match a zones[*].zone_id)."
         },
         "parent_place_id": {
           "oneOf": [
-            { "$ref": "#/$defs/id" },
+            { "$ref": "common.schema.json#/$defs/id" },
             { "type": "null" }
           ],
           "default": null,
@@ -85,7 +77,7 @@
           "description": "Whether this place is a liminal threshold where crossings (e.g. portals) are possible."
         },
         "mood": {
-          "$ref": "#/$defs/nonempty_string",
+          "$ref": "common.schema.json#/$defs/nonempty_string",
           "description": "Place-level mood tag; can override or refine the zone mood."
         },
         "notes": {
@@ -101,7 +93,7 @@
           "required": ["meaning", "sensory_focus", "social_level", "time_sensitivity", "weather_sensitivity", "emotional_range", "player_need_satisfied"],
           "properties": {
             "meaning": {
-              "$ref": "#/$defs/nonempty_string"
+              "$ref": "common.schema.json#/$defs/nonempty_string"
             },
             "sensory_focus": {
               "type": "array",
@@ -127,12 +119,22 @@
               ]
             },
             "emotional_range": {
-              "$ref": "#/$defs/nonempty_string"
+              "$ref": "common.schema.json#/$defs/nonempty_string"
             },
             "player_need_satisfied": {
-              "$ref": "#/$defs/nonempty_string"
+              "$ref": "common.schema.json#/$defs/nonempty_string"
             }
           }
+        },
+        "actions": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/id" },
+          "default": []
+        },
+        "visible_npcs": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/id" },
+          "default": []
         }
       }
     }

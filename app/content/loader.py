@@ -4,8 +4,9 @@ import json
 from pathlib import Path
 from typing import Any
 
-from jsonschema import SchemaError, ValidationError, validate
+from jsonschema import SchemaError, ValidationError
 
+from app.content.schema_utils import load_validator
 
 def load_json(path: Path | str, schema_path: Path | str | None = None) -> Any:
     path = Path(path)
@@ -19,13 +20,11 @@ def load_json(path: Path | str, schema_path: Path | str | None = None) -> Any:
     if schema_path is not None:
         schema_path = Path(schema_path)
         try:
-            schema = json.loads(schema_path.read_text(encoding="utf-8"))
-        except Exception as exc:
-            raise ValueError(f"Failed to load schema: {schema_path}") from exc
-        try:
-            validate(instance=data, schema=schema)
+            validator = load_validator(schema_path)
+            validator.validate(instance=data)
         except (ValidationError, SchemaError) as exc:
             raise ValueError(f"Schema validation failed for {path}: {exc.message}") from exc
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"Failed to load schema: {schema_path}") from exc
 
     return data
-

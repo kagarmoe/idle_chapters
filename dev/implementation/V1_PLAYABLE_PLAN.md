@@ -6,8 +6,8 @@ Produce a working v1 that is demoable via FastAPI:
 
 - creates a session
 - returns a journal page for “what happens next”
-- offers 3 choices
-- applies effects and persists state
+- offers eligible actions (intent-based)
+- applies effects and persists state (inventory_counts canonical)
 - stores journal pages as the primary record
 
 This plan is intentionally granular: file names, milestones, and acceptance criteria.
@@ -42,7 +42,7 @@ This plan is intentionally granular: file names, milestones, and acceptance crit
 
 File: `app/content/loader.py`
 
-- load YAML from a path
+- load JSON from a path
 - validate against schema (jsonschema)
 - return parsed dict/list
 
@@ -58,7 +58,7 @@ File: `app/content/manifest.py`
 
 ### 1.3 Build ContentRepo + indices
 
-- `ContentProvider` (file-based in V1; loads YAML from the repo)
+- `ContentProvider` (file-based in V1; loads JSON from the repo)
 - Later (optional): `MongoContentProvider` (only if we need live editing / multi-pack serving)
 
 File: `app/content/repo.py`
@@ -66,11 +66,16 @@ File: `app/content/repo.py`
 **V1 decision:** load all validated *asset content* into memory at process start, then serve lookups from indices.
 MongoDB is reserved for *runtime data* (sessions, state, journal pages), not static world content.
 
+Scene manifest loading (v1):
+- read `assets/scenes/manifest.json`
+- load each scene file listed there
+- validate against `scene.schema.json`
+
 Why this is the right default for V1:
 - **Simplicity**: no migrations, no content database bootstrapping, no dual-source-of-truth.
 - **Speed**: after startup, content access is pure in-process dict lookup.
 - **Fail-fast validation**: schema + cross-file checks run once at boot and crash loudly if broken.
-- **Git-native workflow**: edit YAML → run tests → commit. No admin UI required.
+- **Git-native workflow**: edit JSON → run tests → commit. No admin UI required.
 - **Determinism & testability**: generator behavior depends on versioned content, not mutable DB rows.
 
 Tradeoffs and when Mongo-backed content becomes worth it:
@@ -104,8 +109,8 @@ Load all validated assets into memory and build indices:
 - interactions_by_place_id
 - tea_by_id
 - spells_by_id
-- storylets_by_id (placeholder until file exists)
-- storylets_by_place_id (when authored anchors are added)
+- actions_by_id
+- scenes_by_id (from per-file scenes + manifest)
 - journal_templates_by_entry_type
 - lexicon_by_key
 
@@ -138,56 +143,58 @@ Validate at load time:
 
 ---
 
-## Milestone 2 — Storylets v1 (procedural-first)
+## Milestone 2 — Scenes + actions v1 (procedural-first interactions)
 
-Storylets are the unit of experience selected by the engine to describe “what happens next.”
-In v1, **procedural generation is the primary path**. Authored storylets exist as anchors,
-examples, and regression tests — not as the main content supply.
+Scenes are authored graphs of reusable actions. In v1, **procedural generation is used for interactions** and ambient variation, while scenes/actions are authored and validated.
 
-### 2.0 Decide the v1 Storylet contract (one-time decisions)
+### 2.0 Decide the v1 Scene + Action contract (one-time decisions)
 
 These decisions keep the code simple and testable:
 
-- **Binding**: v1 storylets are place-bound (use `place_id`, not `zone_id`).
-- **Choices**: every storylet returns **exactly 3** choices.
-- **Determinism**: every generation step accepts an optional `seed`.
-- **Debugability**: every generated storylet includes `debug` metadata (seed + templates + constraint notes).
+- **Binding**: v1 scenes are place-bound (use `place_id`, not `zone_id`).
+- **Choices**: scenes own the graph; actions are reusable.
+- **Determinism**: every selection step accepts an optional `seed`.
+- **Debugability**: selections include debug metadata (seed + template ids + constraint notes).
 
-### 2.1 Confirm/adjust `storylet.schema.yaml` for generated storylets
+### 2.1 Confirm/adjust `scene.schema.json`, `actions.schema.json`, `conditions.schema.json`
 
-File: `schemas/storylet.schema.yaml`
+Files: `schemas/scene.schema.json`, `schemas/actions.schema.json`, `schemas/conditions.schema.json`
 
 Add (or confirm) support for:
 
-- a `debug` object (optional) with freeform string fields (seed, template_id, notes)
-- simple `conditions` structure usable by both authored and generated storylets
-- `choices[*].effects` structure compatible with reducer functions
+- `when` structure usable by both authored and generated actions
+- `effects` structure compatible with reducer functions
 
 Acceptance check:
 
-- a generated storylet can validate without requiring fully authored prose
+- a generated action/interaction can validate without requiring fully authored prose
 
-### 2.2 Implement a Storylet model (internal)
+### 2.2 Implement Scene/Action models (internal)
 
-File: `app/domain/storylet.py`
+Files: `app/domain/scene.py`, `app/domain/action.py` (or unified models)
 
-- Define a lightweight Storylet type (Pydantic model or dataclass) that matches the schema shape.
-- Include:
-  - `storylet_id: str`
+- Define lightweight Scene/Action types (Pydantic model or dataclass) that match the schema shapes.
+- Scene fields:
+  - `scene_id: str`
   - `place_id: str`
-  - `entry_type: str`
-  - `title: str | None` (optional)
-  - `prompt: str | None` (optional)
-  - `tags: list[str]` (optional)
-  - `need_hint: str | None` (optional)
-  - `mood_hint: str | None` (optional)
-  - `conditions: dict` (minimal)
-  - `choices: list[dict]` (exactly 3)
-  - `debug: dict | None` (optional)
+  - `entry_node: str`
+  - `nodes: list[SceneNode]`
+- SceneNode fields:
+  - `node_id: str`
+  - `action_ref: str`
+  - `choices: list[str]`
+- Action fields:
+  - `action_id: str`
+  - `label: str`
+  - `when: dict | None`
+  - `result: str | None`
+  - `result_variants: list[str]`
+  - `intent_signature: dict`
+  - `effects: dict`
 
-### 2.3 Implement procedural storylet generator (core v1 feature)
+### 2.3 Implement procedural interaction generator (core v1 feature)
 
-File: `app/domain/storylet_generator.py`
+File: `app/domain/interaction_generator.py`
 
 Responsibilities:
 
@@ -197,7 +204,7 @@ Responsibilities:
   - `seed` (optional)
 
 - Output:
-  - one valid Storylet (or N candidates)
+  - interaction candidates (or N candidates)
 
 Implementation steps:
 
@@ -205,7 +212,7 @@ Implementation steps:
    - Start rule: default to `tea` unless a place has a “threshold” tag for `spell`.
    - Later: weight by time_tick or recent history.
 
-2) **Pick a template family** (not the journal template; a storylet “shape”)
+2) **Pick a template family** (not the journal template; an interaction “shape”)
    - Example families: `arrival`, `small_find`, `offer_help`, `quiet_notice`, `threshold_call`.
 
 3) **Construct a prompt/title seed**
@@ -231,10 +238,10 @@ Implementation steps:
    - key constraint decisions (e.g., “spell disallowed: not a threshold place”)
 
 7) **Validate**
-   - Validate the generated object against `storylet.schema.yaml`.
+   - Validate the generated object against `interactions.schema.json`.
    - If invalid, fail fast with readable error (this is portfolio-grade).
 
-### 2.4 Implement storylet candidate selection (generated + authored)
+### 2.4 Implement interaction candidate selection (generated + authored)
 
 File: `app/domain/selector.py`
 
@@ -246,44 +253,44 @@ File: `app/domain/selector.py`
 
 ### 2.5 Author a minimal anchor set (optional but recommended)
 
-File: `assets/storylets.yaml`
+File: `assets/scenes/manifest.json`
 
-Target: **6–10** storylets total.
+Target: **6–10** scenes total.
 
 Purpose:
 - stable examples
 - regression fixtures
-- guarantee at least one storylet exists per major zone
+- guarantee at least one scene exists per major zone
 
 Guidelines:
 - keep prose minimal
 - keep effects conservative
 - keep tags simple
 
-### 2.6 Add storylets to ContentRepo (authored anchors)
+### 2.6 Add scenes/actions to ContentRepo (authored anchors)
 
 File: `app/content/repo.py`
 
-- Load and index authored storylets if `assets/storylets.yaml` exists.
+- Load and index authored scenes from the manifest and actions from `assets/actions.json`.
 - Index by `place_id`.
 
 ### 2.7 Tests for generation (required)
 
 Files:
-- `tests/test_storylet_generation.py`
+- `tests/test_storylet_generation.py` (to be renamed when interaction generator replaces storylets)
 
 Test cases:
-- generator returns exactly 3 choices
+- generator returns valid interaction candidates
 - generator output validates against schema
-- determinism: same seed + same state => same storylet_id and choice labels
+- determinism: same seed + same state => same ids and labels
 - safety: generator output contains no disallowed words (basic check via not_allowed lexicon)
 
 ### Acceptance criteria (Milestone 2)
 
-- procedural generator can emit a valid Storylet for any supported place
-- generated storylets validate against `storylet.schema.yaml`
+- procedural generator can emit valid interactions for any supported place
+- generated interactions validate against `interactions.schema.json`
 - selector can merge generated candidates with authored anchors (if present)
-- at least one end-to-end step can run using a generated storylet
+- at least one end-to-end step can run using a generated interaction
 
 ---
 
@@ -295,8 +302,8 @@ File: `app/domain/step_result.py`
 
 - Define `StepResult` to include:
   - `journal_page` (frontmatter dict + markdown body)
-  - `choices` (exactly 3)
-  - `debug` (seed, selected_storylet_id, eligible_count)
+  - `eligible_actions`
+  - `debug` (seed, selected_action_id, eligible_count)
 
 This keeps the API/CLI thin: they render the returned journal page.
 
@@ -304,7 +311,7 @@ This keeps the API/CLI thin: they render the returned journal page.
 
 File: `app/content/repo.py`
 
-- load `journal_templates.yaml`
+- load `journal_templates.json`
 - index templates by entry_type (and optionally by tags)
 
 ### 3.2 Implement journal renderer
@@ -315,15 +322,15 @@ Inputs:
 
 - place_id
 - entry_type
-- storylet (selected)
+- scene/action (selected)
 - state snapshot (inventory/flags as needed)
-- ingredient picks (optional, based on storylet tags)
+- ingredient picks (optional, based on action/interaction tags)
 
 Outputs:
 
 - JournalPage object:
   - frontmatter fields aligned with journal_page.schema
-  - markdown body assembled from template + storylet context
+  - markdown body assembled from template + scene/action context
 
 ### 3.3 Ingredient picking (locality rules)
 
@@ -332,12 +339,12 @@ File: `app/domain/ingredient_picker.py`
 Implement:
 
 - place_policy order: same_place (strict) > same_zone > any_place
-- use places.yaml zone_id mapping (no heuristics once places are loaded)
+- use places.json zone_id mapping (no heuristics once places are loaded)
 - ensure picks are compatible with entry_type (tea/spell constraints)
 
 ### Acceptance criteria
 
-- engine can produce a JournalPage for at least one storylet
+- engine can produce a JournalPage for at least one scene/action
 - locality works:
   - same_place used when available
   - same_zone used only when same_place insufficient
@@ -355,8 +362,10 @@ File: `app/domain/state.py`
 - PlayerState (Pydantic or dataclass):
   - session_id
   - current_place_id
-  - inventory: {item_id: qty}
+  - inventory_counts: {item_id: qty}
   - flags: set[str]
+  - visit_counts
+  - seen_interactions
   - time_tick (optional)
 
 ### 4.2 Implement effects reducers
@@ -366,12 +375,12 @@ File: `app/domain/effects.py`
 - apply_effects(state, effects) -> new_state
 - validate inventory cannot go negative (unless allowed)
 
-### 4.3 Implement storylet selector
+### 4.3 Implement action/scene selector
 
 File: `app/domain/selector.py`
 
-- eligible_storylets(state, repo) -> list[Storylet]
-- choose_storylet(storylets, seed) -> Storylet
+- eligible_actions(state, repo) -> list[Action]
+- choose_action(actions, seed) -> Action
 
 ### 4.4 Implement Engine.step
 
@@ -379,13 +388,13 @@ File: `app/domain/engine.py`
 
 Flow:
 
-1) select eligible storylet(s) for current place
-2) if command is “enter” or “continue,” return storylet choices without applying effects
-3) if command is “choose option,” apply chosen effects
+1) select eligible actions for current place/scene
+2) resolve intent against eligible actions
+3) apply chosen effects
 4) render JournalPage
 5) return StepResult:
    - journal_page
-   - choices (next)
+   - eligible_actions (next)
    - debug info
 
 ### Acceptance criteria
@@ -470,7 +479,7 @@ File: `app/api/routers/world.py`
 - GET /world/places
 - GET /world/npcs
 - GET /world/items
-- GET /world/storylets (optional, debug)
+- GET /world/scenes (optional, debug)
 - GET /world/lexicons (optional, debug)
 
 ### 6.3 Services
@@ -518,9 +527,9 @@ Acceptance criteria:
 
 ## Notes: “schema drift” policy (enforced)
 
-- JSON Schemas validate YAML assets at load time.
+- JSON Schemas validate JSON assets at load time.
 - Pydantic models define API contracts and persistence shapes.
 - Mongo stores runtime state and history; it is not a schema generator.
 - Any “any:” token must either:
-  - be resolvable by ingredient_substitutions.yaml (when used), or
+  - be resolvable by ingredient_substitutions.json (when used), or
   - be deferred with a clear TODO and a safe fallback path.

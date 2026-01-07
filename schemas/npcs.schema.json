@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$title": "NPCs Schema",
+  "$id": "https://example.com/schemas/npcs.schema.json",
   "type": "object",
   "required": ["npcs"],
   "properties": {
@@ -13,13 +14,11 @@
         "required": ["npc_id", "display_name", "npc_kind", "home_location_id", "spawn_rules", "interactions"],
         "properties": {
           "npc_id": {
-            "type": "string",
-            "pattern": "^[a-z0-9_]+$",
+            "$ref": "common.schema.json#/$defs/id",
             "description": "Stable identifier used by events, dialogue, and NPC acquisition rules."
           },
           "display_name": {
-            "type": "string",
-            "minLength": 1
+            "$ref": "common.schema.json#/$defs/nonempty_string"
           },
           "npc_kind": {
             "type": "string",
@@ -35,8 +34,7 @@
             "default": null
           },
           "home_location_id": {
-            "type": "string",
-            "minLength": 1
+            "$ref": "common.schema.json#/$defs/id"
           },
           "spawn_rules": {
             "type": "object",
@@ -82,7 +80,7 @@
             "additionalProperties": false,
             "required": ["currency_item_id", "daily_limit", "pools"],
             "properties": {
-              "currency_item_id": { "type": "string", "minLength": 1 },
+              "currency_item_id": { "$ref": "common.schema.json#/$defs/id" },
               "daily_limit": { "type": "integer", "minimum": 0, "description": "0 means unlimited." },
               "mode": { "type": "string", "enum": ["procedural", "curated", "mixed"], "default": "procedural" },
               "pools": {
@@ -93,7 +91,7 @@
                   "additionalProperties": false,
                   "required": ["pool_id", "weight", "filters"],
                   "properties": {
-                    "pool_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+                    "pool_id": { "$ref": "common.schema.json#/$defs/id" },
                     "weight": { "type": "integer", "minimum": 1 },
                     "quantity_range": {
                       "type": ["object", "null"],
@@ -150,7 +148,7 @@
                   "additionalProperties": false,
                   "required": ["pool_id", "weight", "filters"],
                   "properties": {
-                    "pool_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+                    "pool_id": { "$ref": "common.schema.json#/$defs/id" },
                     "weight": { "type": "integer", "minimum": 1 },
                     "filters": {
                       "type": "object",

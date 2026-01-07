@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$title": "Conditions Schema",
+  "$id": "https://example.com/schemas/conditions.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "location": { "$ref": "common.schema.json#/$defs/id" },
+    "zone": { "$ref": "common.schema.json#/$defs/id" },
+    "zone_not": { "$ref": "common.schema.json#/$defs/id" },
+    "flags_set": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/nonempty_string" },
+      "default": []
+    },
+    "flags_not_set": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/nonempty_string" },
+      "default": []
+    },
+    "inventory_min": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 },
+      "default": {}
+    },
+    "visit_count_min": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 },
+      "default": {}
+    },
+    "seen_interactions_min": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 },
+      "default": {}
+    },
+    "time_of_day": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/nonempty_string" },
+      "default": []
+    },
+    "day_min": { "type": "integer", "minimum": 0 },
+    "day_max": { "type": "integer", "minimum": 0 }
+  }
+}

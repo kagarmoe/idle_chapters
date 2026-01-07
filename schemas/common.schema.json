@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$title": "Common Schema Definitions",
+  "$id": "https://example.com/schemas/common.schema.json",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "nonempty_string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "add_items": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "remove_items": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "set_flags": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonempty_string" }
+        },
+        "clear_flags": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonempty_string" }
+        },
+        "move_to": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "default": {}
+    }
+  }
+}

@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$title": "Spell Recipe Schema",
+  "$id": "https://example.com/schemas/spell.schema.json",
   "type": "object",
   "required": ["spell_recipes"],
   "properties": {
@@ -12,8 +13,8 @@
         "additionalProperties": false,
         "required": ["spell_id", "display_name", "incantation_style", "incantation", "narrative_purpose", "target_need", "place_affinity", "ingredients", "ritual_steps", "tone", "repeatable", "output"],
         "properties": {
-          "spell_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
-          "display_name": { "type": "string", "minLength": 1 },
+          "spell_id": { "$ref": "common.schema.json#/$defs/id" },
+          "display_name": { "$ref": "common.schema.json#/$defs/nonempty_string" },
           "spell_type": {
             "type": "string",
             "enum": ["ritual", "portal", "charm", "ward", "reveal", "soothe", "bond"],
@@ -72,12 +73,12 @@
               }
             }
           },
-          "narrative_purpose": { "type": "string", "minLength": 1, "description": "Reveal, bond, soothe, transition, accept, notice..." },
-          "target_need": { "type": "string", "minLength": 1 },
+          "narrative_purpose": { "$ref": "common.schema.json#/$defs/nonempty_string", "description": "Reveal, bond, soothe, transition, accept, notice..." },
+          "target_need": { "$ref": "common.schema.json#/$defs/nonempty_string" },
           "place_affinity": {
             "type": "array",
             "minItems": 1,
-            "items": { "type": "string", "pattern": "^[a-z0-9_]+$" }
+            "items": { "$ref": "common.schema.json#/$defs/id" }
           },
           "element_affinity": {
             "type": "array",
@@ -95,14 +96,14 @@
               "properties": {
                 "ingredient_ref": { "type": "string", "description": "collectible_id OR substitution token any:... (e.g., any:item_type=Crystal&usable_in=portal)." },
                 "symbolic_role": { "type": "string", "enum": ["anchor", "offering", "focus", "bridge", "blessing", "memory", "comfort"] },
-                "place_requirement": { "type": ["string", "null"], "pattern": "^[a-z0-9_]+$", "default": null }
+                "place_requirement": { "oneOf": [{ "$ref": "common.schema.json#/$defs/id" }, { "type": "null" }], "default": null }
               }
             }
           },
           "ritual_steps": {
             "type": "array",
             "minItems": 3,
-            "items": { "type": "string", "minLength": 1 }
+            "items": { "$ref": "common.schema.json#/$defs/nonempty_string" }
           },
           "tone": { "type": "string", "enum": ["calm", "tender", "wonder", "reverent", "playful", "nostalgic"] },
           "repeatable": { "type": "string", "enum": ["Always", "Limited", "Once"] },
@@ -113,11 +114,17 @@
             "required": ["type", "effect_summary", "state_changes"],
             "properties": {
               "type": { "type": "string", "enum": ["journal_entry", "place_shift", "npc_bond", "unlock_hint", "mood_soften", "dream_fragment"] },
-              "effect_summary": { "type": "string", "minLength": 1 },
+              "effect_summary": { "$ref": "common.schema.json#/$defs/nonempty_string" },
               "state_changes": { "type": "object", "description": "Flags/stats/inventory deltas (cozy-safe)", "additionalProperties": true }
             }
           },
-          "notes": { "type": ["string", "null"], "default": null }
+          "notes": {
+            "oneOf": [
+              { "$ref": "common.schema.json#/$defs/nonempty_string" },
+              { "type": "null" }
+            ],
+            "default": null
+          }
         }
       }
     }

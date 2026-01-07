@@ -1,13 +1,8 @@
-[build-system]
-requires = ["setuptools>=64", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "idle-chapters"
 version = "0.0.0"
 description = "Idle Chapters"
 readme = "README.md"
 requires-python = ">=3.10"
-
-[tool.setuptools]
-packages = ["app"]
+authors = [
+    {name = "Kimberly Garmoe"}]

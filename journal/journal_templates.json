@@ -29,6 +29,16 @@
         "One quiet connection.",
         "One question to revisit later."
       ]
+    },
+    {
+      "template_id": "inventory_v1",
+      "entry_type": "inventory",
+      "prompt": "What am I carrying with me today?",
+      "structure": [
+        "A simple list of what is in my journal.",
+        "One small note about a favorite item.",
+        "A gentle reminder that I have what I need."
+      ]
     }
   ]
 }

@@ -1,5 +1,30 @@
 {
   "collectibles": [
+      {
+        "item_id": "bag",
+        "display_name": "Bag",
+        "item_type": "Tool",
+        "botanical_kind": null,
+        "symbolic_meaning": "Carrying",
+        "cozy_association": "A familiar strap on your shoulder",
+        "tags": [
+            "storage",
+            "travel",
+            "element_earth"
+        ],
+        "origin_scope": "starting",
+        "origin_ref": null,
+        "lore_place_hint": null,
+        "player_need_satisfied": "Ease in keeping essentials close",
+        "notes": "A simple bag that keeps your small belongings together.",
+        "safety_category": "non_ingestible",
+        "usable_in": [
+            "quest"
+        ],
+        "stock_behavior": "key_item",
+        "starting_quantity": 1,
+        "max_stack": 1
+    },
     {
       "item_id": "black_tea",
       "display_name": "Black Tea",
@@ -57,7 +82,7 @@
       "max_stack": null
     },
     {
-      "item_id": "chamomile_flower",
+      "item_id": "chamomile_flowers",
       "display_name": "Chamomile",
       "item_type": "Botanical",
       "botanical_kind": "Flower",
@@ -1044,6 +1069,25 @@
       "max_stack": null
     },
     {
+      "item_id": "bag",
+      "display_name": "Bag",
+      "item_type": "Tool",
+      "botanical_kind": null,
+      "symbolic_meaning": "Carrying",
+      "cozy_association": "A familiar strap on your shoulder",
+      "tags": ["storage", "travel", "element_earth"],
+      "origin_scope": "starting",
+      "origin_ref": null,
+      "lore_place_hint": null,
+      "player_need_satisfied": "Ease in keeping essentials close",
+      "notes": "A simple bag that keeps your small belongings together.",
+      "safety_category": "non_ingestible",
+      "usable_in": ["quest"],
+      "stock_behavior": "key_item",
+      "starting_quantity": 1,
+      "max_stack": 1
+    },
+    {
       "item_id": "mortar_pestle",
       "display_name": "Mortar & Pestle",
       "item_type": "Tool",
@@ -1364,6 +1408,44 @@
       "usable_in": ["tea", "spell"],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
+      "max_stack": null
+    },
+    {
+      "item_id": "tea",
+      "display_name": "Cup of Tea",
+      "item_type": "Food",
+      "botanical_kind": null,
+      "symbolic_meaning": "Comfort",
+      "cozy_association": "Warm hands, steady breath",
+      "tags": ["comfort", "warm", "element_water"],
+      "origin_scope": "starting",
+      "origin_ref": null,
+      "lore_place_hint": null,
+      "player_need_satisfied": "Permission to pause and settle",
+      "notes": "A simple cup of tea, brewed to taste.",
+      "safety_category": "generally_safe",
+      "usable_in": ["quest", "gift"],
+      "stock_behavior": "finite",
+      "starting_quantity": 0,
+      "max_stack": null
+    },
+    {
+      "item_id": "biscuits",
+      "display_name": "Biscuits",
+      "item_type": "Food",
+      "botanical_kind": null,
+      "symbolic_meaning": "Care",
+      "cozy_association": "Gentle sweetness with tea",
+      "tags": ["comfort", "sweet", "warm"],
+      "origin_scope": "starting",
+      "origin_ref": null,
+      "lore_place_hint": null,
+      "player_need_satisfied": "A small reminder that you are cared for",
+      "notes": "A few simple biscuits, easy to share.",
+      "safety_category": "generally_safe",
+      "usable_in": ["quest", "gift"],
+      "stock_behavior": "finite",
+      "starting_quantity": 0,
       "max_stack": null
     },
     {

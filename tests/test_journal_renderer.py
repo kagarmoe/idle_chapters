@@ -1,7 +1,7 @@
-from pathlib import Path
 import json
+from pathlib import Path
 from types import SimpleNamespace
-from jsonschema import validate
+from app.content.schema_utils import load_validator
 
 
 def _minimal_repo() -> SimpleNamespace:
@@ -15,7 +15,7 @@ def _minimal_repo() -> SimpleNamespace:
 def test_render_journal_page_validates_schema(repo_root: Path) -> None:
     from app.domain.journal_renderer import render_journal_page
 
-    schema = json.loads((repo_root / "schemas" / "journal_page.schema.json").read_text())
+    schema_path = repo_root / "schemas" / "journal_page.schema.json"
     repo = _minimal_repo()
 
     storylet = {
@@ -49,7 +49,8 @@ def test_render_journal_page_validates_schema(repo_root: Path) -> None:
 
     assert "frontmatter" in page
     assert "body" in page
-    validate(instance=page["frontmatter"], schema=schema)
+    validator = load_validator(schema_path)
+    validator.validate(instance=page["frontmatter"])
 
 
 def test_ingredient_picker_locality_same_place() -> None:

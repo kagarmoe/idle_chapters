@@ -10,10 +10,9 @@ The project is a technical writing portfolio artifact that demonstrates:
 - an API-first architecture (FastAPI) with persistence (MongoDB)
 - an interchangeable interface layer (API now, CLI later)
 - a journal artifact that functions as UI, narrative record, and inventory ledger
-- - procedural generation of storylets/interactions constrained by schemas + lexicons
+- procedural generation of scenes/actions/interactions constrained by schemas + lexicons
 
-The first playable version presents the player with “Option 1 / Option 2 / Option 3” choices.
-A later version supports a CLI for navigation and interaction.
+The first playable version supports a CLI that parses intent into actions (no numeric menus).
 
 ## Non-goals (for v1)
 
@@ -34,10 +33,10 @@ A later version supports a CLI for navigation and interaction.
 
 A gameplay step produces a JournalPage.
 
-Instead of “engine returns a paragraph,” the system returns a structured page (YAML frontmatter + Markdown body) that captures:
+Instead of “engine returns a paragraph,” the system returns a structured page (JSON frontmatter + Markdown body) that captures:
 
 - where you are (place_id / zone context)
-- what happened (storylet / interaction / recipe framing)
+- what happened (scene/action / interaction / recipe framing)
 - what was used or gained (inventory deltas and/or ingredient picks)
 - tone anchors (mood, need, tags, sensory prompts)
 - a stable record that can be stored and rendered anywhere
@@ -49,7 +48,7 @@ Engine.step(state, command) -> StepResult
 StepResult:
 
 - journal_page: JournalPage (validated structure)
-- choices: [Choice, …] (v1 menu)
+- eligible_actions: [Action, …]
 - state: updated PlayerState (persistable)
 - debug: selection metadata (portfolio visibility)
 
@@ -59,20 +58,21 @@ The API and CLI both render the returned journal_page.
 
 ### Content Layer (authored, validated, read-only at runtime)
 
-Stored as YAML instance files and validated with JSON Schemas (YAML format).
+Stored as JSON instance files and validated with JSON Schemas.
 
 - assets/
-  - places.yaml
-  - npcs.yaml
-  - collectibles.yaml
-  - interactions.yaml
-  - tea.yaml
-  - spells.yaml
-  - storylets.yaml (next major content file)
-  - journal_templates.yaml
+  - places.json
+  - npcs.json
+  - collectibles.json
+  - interactions.json
+  - tea.json
+  - spells.json
+  - actions.json
+  - scenes/ (per-file scenes + manifest)
+  - journal_templates.json
 - lexicons/
-  - descriptive_lexicon.yaml
-  - not_allowed_lexicon.yaml
+  - descriptive_lexicon.json
+  - not_allowed_lexicon.json
 
 Schemas live under schemas/ and are used to validate asset/lexicon instances at load time.
 
@@ -89,19 +89,18 @@ The domain layer must not know about FastAPI or Mongo.
 
 #### Generation (v1)
 
-In v1, storylets and many interaction lines are produced *procedurally at runtime* (per step),
-not pre-authored as a fixed catalog.
+In v1, scenes are authored and actions are reusable; interactions may be generated procedurally at runtime.
 
 The generator is a domain component that:
 
 - takes the current state (place_id, time/tick, inventory, flags) and a seed
 - consults authored assets (places, NPCs, collectibles, recipes, lexicons, journal templates)
-- emits a Storylet-like object and/or interaction candidates that conform to the relevant schemas
+- emits content-shaped action/interaction candidates that conform to the relevant schemas
 - is constrained by lexicons (including Not_Allowed) and the tone contract
 - returns debug metadata (seed, template ids, constraint hits) for portfolio-grade inspectability
 
 This is distinct from “full procedural world generation at load time.” The *world* (zones/places/NPCs/items) is authored;
-the *moment-to-moment* storylet/interaction content is generated.
+the *moment-to-moment* interaction content is generated.
 
 ### Persistence Layer (MongoDB)
 
@@ -118,13 +117,13 @@ MongoDB does not “generate tables.” Schemas validate assets and define API D
 - FastAPI: primary portfolio interface, with OpenAPI docs
 - CLI (later): uses the API as a client (best separation), or runs the engine locally (fallback)
 
-## Data Model Strategy
+## Data model strategy
 
 ### Schemas (what they do)
 
 Schemas are used for:
 
-1. validating YAML assets/lexicons/journal templates at load time
+1. validating JSON assets/lexicons/journal templates at load time
 2. defining request/response DTOs for the API (Pydantic)
 3. documenting system invariants (through comments + constraints)
 
@@ -136,7 +135,8 @@ Mongo collections are shaped by Pydantic models and enforced by application logi
 Assets provide authored world content.
 They are loaded into an in-memory ContentRepo with indices that allow fast lookup:
 
-- storylets by place_id / zone_id / tags
+- scenes by place_id
+- actions by action_id
 - interactions by npc_kind / npc_id / place_id
 - collectibles by item_id / tags / usable_in
 - journal templates by entry_type / tags
@@ -154,44 +154,46 @@ Example state elements:
 
 - session_id
 - current_place_id
-- inventory counts
+- inventory_counts (canonical)
+- inventory list (derived display only)
 - flags / unlocked markers
+- visit_counts
+- seen_interactions
 - relationship affinity counters (optional, later)
 - time ticks (optional)
 
-## Storylets: Unit of Experience
+## Scenes and actions: unit of experience
 
-A storylet is the core unit the engine selects to describe “what happens next.”
+Scenes are authored graphs of actions. Actions are reusable and selected by intent.
 
-A storylet:
+A scene/action:
 
 - is anchored to a place (or zone)
 - has conditions that must be true to occur
-- contains choice options (v1) or sets up an interaction
+- contains choice options (via scene graph) or sets up an interaction
 - applies effects (inventory, flags, time)
 - provides guidance for journal rendering (entry_type, mood/need/tags)
 
-Storylets connect authored world content to the journal artifact.
+Scenes connect authored world content to the journal artifact.
 
-In v1, storylets may be either authored (assets/storylets.yaml) **or generated on demand** using the same schema shape.
-The engine treats both the same: it evaluates conditions, applies effects, and renders a JournalPage.
+In v1, scenes are authored per-file with a manifest; actions may be reused across scenes.
 
-## Selection Model (v1)
+## Selection model (v1)
 
 Selection is simple and explainable (portfolio-friendly):
 
-- filter eligible storylets based on current place and conditions
+- filter eligible actions based on current place and conditions
 - optionally weight by tags/time/rarity
 - choose deterministically with a seed (if provided) for testability
-- optionally generate a fresh storylet/interaction candidate for the current context (seeded), then select among candidates
-- record debug metadata (eligible_count, selected_storylet_id)
+- optionally generate fresh interaction candidates for the current context (seeded), then select among candidates
+- record debug metadata (eligible_count, selected_action_id)
 
-## Effects Model (v1)
+## Effects model (v1)
 
 Effects are reducer-like operations applied to state. Keep small and composable:
 
-- inventory.add(item_id, qty)
-- inventory.remove(item_id, qty)
+- inventory_counts.add(item_id, qty)
+- inventory_counts.remove(item_id, qty)
 - flags.set(flag_id)
 - flags.clear(flag_id)
 - location.set(place_id)
@@ -203,14 +205,14 @@ Effects are validated by schema and by runtime checks (e.g., cannot remove below
 
 Journal rendering uses:
 
-- journal_templates.yaml to select a template by entry_type and tags
+- journal_templates.json to select a template by entry_type and tags
 - lexicons to constrain generated phrases (and avoid disallowed words)
-- place + storylet context to fill prompts and sensory details
+- place + scene/action context to fill prompts and sensory details
 - ingredient selection rules (place_policy order: same_place > same_zone > any_place)
 
 The renderer must remain safe without player identity fields.
 
-## API Surface (v1)
+## API surface (v1)
 
 Required endpoints:
 
@@ -219,8 +221,8 @@ Required endpoints:
 - GET /sessions/{session_id}
   - return summary of current state + last journal page pointer
 - POST /sessions/{session_id}/step
-  - input: choice/action
-  - output: StepResult (journal_page + choices + debug)
+  - input: intent text
+  - output: StepResult (journal_page + eligible_actions + debug)
 - GET /world/places, /world/npcs, /world/items, /world/recipes
   - read-only assets (portfolio visibility)
 - GET /sessions/{session_id}/journal
@@ -232,21 +234,20 @@ Optional (for portfolio clarity):
 
 - GET /sessions/{session_id}/events
 
-## CLI (v2)
+## CLI (v1)
 
 CLI is a client of the API:
 
 - starts/loads a session
 - prints the last journal page
-- shows numeric choices
-- submits a step
+- parses intent and submits a step
 - repeats
 
 This demonstrates:
 - separation of concerns
 - reusable domain logic behind multiple interfaces
 
-## Testing Strategy
+## Testing strategy
 
 - unit tests:
   - schema validation of all assets
@@ -262,7 +263,7 @@ This demonstrates:
 
 Every step should be inspectable:
 
-- selected_storylet_id
+- selected_action_id
 - eligible_count
 - applied_effects list
 - inventory deltas

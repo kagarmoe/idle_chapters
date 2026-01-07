@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
-from jsonschema import validate
+from app.content.schema_utils import load_validator
 
 
 def _storylet_to_dict(storylet):
@@ -84,7 +84,7 @@ def test_generator_validates_against_schema(repo_root: Path) -> None:
     from app.domain.state import PlayerState
     from app.domain.storylet_generator import generate_storylet
 
-    schema = json.loads((repo_root / "schemas" / "storylet.schema.json").read_text())
+    schema_path = repo_root / "schemas" / "storylet.schema.json"
 
     repo = ContentRepo()
     state = PlayerState(
@@ -96,7 +96,8 @@ def test_generator_validates_against_schema(repo_root: Path) -> None:
     )
 
     storylet = _storylet_to_dict(generate_storylet(state=state, repo=repo, seed=99))
-    validate(instance=storylet, schema=schema)
+    validator = load_validator(schema_path)
+    validator.validate(instance=storylet)
 
 
 def test_generator_avoids_not_allowed_lexicon(repo_root: Path) -> None:

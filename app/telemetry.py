@@ -1,7 +1,8 @@
 # telemetry.py
-from __future__ import annotations
+# from __future__ import annotations
 
 import os
+
 from opentelemetry import trace
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
