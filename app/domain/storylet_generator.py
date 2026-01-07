@@ -28,8 +28,11 @@ SAFE_CHOICE_LABELS = [
 ]
 
 
-def _load_storylet_schema() -> dict[str, Any]:
+def _load_storylet_schema() -> dict[str, Any] | None:
+    """Load storylet schema if it exists, otherwise return None."""
     schema_path = Path(__file__).resolve().parents[2] / "schemas" / "storylet.schema.json"
+    if not schema_path.exists():
+        return None
     return json.loads(schema_path.read_text(encoding="utf-8"))
 
 
@@ -108,9 +111,10 @@ def generate_storylet(state, repo, seed: int | None = None) -> Storylet:
     )
 
     schema = _load_storylet_schema()
-    try:
-        validate(instance=storylet.to_dict(), schema=schema)
-    except ValidationError as exc:
-        raise ValueError(f"Generated storylet failed schema validation: {exc.message}") from exc
+    if schema is not None:
+        try:
+            validate(instance=storylet.to_dict(), schema=schema)
+        except ValidationError as exc:
+            raise ValueError(f"Generated storylet failed schema validation: {exc.message}") from exc
 
     return storylet

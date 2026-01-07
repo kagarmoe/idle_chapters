@@ -30,7 +30,10 @@
       "premise_bias": null,
       "directional_guidance": null,
       "effects": null,
-      "tags": ["tone_quiet", "generic"],
+      "tags": [
+        "tone_quiet",
+        "generic"
+      ],
       "notes": "Generic ambient acknowledgment; safe anywhere."
     },
     {
@@ -63,7 +66,10 @@
       "premise_bias": null,
       "directional_guidance": null,
       "effects": null,
-      "tags": ["tone_quiet", "generic"],
+      "tags": [
+        "tone_quiet",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -96,7 +102,10 @@
       "premise_bias": null,
       "directional_guidance": null,
       "effects": null,
-      "tags": ["tone_plain", "generic"],
+      "tags": [
+        "tone_plain",
+        "generic"
+      ],
       "notes": "Once-per-day variation to avoid repetition spam."
     },
     {
@@ -132,7 +141,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["micro_offer", "generic"],
+      "tags": [
+        "micro_offer",
+        "generic"
+      ],
       "notes": "Choice handling lives in game logic; this is the offer line only."
     },
     {
@@ -167,7 +179,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["micro_offer", "generic"],
+      "tags": [
+        "micro_offer",
+        "generic"
+      ],
       "notes": "Shortest possible micro-offer; avoids implication."
     },
     {
@@ -177,7 +192,7 @@
       "capability": "hint",
       "text": {
         "kind": "spoken",
-        "primary": "Oh—there you are.",
+        "primary": "Oh\u2014there you are.",
         "secondary": null
       },
       "conditions": {
@@ -202,7 +217,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["ritual", "generic"],
+      "tags": [
+        "ritual",
+        "generic"
+      ],
       "notes": "Ritual greeting; should remain non-evaluative."
     },
     {
@@ -237,7 +255,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["ritual", "generic"],
+      "tags": [
+        "ritual",
+        "generic"
+      ],
       "notes": "Use sparingly; 'Good' must not read as judgment (tone contract governs)."
     },
     {
@@ -276,13 +297,19 @@
         "hint_place_id": "meadow_path"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "calming",
-        "adjust_affinity": 0,
-        "set_flags": ["learned_chamomile_hint"]
+        "set_flags": [
+          "learned_chamomile_hint"
+        ]
       },
-      "tags": ["directional_guidance", "generic", "item_hint"],
-      "notes": "Directional guidance: optional, non-exhaustive."
+      "tags": [
+        "directional_guidance",
+        "generic",
+        "item_hint"
+      ],
+      "notes": "Directional guidance: optional, non-exhaustive.",
+      "generator_hints": {
+        "spawn_item_tag": "calming"
+      }
     },
     {
       "interaction_id": "human_light_request_botanical_02",
@@ -319,14 +346,16 @@
         "target_tag": "calming",
         "hint_place_id": "meadow_path"
       },
-      "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "calming",
-        "adjust_affinity": 0,
-        "set_flags": null
-      },
-      "tags": ["directional_guidance", "generic", "item_hint"],
-      "notes": "Tag-driven hint; no specific ingredient required."
+      "effects": null,
+      "tags": [
+        "directional_guidance",
+        "generic",
+        "item_hint"
+      ],
+      "notes": "Tag-driven hint; no specific ingredient required.",
+      "generator_hints": {
+        "spawn_item_tag": "calming"
+      }
     },
     {
       "interaction_id": "human_light_request_botanical_03",
@@ -363,14 +392,16 @@
         "target_tag": "gentle",
         "hint_place_id": "meadow_path"
       },
-      "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "gentle",
-        "adjust_affinity": 0,
-        "set_flags": null
-      },
-      "tags": ["directional_guidance", "generic", "item_hint"],
-      "notes": "Keeps your earlier 'through the hedge' pattern; stays non-directive."
+      "effects": null,
+      "tags": [
+        "directional_guidance",
+        "generic",
+        "item_hint"
+      ],
+      "notes": "Keeps your earlier 'through the hedge' pattern; stays non-directive.",
+      "generator_hints": {
+        "spawn_item_tag": "gentle"
+      }
     },
     {
       "interaction_id": "human_light_request_botanical_04",
@@ -386,7 +417,10 @@
         "npc_id": null,
         "place_id": null,
         "zone_id": null,
-        "time_of_day": ["evening", "night"],
+        "time_of_day": [
+          "evening",
+          "night"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -408,14 +442,16 @@
         "target_tag": "sleep",
         "hint_place_id": "meadow"
       },
-      "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "sleep",
-        "adjust_affinity": 0,
-        "set_flags": null
-      },
-      "tags": ["directional_guidance", "generic", "item_hint"],
-      "notes": null
+      "effects": null,
+      "tags": [
+        "directional_guidance",
+        "generic",
+        "item_hint"
+      ],
+      "notes": null,
+      "generator_hints": {
+        "spawn_item_tag": "sleep"
+      }
     },
     {
       "interaction_id": "human_light_request_stone_water_01",
@@ -453,13 +489,19 @@
         "hint_place_id": "forest_waterfall"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "element_water",
-        "adjust_affinity": 0,
-        "set_flags": ["learned_water_stone_hint"]
+        "set_flags": [
+          "learned_water_stone_hint"
+        ]
       },
-      "tags": ["directional_guidance", "generic", "item_hint"],
-      "notes": "Uses 'any will do' to avoid optimization tone."
+      "tags": [
+        "directional_guidance",
+        "generic",
+        "item_hint"
+      ],
+      "notes": "Uses 'any will do' to avoid optimization tone.",
+      "generator_hints": {
+        "spawn_item_tag": "element_water"
+      }
     },
     {
       "interaction_id": "human_threshold_adjacent_01",
@@ -494,7 +536,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["threshold", "generic"],
+      "tags": [
+        "threshold",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -529,7 +574,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["threshold", "generic"],
+      "tags": [
+        "threshold",
+        "generic"
+      ],
       "notes": "Avoids readiness framing."
     },
     {
@@ -565,7 +613,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["threshold", "generic"],
+      "tags": [
+        "threshold",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -601,7 +652,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["threshold", "generic"],
+      "tags": [
+        "threshold",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -637,7 +691,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["threshold", "generic"],
+      "tags": [
+        "threshold",
+        "generic"
+      ],
       "notes": "Keeps the tone light; no readiness framing."
     },
     {
@@ -674,7 +731,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["threshold", "generic"],
+      "tags": [
+        "threshold",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -709,7 +769,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["observed", "generic"],
+      "tags": [
+        "observed",
+        "generic"
+      ],
       "notes": "Non-dialogue description for animals."
     },
     {
@@ -744,7 +807,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["observed", "generic"],
+      "tags": [
+        "observed",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -780,14 +846,16 @@
         "target_tag": "trinket",
         "hint_place_id": null
       },
-      "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "shiny",
-        "adjust_affinity": 0,
-        "set_flags": null
-      },
-      "tags": ["observed", "generic", "item_hint"],
-      "notes": "Generic animal 'find' behavior; actual spawn handled by system."
+      "effects": null,
+      "tags": [
+        "observed",
+        "generic",
+        "item_hint"
+      ],
+      "notes": "Generic animal 'find' behavior; actual spawn handled by system.",
+      "generator_hints": {
+        "spawn_item_tag": "shiny"
+      }
     },
     {
       "interaction_id": "animal_threshold_adjacent_01",
@@ -821,7 +889,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["observed", "threshold", "generic"],
+      "tags": [
+        "observed",
+        "threshold",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -857,7 +929,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["observed", "threshold", "generic"],
+      "tags": [
+        "observed",
+        "threshold",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -867,7 +943,7 @@
       "capability": "companion",
       "text": {
         "kind": "observed",
-        "primary": "The animal edges forward, then waits—patient, as if timing matters.",
+        "primary": "The animal edges forward, then waits\u2014patient, as if timing matters.",
         "secondary": null
       },
       "conditions": {
@@ -893,7 +969,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["observed", "threshold", "generic"],
+      "tags": [
+        "observed",
+        "threshold",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -929,7 +1009,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["observed", "threshold", "generic"],
+      "tags": [
+        "observed",
+        "threshold",
+        "generic"
+      ],
       "notes": null
     },
     {
@@ -946,7 +1030,9 @@
         "npc_id": "npc_baker_elin",
         "place_id": "town_bakery",
         "zone_id": null,
-        "time_of_day": ["morning"],
+        "time_of_day": [
+          "morning"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -964,7 +1050,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["elin", "shop", "ritual"],
+      "tags": [
+        "elin",
+        "shop",
+        "ritual"
+      ],
       "notes": "Elin-specific shop greeting."
     },
     {
@@ -1000,7 +1090,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["elin", "threshold"],
+      "tags": [
+        "elin",
+        "threshold"
+      ],
       "notes": "Subtle threshold-adjacent line; no readiness framing."
     },
     {
@@ -1035,13 +1128,18 @@
       },
       "directional_guidance": null,
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "comfort",
-        "adjust_affinity": 0,
-        "set_flags": ["elin_offered_pastry"]
+        "set_flags": [
+          "elin_offered_pastry"
+        ]
       },
-      "tags": ["elin", "micro_offer"],
-      "notes": "Actual item grant handled by game logic (e.g., gift pool) if you want."
+      "tags": [
+        "elin",
+        "micro_offer"
+      ],
+      "notes": "Actual item grant handled by game logic (e.g., gift pool) if you want.",
+      "generator_hints": {
+        "spawn_item_tag": "comfort"
+      }
     },
     {
       "interaction_id": "saoirse_hint_substitution_01",
@@ -1079,13 +1177,19 @@
         "hint_place_id": "meadow_path"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "calming",
-        "adjust_affinity": 0,
-        "set_flags": ["learned_substitution_calming"]
+        "set_flags": [
+          "learned_substitution_calming"
+        ]
       },
-      "tags": ["saoirse", "item_hint", "substitution"],
-      "notes": "Substitution guidance; avoids ruley tone."
+      "tags": [
+        "saoirse",
+        "item_hint",
+        "substitution"
+      ],
+      "notes": "Substitution guidance; avoids ruley tone.",
+      "generator_hints": {
+        "spawn_item_tag": "calming"
+      }
     },
     {
       "interaction_id": "saoirse_direction_mint_01",
@@ -1094,7 +1198,7 @@
       "capability": "hint",
       "text": {
         "kind": "spoken",
-        "primary": "Mint likes the edges—where people walk, but not too often.",
+        "primary": "Mint likes the edges\u2014where people walk, but not too often.",
         "secondary": null
       },
       "conditions": {
@@ -1121,13 +1225,19 @@
         "hint_place_id": "meadow_path"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "balancing",
-        "adjust_affinity": 0,
-        "set_flags": ["learned_mint_hint"]
+        "set_flags": [
+          "learned_mint_hint"
+        ]
       },
-      "tags": ["saoirse", "directional_guidance", "item_hint"],
-      "notes": null
+      "tags": [
+        "saoirse",
+        "directional_guidance",
+        "item_hint"
+      ],
+      "notes": null,
+      "generator_hints": {
+        "spawn_item_tag": "balancing"
+      }
     },
     {
       "interaction_id": "marcel_hint_crystal_01",
@@ -1161,7 +1271,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["marcel", "curio", "hint"],
+      "tags": [
+        "marcel",
+        "curio",
+        "hint"
+      ],
       "notes": "Curio flavor; non-directive."
     },
     {
@@ -1196,13 +1310,18 @@
       },
       "directional_guidance": null,
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "portal",
-        "adjust_affinity": 0,
-        "set_flags": ["heard_marcel_door_line"]
+        "set_flags": [
+          "heard_marcel_door_line"
+        ]
       },
-      "tags": ["marcel", "threshold"],
-      "notes": "Borderline surreal; ensure tone_contract permits 'door' language."
+      "tags": [
+        "marcel",
+        "threshold"
+      ],
+      "notes": "Borderline surreal; ensure tone_contract permits 'door' language.",
+      "generator_hints": {
+        "spawn_item_tag": "portal"
+      }
     },
     {
       "interaction_id": "iones_ambient_afternoon_01",
@@ -1218,7 +1337,9 @@
         "npc_id": "npc_caretaker_iones",
         "place_id": "cottage_home",
         "zone_id": null,
-        "time_of_day": ["afternoon"],
+        "time_of_day": [
+          "afternoon"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -1236,7 +1357,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["iones", "cottage", "tone_plain"],
+      "tags": [
+        "iones",
+        "cottage",
+        "tone_plain"
+      ],
       "notes": "Matter-of-fact, not evaluative."
     },
     {
@@ -1246,7 +1371,7 @@
       "capability": "hint",
       "text": {
         "kind": "spoken",
-        "primary": "If you want dry kindling, check the shed—back left.",
+        "primary": "If you want dry kindling, check the shed\u2014back left.",
         "secondary": null
       },
       "conditions": {
@@ -1254,7 +1379,9 @@
         "place_id": "cottage_home",
         "zone_id": null,
         "time_of_day": null,
-        "weather": ["rain"],
+        "weather": [
+          "rain"
+        ],
         "season": null,
         "affinity_min": 0,
         "requires_seen": null,
@@ -1273,13 +1400,18 @@
         "hint_place_id": "cottage_home"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "warm",
-        "adjust_affinity": 0,
-        "set_flags": ["learned_kindling_hint"]
+        "set_flags": [
+          "learned_kindling_hint"
+        ]
       },
-      "tags": ["iones", "directional_guidance"],
-      "notes": "Only triggers if weather includes 'rain' (string match in your engine)."
+      "tags": [
+        "iones",
+        "directional_guidance"
+      ],
+      "notes": "Only triggers if weather includes 'rain' (string match in your engine).",
+      "generator_hints": {
+        "spawn_item_tag": "warm"
+      }
     },
     {
       "interaction_id": "alen_direction_clearing_01",
@@ -1295,7 +1427,9 @@
         "npc_id": "npc_woodcutter_alen",
         "place_id": "forest",
         "zone_id": null,
-        "time_of_day": ["morning"],
+        "time_of_day": [
+          "morning"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -1315,13 +1449,18 @@
         "hint_place_id": "forest"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "resilience",
-        "adjust_affinity": 0,
-        "set_flags": ["learned_forest_clearing_hint"]
+        "set_flags": [
+          "learned_forest_clearing_hint"
+        ]
       },
-      "tags": ["alen", "directional_guidance"],
-      "notes": null
+      "tags": [
+        "alen",
+        "directional_guidance"
+      ],
+      "notes": null,
+      "generator_hints": {
+        "spawn_item_tag": "resilience"
+      }
     },
     {
       "interaction_id": "mirela_ambient_trail_01",
@@ -1338,7 +1477,9 @@
         "place_id": "forest_trail",
         "zone_id": null,
         "time_of_day": null,
-        "weather": ["wind"],
+        "weather": [
+          "wind"
+        ],
         "season": null,
         "affinity_min": 0,
         "requires_seen": null,
@@ -1355,7 +1496,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["mirela", "forest_trail"],
+      "tags": [
+        "mirela",
+        "forest_trail"
+      ],
       "notes": "Weather token 'wind' must match your engine."
     },
     {
@@ -1372,7 +1516,9 @@
         "npc_id": "npc_restorer_tamsin",
         "place_id": "forest_castle",
         "zone_id": null,
-        "time_of_day": ["afternoon"],
+        "time_of_day": [
+          "afternoon"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -1391,7 +1537,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["tamsin", "threshold", "forest_castle"],
+      "tags": [
+        "tamsin",
+        "threshold",
+        "forest_castle"
+      ],
       "notes": null
     },
     {
@@ -1408,7 +1558,9 @@
         "npc_id": "npc_shepherd_rowan",
         "place_id": "meadow",
         "zone_id": null,
-        "time_of_day": ["midday"],
+        "time_of_day": [
+          "midday"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -1426,7 +1578,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["rowan", "meadow", "ritual"],
+      "tags": [
+        "rowan",
+        "meadow",
+        "ritual"
+      ],
       "notes": null
     },
     {
@@ -1465,7 +1621,10 @@
         "hint_place_id": "meadow_path"
       },
       "effects": null,
-      "tags": ["elinor", "directional_guidance"],
+      "tags": [
+        "elinor",
+        "directional_guidance"
+      ],
       "notes": "Guidance is metaphorical; still optional."
     },
     {
@@ -1482,7 +1641,9 @@
         "npc_id": "npc_watchman_bened",
         "place_id": "meadow_hill",
         "zone_id": null,
-        "time_of_day": ["evening"],
+        "time_of_day": [
+          "evening"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -1500,7 +1661,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["bened", "meadow_hill"],
+      "tags": [
+        "bened",
+        "meadow_hill"
+      ],
       "notes": null
     },
     {
@@ -1535,13 +1699,19 @@
       },
       "directional_guidance": null,
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "portal",
-        "adjust_affinity": 0,
-        "set_flags": ["learned_shrine_thin_place"]
+        "set_flags": [
+          "learned_shrine_thin_place"
+        ]
       },
-      "tags": ["anwen", "threshold", "meadow_shrine"],
-      "notes": "Place-specific threshold line."
+      "tags": [
+        "anwen",
+        "threshold",
+        "meadow_shrine"
+      ],
+      "notes": "Place-specific threshold line.",
+      "generator_hints": {
+        "spawn_item_tag": "portal"
+      }
     },
     {
       "interaction_id": "silas_direction_shells_01",
@@ -1557,7 +1727,9 @@
         "npc_id": "npc_beachcomber_silas",
         "place_id": "beach",
         "zone_id": null,
-        "time_of_day": ["morning"],
+        "time_of_day": [
+          "morning"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -1577,13 +1749,19 @@
         "hint_place_id": "beach"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "element_water",
-        "adjust_affinity": 0,
-        "set_flags": ["learned_beach_foam_hint"]
+        "set_flags": [
+          "learned_beach_foam_hint"
+        ]
       },
-      "tags": ["silas", "directional_guidance", "beach"],
-      "notes": null
+      "tags": [
+        "silas",
+        "directional_guidance",
+        "beach"
+      ],
+      "notes": null,
+      "generator_hints": {
+        "spawn_item_tag": "element_water"
+      }
     },
     {
       "interaction_id": "lio_ambient_boardwalk_01",
@@ -1617,7 +1795,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["lio", "beach_boardwalk"],
+      "tags": [
+        "lio",
+        "beach_boardwalk"
+      ],
       "notes": "Quietly poetic; keep sparse."
     },
     {
@@ -1652,7 +1833,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["maeve", "beach_tidepools"],
+      "tags": [
+        "maeve",
+        "beach_tidepools"
+      ],
       "notes": null
     },
     {
@@ -1669,7 +1853,9 @@
         "npc_id": "npc_fisher_orik",
         "place_id": "beach_pier",
         "zone_id": null,
-        "time_of_day": ["evening"],
+        "time_of_day": [
+          "evening"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -1688,7 +1874,10 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["orik", "beach_pier"],
+      "tags": [
+        "orik",
+        "beach_pier"
+      ],
       "notes": null
     },
     {
@@ -1723,7 +1912,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["moss", "observed", "companion"],
+      "tags": [
+        "moss",
+        "observed",
+        "companion"
+      ],
       "notes": null
     },
     {
@@ -1760,13 +1953,19 @@
         "hint_place_id": "town_bakery_stoop"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "thread",
-        "adjust_affinity": 0,
-        "set_flags": ["moss_found_thread_once"]
+        "set_flags": [
+          "moss_found_thread_once"
+        ]
       },
-      "tags": ["moss", "observed", "item_hint"],
-      "notes": "Pairs well with Moss gift pools."
+      "tags": [
+        "moss",
+        "observed",
+        "item_hint"
+      ],
+      "notes": "Pairs well with Moss gift pools.",
+      "generator_hints": {
+        "spawn_item_tag": "thread"
+      }
     },
     {
       "interaction_id": "moss_find_thread_02",
@@ -1802,13 +2001,19 @@
         "hint_place_id": "town_bakery_stoop"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "button",
-        "adjust_affinity": 0,
-        "set_flags": ["moss_found_button_once"]
+        "set_flags": [
+          "moss_found_button_once"
+        ]
       },
-      "tags": ["moss", "observed", "item_hint"],
-      "notes": null
+      "tags": [
+        "moss",
+        "observed",
+        "item_hint"
+      ],
+      "notes": null,
+      "generator_hints": {
+        "spawn_item_tag": "button"
+      }
     },
     {
       "interaction_id": "moss_find_thread_03",
@@ -1846,13 +2051,19 @@
         "hint_place_id": "town_bakery_stoop"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "ribbon",
-        "adjust_affinity": 0,
-        "set_flags": ["moss_found_ribbon_once"]
+        "set_flags": [
+          "moss_found_ribbon_once"
+        ]
       },
-      "tags": ["moss", "observed", "item_hint"],
-      "notes": null
+      "tags": [
+        "moss",
+        "observed",
+        "item_hint"
+      ],
+      "notes": null,
+      "generator_hints": {
+        "spawn_item_tag": "ribbon"
+      }
     },
     {
       "interaction_id": "ink_messenger_scrap_01",
@@ -1868,7 +2079,9 @@
         "npc_id": "npc_crow_ink",
         "place_id": "town_clocktree",
         "zone_id": null,
-        "time_of_day": ["morning"],
+        "time_of_day": [
+          "morning"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -1886,13 +2099,19 @@
       },
       "directional_guidance": null,
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "note",
-        "adjust_affinity": 0,
-        "set_flags": ["ink_delivered_scrap"]
+        "set_flags": [
+          "ink_delivered_scrap"
+        ]
       },
-      "tags": ["ink", "observed", "messenger"],
-      "notes": "Supports crow-as-messenger behavior without dialogue."
+      "tags": [
+        "ink",
+        "observed",
+        "messenger"
+      ],
+      "notes": "Supports crow-as-messenger behavior without dialogue.",
+      "generator_hints": {
+        "spawn_item_tag": "note"
+      }
     },
     {
       "interaction_id": "ink_messenger_scrap_02",
@@ -1908,7 +2127,9 @@
         "npc_id": "npc_crow_ink",
         "place_id": "town_clocktree",
         "zone_id": null,
-        "time_of_day": ["morning"],
+        "time_of_day": [
+          "morning"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -1924,13 +2145,19 @@
       "premise_bias": null,
       "directional_guidance": null,
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "currency",
-        "adjust_affinity": 0,
-        "set_flags": ["ink_dropped_coin"]
+        "set_flags": [
+          "ink_dropped_coin"
+        ]
       },
-      "tags": ["ink", "observed", "messenger"],
-      "notes": null
+      "tags": [
+        "ink",
+        "observed",
+        "messenger"
+      ],
+      "notes": null,
+      "generator_hints": {
+        "spawn_item_tag": "currency"
+      }
     },
     {
       "interaction_id": "ink_messenger_scrap_03",
@@ -1964,13 +2191,19 @@
       },
       "directional_guidance": null,
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "feather",
-        "adjust_affinity": 0,
-        "set_flags": ["ink_left_feather"]
+        "set_flags": [
+          "ink_left_feather"
+        ]
       },
-      "tags": ["ink", "observed", "messenger"],
-      "notes": null
+      "tags": [
+        "ink",
+        "observed",
+        "messenger"
+      ],
+      "notes": null,
+      "generator_hints": {
+        "spawn_item_tag": "feather"
+      }
     },
     {
       "interaction_id": "bram_lead_water_01",
@@ -1986,7 +2219,9 @@
         "npc_id": "npc_dog_bram",
         "place_id": "town_docks_gate",
         "zone_id": null,
-        "time_of_day": ["evening"],
+        "time_of_day": [
+          "evening"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 1,
@@ -2008,13 +2243,20 @@
         "hint_place_id": "beach"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "element_water",
-        "adjust_affinity": 0,
-        "set_flags": ["bram_invited_walk"]
+        "set_flags": [
+          "bram_invited_walk"
+        ]
       },
-      "tags": ["bram", "observed", "companion", "directional_guidance"],
-      "notes": "Animal micro-offer: invitation without obligation."
+      "tags": [
+        "bram",
+        "observed",
+        "companion",
+        "directional_guidance"
+      ],
+      "notes": "Animal micro-offer: invitation without obligation.",
+      "generator_hints": {
+        "spawn_item_tag": "element_water"
+      }
     },
     {
       "interaction_id": "bram_lead_water_02",
@@ -2030,7 +2272,9 @@
         "npc_id": "npc_dog_bram",
         "place_id": "town_docks_gate",
         "zone_id": null,
-        "time_of_day": ["evening"],
+        "time_of_day": [
+          "evening"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 1,
@@ -2052,13 +2296,20 @@
         "hint_place_id": "beach"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "element_water",
-        "adjust_affinity": 0,
-        "set_flags": ["bram_offered_company"]
+        "set_flags": [
+          "bram_offered_company"
+        ]
       },
-      "tags": ["bram", "observed", "companion", "directional_guidance"],
-      "notes": null
+      "tags": [
+        "bram",
+        "observed",
+        "companion",
+        "directional_guidance"
+      ],
+      "notes": null,
+      "generator_hints": {
+        "spawn_item_tag": "element_water"
+      }
     },
     {
       "interaction_id": "bram_lead_water_03",
@@ -2067,14 +2318,16 @@
       "capability": "companion",
       "text": {
         "kind": "observed",
-        "primary": "Bram waits until you look up, then starts walking—slow enough to follow or not.",
+        "primary": "Bram waits until you look up, then starts walking\u2014slow enough to follow or not.",
         "secondary": null
       },
       "conditions": {
         "npc_id": "npc_dog_bram",
         "place_id": "town_docks_gate",
         "zone_id": null,
-        "time_of_day": ["evening"],
+        "time_of_day": [
+          "evening"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 1,
@@ -2096,13 +2349,20 @@
         "hint_place_id": "beach"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "calm",
-        "adjust_affinity": 0,
-        "set_flags": ["bram_slow_walk_invite"]
+        "set_flags": [
+          "bram_slow_walk_invite"
+        ]
       },
-      "tags": ["bram", "observed", "companion", "directional_guidance"],
-      "notes": "Explicitly non-obligating pacing."
+      "tags": [
+        "bram",
+        "observed",
+        "companion",
+        "directional_guidance"
+      ],
+      "notes": "Explicitly non-obligating pacing.",
+      "generator_hints": {
+        "spawn_item_tag": "calm"
+      }
     },
     {
       "interaction_id": "sable_forest_edge_01",
@@ -2118,7 +2378,10 @@
         "npc_id": "npc_deer_sable",
         "place_id": "forest",
         "zone_id": null,
-        "time_of_day": ["morning", "dusk"],
+        "time_of_day": [
+          "morning",
+          "dusk"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -2136,7 +2399,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["sable", "observed", "forest"],
+      "tags": [
+        "sable",
+        "observed",
+        "forest"
+      ],
       "notes": null
     },
     {
@@ -2174,14 +2441,17 @@
         "target_tag": null,
         "hint_place_id": "forest_trail"
       },
-      "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "grounding",
-        "adjust_affinity": 0,
-        "set_flags": null
-      },
-      "tags": ["marl", "observed", "companion", "item_hint"],
-      "notes": "Tortoise as 'slow pointer' to ground items."
+      "effects": null,
+      "tags": [
+        "marl",
+        "observed",
+        "companion",
+        "item_hint"
+      ],
+      "notes": "Tortoise as 'slow pointer' to ground items.",
+      "generator_hints": {
+        "spawn_item_tag": "grounding"
+      }
     },
     {
       "interaction_id": "vesper_feather_drop_01",
@@ -2197,7 +2467,10 @@
         "npc_id": "npc_owl_vesper",
         "place_id": "forest_castle",
         "zone_id": null,
-        "time_of_day": ["dusk", "night"],
+        "time_of_day": [
+          "dusk",
+          "night"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -2219,13 +2492,20 @@
         "hint_place_id": "forest_castle"
       },
       "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "feather",
-        "adjust_affinity": 0,
-        "set_flags": ["vesper_dropped_feather"]
+        "set_flags": [
+          "vesper_dropped_feather"
+        ]
       },
-      "tags": ["vesper", "observed", "threshold", "item_hint"],
-      "notes": "Animal threshold-adjacent: slow, optional."
+      "tags": [
+        "vesper",
+        "observed",
+        "threshold",
+        "item_hint"
+      ],
+      "notes": "Animal threshold-adjacent: slow, optional.",
+      "generator_hints": {
+        "spawn_item_tag": "feather"
+      }
     },
     {
       "interaction_id": "pip_waterfall_rhythm_01",
@@ -2259,7 +2539,11 @@
       },
       "directional_guidance": null,
       "effects": null,
-      "tags": ["pip", "observed", "forest_waterfall"],
+      "tags": [
+        "pip",
+        "observed",
+        "forest_waterfall"
+      ],
       "notes": null
     },
     {
@@ -2276,7 +2560,10 @@
         "npc_id": "npc_rabbit_luna",
         "place_id": "meadow",
         "zone_id": null,
-        "time_of_day": ["morning", "midday"],
+        "time_of_day": [
+          "morning",
+          "midday"
+        ],
         "weather": null,
         "season": null,
         "affinity_min": 0,
@@ -2297,14 +2584,17 @@
         "target_tag": "botanical",
         "hint_place_id": "meadow"
       },
-      "effects": {
-        "give_item_id": null,
-        "spawn_item_tag": "color",
-        "adjust_affinity": 0,
-        "set_flags": null
-      },
-      "tags": ["luna", "observed", "companion", "directional_guidance"],
-      "notes": "Rabbit as gentle invitation to wander; not a directive."
+      "effects": null,
+      "tags": [
+        "luna",
+        "observed",
+        "companion",
+        "directional_guidance"
+      ],
+      "notes": "Rabbit as gentle invitation to wander; not a directive.",
+      "generator_hints": {
+        "spawn_item_tag": "color"
+      }
     }
   ]
 }

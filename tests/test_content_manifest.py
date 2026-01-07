@@ -25,9 +25,10 @@ def test_manifest_lists_core_assets() -> None:
         "npcs",
         "collectibles",
         "interactions",
+        "actions",
+        "scene_manifest",
         "tea",
         "spells",
-        "storylets",
         "journal_templates",
     }
 

@@ -7,15 +7,22 @@ from dataclasses import dataclass, field
 class ContentManifest:
     schemas: dict[str, str] = field(
         default_factory=lambda: {
+            "common": "schemas/common.schema.json",
+            "conditions": "schemas/conditions.schema.json",
             "places": "schemas/places.schema.json",
             "npcs": "schemas/npcs.schema.json",
             "collectibles": "schemas/collectibles.schema.json",
             "interactions": "schemas/interactions.schema.json",
+            "actions": "schemas/actions.schema.json",
+            "scene": "schemas/scene.schema.json",
+            "scene_manifest": "schemas/scene_manifest.schema.json",
             "tea": "schemas/tea.schema.json",
             "spells": "schemas/spell.schema.json",
-            "storylets": "schemas/storylet.schema.json",
             "journal_page": "schemas/journal_page.schema.json",
+            "journal_templates": "schemas/journal_templates.schema.json",
+            "session": "schemas/session.schema.json",
             "lexicon": "schemas/lexicon.schema.json",
+            "ingredient_substitutions": "schemas/ingredient_substitutions.schema.json",
         }
     )
     assets: dict[str, str] = field(
@@ -24,10 +31,12 @@ class ContentManifest:
             "npcs": "assets/npcs.json",
             "collectibles": "assets/collectibles.json",
             "interactions": "assets/interactions.json",
+            "actions": "assets/actions.json",
+            "scene_manifest": "assets/scenes/manifest.json",
             "tea": "assets/tea.json",
             "spells": "assets/spells.json",
-            "storylets": "assets/storylets.json",
-            "journal_templates": "journal/journal_templates.json",
+            "journal_templates": "assets/journal_templates.json",
+            "ingredient_substitutions": "assets/ingredient_substitutions.json",
         }
     )
     lexicons: dict[str, str] = field(

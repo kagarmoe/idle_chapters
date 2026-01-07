@@ -42,6 +42,11 @@
           "ingredient_ref": "black_tea",
           "role": "base",
           "amount_hint": "1 tsp loose leaf"
+        },
+        {
+          "ingredient_ref": "honey",
+          "role": "sweetener",
+          "amount_hint": "to taste"
         }
       ],
       "steps": [

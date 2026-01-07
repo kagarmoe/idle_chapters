@@ -79,14 +79,23 @@
             }
           },
           "effects": {
+            "oneOf": [
+              { "$ref": "common.schema.json#/$defs/effects" },
+              { "type": "null" }
+            ],
+            "default": null,
+            "description": "State changes using common effects format. For backward compatibility: give_item_id maps to add_items."
+          },
+          "generator_hints": {
             "type": ["object", "null"],
             "default": null,
             "additionalProperties": false,
             "properties": {
-              "give_item_id": { "oneOf": [{ "$ref": "common.schema.json#/$defs/id" }, { "type": "null" }], "default": null },
-              "spawn_item_tag": { "type": ["string", "null"], "default": null },
-              "adjust_affinity": { "type": "integer", "default": 0 },
-              "set_flags": { "type": ["array", "null"], "default": null, "items": { "type": "string" } }
+              "spawn_item_tag": {
+                "type": ["string", "null"],
+                "default": null,
+                "description": "Tag used by generator to spawn an item (not a direct state change)"
+              }
             }
           },
           "tags": { "type": ["array", "null"], "default": null, "items": { "type": "string" } },

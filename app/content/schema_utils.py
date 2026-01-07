@@ -17,6 +17,7 @@ def load_validator(schema_path: Path) -> jsonschema.Draft202012Validator:
         schema_id = candidate_schema.get("$id")
         if schema_id:
             store[schema_id] = candidate_schema
+        store[candidate.resolve().as_uri()] = candidate_schema
     resolver = jsonschema.RefResolver(
         base_uri=schema_path.resolve().as_uri(),
         referrer=schema,

@@ -32,11 +32,13 @@ class ContentRepo:
         self.interactions_by_id: dict[str, dict[str, Any]] = {}
         self.interactions_by_npc_kind: dict[str, list[dict[str, Any]]] = {}
         self.interactions_by_place_id: dict[str, list[dict[str, Any]]] = {}
+        self.actions_by_id: dict[str, dict[str, Any]] = {}
+        self.scenes_by_id: dict[str, dict[str, Any]] = {}
+        self.scenes_by_place_id: dict[str, list[dict[str, Any]]] = {}
         self.tea_by_id: dict[str, dict[str, Any]] = {}
         self.spells_by_id: dict[str, dict[str, Any]] = {}
-        self.storylets_by_id: dict[str, dict[str, Any]] = {}
-        self.storylets_by_place_id: dict[str, list[dict[str, Any]]] = {}
         self.journal_templates_by_entry_type: dict[str, list[dict[str, Any]]] = {}
+        self.journal_templates_by_id: dict[str, dict[str, Any]] = {}
         self.lexicon_by_key: dict[str, dict[str, Any]] = {}
 
         self._load_all()
@@ -46,9 +48,10 @@ class ContentRepo:
         self._load_collectibles()
         self._load_npcs()
         self._load_interactions()
+        self._load_actions()
+        self._load_scenes()
         self._load_tea()
         self._load_spells()
-        self._load_storylets()
         self._load_journal_templates()
         self._load_lexicons()
 
@@ -126,29 +129,55 @@ class ContentRepo:
             spells.append(spell)
         self.spells_by_id = _index_by_id(spells, "spell_id", "spell_recipes")
 
-    def _load_storylets(self) -> None:
-        path = self.root / self.manifest.assets["storylets"]
+    def _load_actions(self) -> None:
+        path = self.root / self.manifest.assets["actions"]
+        schema = self.root / self.manifest.schemas["actions"]
         if not path.exists():
-            self.storylets_by_id = {}
-            self.storylets_by_place_id = {}
+            self.actions_by_id = {}
+            return
+        data = load_json(path, schema_path=schema) or {}
+        actions = data.get("actions", [])
+        self.actions_by_id = _index_by_id(actions, "action_id", "actions")
+
+    def _load_scenes(self) -> None:
+        manifest_path = self.root / self.manifest.assets["scene_manifest"]
+        manifest_schema = self.root / self.manifest.schemas["scene_manifest"]
+        scene_schema = self.root / self.manifest.schemas["scene"]
+
+        if not manifest_path.exists():
+            self.scenes_by_id = {}
+            self.scenes_by_place_id = {}
             return
 
-        data = load_json(path) or {}
-        storylets = data.get("storylets", []) if isinstance(data, dict) else data
-        storylets = storylets or []
-        self.storylets_by_id = _index_by_id(storylets, "storylet_id", "storylets")
+        manifest_data = load_json(manifest_path, schema_path=manifest_schema) or {}
+        scene_files = manifest_data.get("scenes", [])
+
+        scenes: list[dict[str, Any]] = []
+        scenes_dir = manifest_path.parent
+        for scene_file in scene_files:
+            scene_path = scenes_dir / scene_file
+            if scene_path.exists():
+                scene_data = load_json(scene_path, schema_path=scene_schema)
+                if scene_data:
+                    scenes.append(scene_data)
+
+        self.scenes_by_id = _index_by_id(scenes, "scene_id", "scenes")
 
         by_place: dict[str, list[dict[str, Any]]] = defaultdict(list)
-        for storylet in storylets:
-            place_id = storylet.get("place_id")
+        for scene in scenes:
+            place_id = scene.get("place_id")
             if place_id:
-                by_place[str(place_id)].append(storylet)
-        self.storylets_by_place_id = dict(by_place)
+                by_place[str(place_id)].append(scene)
+        self.scenes_by_place_id = dict(by_place)
 
     def _load_journal_templates(self) -> None:
         path = self.root / self.manifest.assets["journal_templates"]
-        data = load_json(path) or {}
+        schema = self.root / self.manifest.schemas["journal_templates"]
+        data = load_json(path, schema_path=schema) or {}
         templates = data.get("templates", [])
+
+        self.journal_templates_by_id = _index_by_id(templates, "template_id", "journal_templates")
+
         by_entry_type: dict[str, list[dict[str, Any]]] = defaultdict(list)
         for template in templates:
             entry_type = template.get("entry_type")
