@@ -1069,25 +1069,6 @@
       "max_stack": null
     },
     {
-      "item_id": "bag",
-      "display_name": "Bag",
-      "item_type": "Tool",
-      "botanical_kind": null,
-      "symbolic_meaning": "Carrying",
-      "cozy_association": "A familiar strap on your shoulder",
-      "tags": ["storage", "travel", "element_earth"],
-      "origin_scope": "starting",
-      "origin_ref": null,
-      "lore_place_hint": null,
-      "player_need_satisfied": "Ease in keeping essentials close",
-      "notes": "A simple bag that keeps your small belongings together.",
-      "safety_category": "non_ingestible",
-      "usable_in": ["quest"],
-      "stock_behavior": "key_item",
-      "starting_quantity": 1,
-      "max_stack": 1
-    },
-    {
       "item_id": "mortar_pestle",
       "display_name": "Mortar & Pestle",
       "item_type": "Tool",

@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$title": "Session Schema",
+  "$id": "https://example.com/schemas/session.schema.json",
+  "description": "Defines the runtime session stored in MongoDB. Combines player identity with game state.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["session_id", "state", "created_at"],
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$",
+      "description": "Unique session identifier (32-char hex)"
+    },
+    "address": {
+      "type": "object",
+      "description": "Optional player address fields (how the player is addressed in text)",
+      "additionalProperties": false,
+      "properties": {
+        "display_name": {
+          "oneOf": [
+            { "$ref": "common.schema.json#/$defs/nonempty_string" },
+            { "type": "null" }
+          ],
+          "description": "Optional name or nickname"
+        },
+        "pronouns": {
+          "type": "string",
+          "enum": ["unspecified", "they_them", "she_her", "he_him", "ze_hir", "you_your"],
+          "default": "unspecified"
+        }
+      }
+    },
+    "premise": {
+      "type": "object",
+      "description": "Player premise (facets for tone selection)",
+      "additionalProperties": false,
+      "properties": {
+        "facets": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "default": {}
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "description": "Current game state",
+      "additionalProperties": false,
+      "required": ["current_location"],
+      "properties": {
+        "current_location": {
+          "$ref": "common.schema.json#/$defs/id",
+          "description": "Current place_id"
+        },
+        "inventory_counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 },
+          "default": {},
+          "description": "Canonical inventory: { item_id: quantity }"
+        },
+        "flags": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/nonempty_string" },
+          "default": [],
+          "description": "Set flags (milestones, discoveries, unlocks)"
+        },
+        "visit_counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 },
+          "default": {},
+          "description": "Visit counts per place: { place_id: count }"
+        },
+        "seen_interactions": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              { "type": "integer", "minimum": 0 },
+              { "type": "string", "format": "date-time" }
+            ]
+          },
+          "default": {},
+          "description": "Interaction history: { interaction_id: times_seen or last_seen_timestamp }"
+        },
+        "relationships": {
+          "type": "object",
+          "additionalProperties": { "type": "number" },
+          "default": {},
+          "description": "NPC affinity values: { npc_id: affinity }"
+        },
+        "current_scene_id": {
+          "oneOf": [
+            { "$ref": "common.schema.json#/$defs/id" },
+            { "type": "null" }
+          ],
+          "default": null,
+          "description": "Active scene if in a scene graph"
+        },
+        "current_node_id": {
+          "oneOf": [
+            { "$ref": "common.schema.json#/$defs/id" },
+            { "type": "null" }
+          ],
+          "default": null,
+          "description": "Current node within active scene"
+        },
+        "time_tick": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Simple time counter (optional)"
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Session creation timestamp"
+    },
+    "updated_at": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "null" }
+      ],
+      "default": null,
+      "description": "Last update timestamp"
+    },
+    "content_version": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "null" }
+      ],
+      "default": null,
+      "description": "Content manifest hash/version used by this session (for debugging)"
+    }
+  }
+}

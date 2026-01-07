@@ -17,25 +17,44 @@
       "properties": {
         "add_items": {
           "type": "object",
-          "additionalProperties": { "type": "integer" }
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "Items to add to inventory: { item_id: quantity }"
         },
         "remove_items": {
           "type": "object",
-          "additionalProperties": { "type": "integer" }
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "Items to remove from inventory: { item_id: quantity }"
         },
         "set_flags": {
           "type": "array",
-          "items": { "$ref": "#/$defs/nonempty_string" }
+          "items": {
+            "$ref": "https://example.com/schemas/common.schema.json#/$defs/nonempty_string"
+          },
+          "description": "Flags to set (add to player flags array)"
         },
         "clear_flags": {
           "type": "array",
-          "items": { "$ref": "#/$defs/nonempty_string" }
+          "items": {
+            "$ref": "https://example.com/schemas/common.schema.json#/$defs/nonempty_string"
+          },
+          "description": "Flags to clear (remove from player flags array)"
         },
         "move_to": {
           "oneOf": [
-            { "$ref": "#/$defs/id" },
-            { "type": "null" }
-          ]
+            {
+              "$ref": "https://example.com/schemas/common.schema.json#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Place to move the player to"
         }
       },
       "default": {}

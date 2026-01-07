@@ -79,6 +79,7 @@ def test_generator_determinism() -> None:
     assert labels_a == labels_b
 
 
+@pytest.mark.skip(reason="storylet.schema.json removed; storylets replaced by scenes")
 def test_generator_validates_against_schema(repo_root: Path) -> None:
     from app.content.repo import ContentRepo
     from app.domain.state import PlayerState

@@ -4,28 +4,51 @@
   "$id": "https://example.com/schemas/scene.schema.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["scene_id", "place_id", "entry_node", "nodes"],
+  "required": [
+    "scene_id",
+    "place_id",
+    "entry_node",
+    "nodes"
+  ],
   "properties": {
-    "scene_id": { "$ref": "common.schema.json#/$defs/id" },
-    "place_id": { "$ref": "common.schema.json#/$defs/id" },
-    "entry_node": { "$ref": "common.schema.json#/$defs/id" },
+    "scene_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "place_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "entry_node": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
     "nodes": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/$defs/node" }
+      "items": {
+        "$ref": "https://example.com/schemas/scene.schema.json#/$defs/node"
+      }
     }
   },
   "$defs": {
     "node": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["node_id", "action_ref", "choices"],
+      "required": [
+        "node_id",
+        "action_ref",
+        "choices"
+      ],
       "properties": {
-        "node_id": { "$ref": "common.schema.json#/$defs/id" },
-        "action_ref": { "$ref": "common.schema.json#/$defs/id" },
+        "node_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "action_ref": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
         "choices": {
           "type": "array",
-          "items": { "$ref": "common.schema.json#/$defs/id" },
+          "items": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
           "default": []
         }
       }

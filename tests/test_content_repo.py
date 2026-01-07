@@ -12,11 +12,13 @@ def test_content_repo_builds_indices() -> None:
         "interactions_by_id",
         "interactions_by_npc_kind",
         "interactions_by_place_id",
+        "actions_by_id",
+        "scenes_by_id",
+        "scenes_by_place_id",
         "tea_by_id",
         "spells_by_id",
-        "storylets_by_id",
-        "storylets_by_place_id",
         "journal_templates_by_entry_type",
+        "journal_templates_by_id",
         "lexicon_by_key",
     ]
 
@@ -34,9 +36,10 @@ def test_content_repo_ids_are_strings() -> None:
         "collectibles_by_id": repo.collectibles_by_id,
         "npcs_by_id": repo.npcs_by_id,
         "interactions_by_id": repo.interactions_by_id,
+        "actions_by_id": repo.actions_by_id,
+        "scenes_by_id": repo.scenes_by_id,
         "tea_by_id": repo.tea_by_id,
         "spells_by_id": repo.spells_by_id,
-        "storylets_by_id": repo.storylets_by_id,
     }
 
     for index_name, index in index_map.items():

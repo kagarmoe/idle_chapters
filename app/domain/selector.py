@@ -21,12 +21,19 @@ def merge_with_authored(candidates: Iterable[dict], authored: Iterable[dict]) ->
     return merged
 
 
-def eligible_storylets(state, repo) -> list[dict]:
-    return list(repo.storylets_by_place_id.get(state.current_place_id, []))
+def eligible_scenes(state, repo) -> list[dict]:
+    """Get scenes eligible for the current place."""
+    return list(repo.scenes_by_place_id.get(state.current_place_id, []))
 
 
-def choose_storylet(storylets: list[dict], seed: int | None = None) -> dict:
-    if not storylets:
-        raise ValueError("No eligible storylets")
+def eligible_actions(state, repo) -> list[dict]:
+    """Get actions eligible for the current state (basic implementation)."""
+    # TODO: implement full condition evaluation
+    return list(repo.actions_by_id.values())
+
+
+def choose_scene(scenes: list[dict], seed: int | None = None) -> dict:
+    if not scenes:
+        raise ValueError("No eligible scenes")
     rng = random.Random(seed)
-    return rng.choice(storylets)
+    return rng.choice(scenes)
