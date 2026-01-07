@@ -2,48 +2,48 @@
 
 Idle Chapters is a cozy text-based game about nothing much at all.
 
-## Dependencies
+## Documentation
 
-FastAPI server + Mongo driver:
+The Idle Chapters [documentation](https://kagarmoe.github.io/idle_chapters/) is published on GitHub Pages.
 
-- `fastapi`
-- `uvicorn`
-- `pymongo`
+## Quickstart
 
-Install:
+1. Clone repo
 
-```
+1. Install dependencies
+
+```bash
 python -m pip install -r requirements.txt
 ```
 
-## Run MongoDB
+1. Start services
 
-If you use a local MongoDB instance:
-
-```
+```bash
 mongod --dbpath ./data/mongo
 ```
 
-Set env vars if needed:
+Optional env vars:
 
-```
+```bash
 export MONGO_URL="mongodb://localhost:27017"
 export MONGO_DB="idle_chapters"
 ```
 
-## Run the API
+1. Run app
 
-```
+Run the API:
+
+```bash
 python -m uvicorn app.api.app:app --host 127.0.0.1 --port 8000
 ```
 
-## API URLs
+Run the game (CLI):
 
-Docs + OpenAPI:
+```python
+python -m app.main
+```
 
-http://127.0.0.1:8000/docs
-http://127.0.0.1:8000/openapi.json
+1. Look at the API documentation
 
-Example:
-
-http://127.0.0.1:8000/v1/world/manifest
+[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+[http://127.0.0.1:8000/openapi.json](http://127.0.0.1:8000/openapi.json)
