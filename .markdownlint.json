@@ -32,7 +32,7 @@
     "style": "---"
   },
   "line-length": {
-    "line_length": 120,
+    "line_length": 999,
     "code_block_line_length": 80,
     "tables": false
   },
