@@ -1,4 +1,4 @@
-# Cottage storylet graph (first wake)
+# Cottage scene graph (first wake)
 
 ## Node: `cottage_wake`
 - **Prompt**: waking text

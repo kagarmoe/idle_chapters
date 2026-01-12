@@ -7,7 +7,7 @@ from typing import Any
 
 from jsonschema import ValidationError, validate
 
-from app.domain.storylet import Storylet
+from app.domain.scene import Scene
 
 
 FAMILIES = [
@@ -28,9 +28,9 @@ SAFE_CHOICE_LABELS = [
 ]
 
 
-def _load_storylet_schema() -> dict[str, Any] | None:
-    """Load storylet schema if it exists, otherwise return None."""
-    schema_path = Path(__file__).resolve().parents[2] / "schemas" / "storylet.schema.json"
+def _load_scene_schema() -> dict[str, Any] | None:
+    """Load scene schema if it exists, otherwise return None."""
+    schema_path = Path(__file__).resolve().parents[2] / "schemas" / "scene.schema.json"
     if not schema_path.exists():
         return None
     return json.loads(schema_path.read_text(encoding="utf-8"))
@@ -72,7 +72,7 @@ def _choices(rng: random.Random) -> list[dict[str, Any]]:
     ]
 
 
-def generate_storylet(state, repo, seed: int | None = None) -> Storylet:
+def generate_scene(state, repo, seed: int | None = None) -> Scene:
     if state.current_place_id not in repo.places_by_id:
         raise ValueError(f"Unknown place_id: {state.current_place_id}")
 
@@ -87,12 +87,12 @@ def generate_storylet(state, repo, seed: int | None = None) -> Storylet:
     words = _descriptive_words(repo, state.current_place_id, zone_id)
     prompt = _safe_prompt(words, disallowed, rng)
 
-    storylet_id = f"{state.current_place_id}_{entry_type}_{family}"
+    scene_id = f"{state.current_place_id}_{entry_type}_{family}"
     if seed is not None:
-        storylet_id = f"{storylet_id}_{seed}"
+        scene_id = f"{scene_id}_{seed}"
 
-    storylet = Storylet(
-        storylet_id=storylet_id,
+    scene = Scene(
+        scene_id=scene_id,
         place_id=state.current_place_id,
         entry_type=entry_type,
         title=None,
@@ -110,11 +110,11 @@ def generate_storylet(state, repo, seed: int | None = None) -> Storylet:
         },
     )
 
-    schema = _load_storylet_schema()
+    schema = _load_scene_schema()
     if schema is not None:
         try:
-            validate(instance=storylet.to_dict(), schema=schema)
+            validate(instance=scene.to_dict(), schema=schema)
         except ValidationError as exc:
-            raise ValueError(f"Generated storylet failed schema validation: {exc.message}") from exc
+            raise ValueError(f"Generated scene failed schema validation: {exc.message}") from exc
 
-    return storylet
+    return scene

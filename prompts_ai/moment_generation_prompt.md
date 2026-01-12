@@ -1,4 +1,4 @@
-# Moment storylets
+# Moment scenes
 
 Keeps moments from turning into micro-stories
 

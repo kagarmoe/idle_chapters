@@ -3,7 +3,7 @@ from __future__ import annotations
 import random
 from typing import Iterable
 
-from app.domain.storylet_generator import generate_storylet
+from app.domain.scene_generator import generate_scene
 
 
 def generate_candidates(state, repo, seed: int | None, n: int = 3) -> list[dict]:
@@ -11,7 +11,7 @@ def generate_candidates(state, repo, seed: int | None, n: int = 3) -> list[dict]
     candidates = []
     for _ in range(n):
         candidate_seed = rng.randint(0, 1_000_000) if seed is not None else None
-        candidate = generate_storylet(state=state, repo=repo, seed=candidate_seed)
+        candidate = generate_scene(state=state, repo=repo, seed=candidate_seed)
         candidates.append(candidate.to_dict() if hasattr(candidate, "to_dict") else candidate)
     return candidates
 

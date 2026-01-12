@@ -277,7 +277,7 @@ File: `app/content/repo.py`
 ### 2.7 Tests for generation (required)
 
 Files:
-- `tests/test_storylet_generation.py` (to be renamed when interaction generator replaces storylets)
+- `tests/test_scene_generation.py` (to be renamed when interaction generator replaces scenes)
 
 Test cases:
 - generator returns valid interaction candidates

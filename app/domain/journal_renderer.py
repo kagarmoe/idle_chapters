@@ -8,19 +8,19 @@
 
 # - place_id
 # - entry_type
-# - storylet (selected)
+# - scene (selected)
 # - state snapshot (inventory/flags as needed)
-# - ingredient picks (optional, based on storylet tags)
+# - ingredient picks (optional, based on scene tags)
 
 # Outputs:
 
 # - JournalPage object:
 #   - frontmatter fields aligned with journal_page.schema
-#   - markdown body assembled from template + storylet context
+#   - markdown body assembled from template + scene context
 
 # ### Acceptance criteria
 
-# - engine can produce a JournalPage for at least one storylet
+# - engine can produce a JournalPage for at least one scene
 # - locality works:
 #   - same_place used when available
 #   - same_zone used only when same_place insufficient

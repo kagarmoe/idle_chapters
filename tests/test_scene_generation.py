@@ -5,14 +5,14 @@ import pytest
 from app.content.schema_utils import load_validator
 
 
-def _storylet_to_dict(storylet):
-    if isinstance(storylet, dict):
-        return storylet
-    if hasattr(storylet, "model_dump"):
-        return storylet.model_dump()
-    if hasattr(storylet, "dict"):
-        return storylet.dict()
-    return storylet.__dict__
+def _scene_to_dict(scene):
+    if isinstance(scene, dict):
+        return scene
+    if hasattr(scene, "model_dump"):
+        return scene.model_dump()
+    if hasattr(scene, "dict"):
+        return scene.dict()
+    return scene.__dict__
 
 
 def _load_not_allowed_words(repo_root: Path) -> set[str]:
@@ -24,13 +24,13 @@ def _load_not_allowed_words(repo_root: Path) -> set[str]:
     return words
 
 
-def _storylet_text(storylet_dict: dict) -> str:
+def _scene_text(scene_dict: dict) -> str:
     parts = []
     for key in ("title", "prompt", "need_hint", "mood_hint"):
-        value = storylet_dict.get(key)
+        value = scene_dict.get(key)
         if isinstance(value, str):
             parts.append(value)
-    for choice in storylet_dict.get("choices", []):
+    for choice in scene_dict.get("choices", []):
         label = choice.get("label")
         if isinstance(label, str):
             parts.append(label)
@@ -40,7 +40,7 @@ def _storylet_text(storylet_dict: dict) -> str:
 def test_generator_returns_three_choices() -> None:
     from app.content.repo import ContentRepo
     from app.domain.state import PlayerState
-    from app.domain.storylet_generator import generate_storylet
+    from app.domain.scene_generator import generate_scene
 
     repo = ContentRepo()
     state = PlayerState(
@@ -51,15 +51,15 @@ def test_generator_returns_three_choices() -> None:
         time_tick=0,
     )
 
-    storylet = generate_storylet(state=state, repo=repo, seed=123)
-    data = _storylet_to_dict(storylet)
+    scene = generate_scene(state=state, repo=repo, seed=123)
+    data = _scene_to_dict(scene)
     assert len(data.get("choices", [])) == 3
 
 
 def test_generator_determinism() -> None:
     from app.content.repo import ContentRepo
     from app.domain.state import PlayerState
-    from app.domain.storylet_generator import generate_storylet
+    from app.domain.scene_generator import generate_scene
 
     repo = ContentRepo()
     state = PlayerState(
@@ -70,22 +70,22 @@ def test_generator_determinism() -> None:
         time_tick=0,
     )
 
-    storylet_a = _storylet_to_dict(generate_storylet(state=state, repo=repo, seed=7))
-    storylet_b = _storylet_to_dict(generate_storylet(state=state, repo=repo, seed=7))
+    scene_a = _scene_to_dict(generate_scene(state=state, repo=repo, seed=7))
+    scene_b = _scene_to_dict(generate_scene(state=state, repo=repo, seed=7))
 
-    assert storylet_a.get("storylet_id") == storylet_b.get("storylet_id")
-    labels_a = [choice.get("label") for choice in storylet_a.get("choices", [])]
-    labels_b = [choice.get("label") for choice in storylet_b.get("choices", [])]
+    assert scene_a.get("scene_id") == scene_b.get("scene_id")
+    labels_a = [choice.get("label") for choice in scene_a.get("choices", [])]
+    labels_b = [choice.get("label") for choice in scene_b.get("choices", [])]
     assert labels_a == labels_b
 
 
-@pytest.mark.skip(reason="storylet.schema.json removed; storylets replaced by scenes")
+@pytest.mark.skip(reason="scene.schema.json removed; scenes replaced by scenes")
 def test_generator_validates_against_schema(repo_root: Path) -> None:
     from app.content.repo import ContentRepo
     from app.domain.state import PlayerState
-    from app.domain.storylet_generator import generate_storylet
+    from app.domain.scene_generator import generate_scene
 
-    schema_path = repo_root / "schemas" / "storylet.schema.json"
+    schema_path = repo_root / "schemas" / "scene.schema.json"
 
     repo = ContentRepo()
     state = PlayerState(
@@ -96,15 +96,15 @@ def test_generator_validates_against_schema(repo_root: Path) -> None:
         time_tick=0,
     )
 
-    storylet = _storylet_to_dict(generate_storylet(state=state, repo=repo, seed=99))
+    scene = _scene_to_dict(generate_scene(state=state, repo=repo, seed=99))
     validator = load_validator(schema_path)
-    validator.validate(instance=storylet)
+    validator.validate(instance=scene)
 
 
 def test_generator_avoids_not_allowed_lexicon(repo_root: Path) -> None:
     from app.content.repo import ContentRepo
     from app.domain.state import PlayerState
-    from app.domain.storylet_generator import generate_storylet
+    from app.domain.scene_generator import generate_scene
 
     repo = ContentRepo()
     state = PlayerState(
@@ -115,34 +115,34 @@ def test_generator_avoids_not_allowed_lexicon(repo_root: Path) -> None:
         time_tick=0,
     )
 
-    storylet = _storylet_to_dict(generate_storylet(state=state, repo=repo, seed=1))
+    scene = _scene_to_dict(generate_scene(state=state, repo=repo, seed=1))
     not_allowed = _load_not_allowed_words(repo_root)
-    text = _storylet_text(storylet)
+    text = _scene_text(scene)
 
     for word in not_allowed:
-        assert word not in text, f"Found disallowed word in storylet: {word}"
+        assert word not in text, f"Found disallowed word in scene: {word}"
 
 
 def test_selector_merges_authored_anchors() -> None:
     from app.domain.selector import merge_with_authored
 
     generated = [
-        {"storylet_id": "generated_1", "place_id": "cottage_home", "choices": []},
-        {"storylet_id": "generated_2", "place_id": "cottage_home", "choices": []},
+        {"scene_id": "generated_1", "place_id": "cottage_home", "choices": []},
+        {"scene_id": "generated_2", "place_id": "cottage_home", "choices": []},
     ]
     authored = [
-        {"storylet_id": "authored_1", "place_id": "cottage_home", "choices": []},
+        {"scene_id": "authored_1", "place_id": "cottage_home", "choices": []},
     ]
 
     merged = merge_with_authored(generated, authored)
-    ids = [storylet["storylet_id"] for storylet in merged]
+    ids = [scene["scene_id"] for scene in merged]
     assert "authored_1" in ids
 
 
-def test_generated_storylet_exists_for_all_places() -> None:
+def test_generated_scene_exists_for_all_places() -> None:
     from app.content.repo import ContentRepo
     from app.domain.state import PlayerState
-    from app.domain.storylet_generator import generate_storylet
+    from app.domain.scene_generator import generate_scene
 
     repo = ContentRepo()
 
@@ -154,5 +154,5 @@ def test_generated_storylet_exists_for_all_places() -> None:
             flags=set(),
             time_tick=0,
         )
-        storylet = generate_storylet(state=state, repo=repo, seed=10)
-        assert storylet is not None
+        scene = generate_scene(state=state, repo=repo, seed=10)
+        assert scene is not None

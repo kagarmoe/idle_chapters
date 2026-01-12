@@ -168,6 +168,6 @@ To avoid proliferating sub-locations, NPC visibility can be derived from state.
 No new schema fields required if conditional visibility is driven by action/interaction eligibility.
 If needed later, we can add a dedicated `npc_visibility` content type; for now, use flags + actions.
 
-## Storylets vs scenes
+## Scenes vs scenes
 
-Scenes replace storylets for graph-based flows. Actions are reusable; scenes own the choice graph.
+Scenes replace scenes for graph-based flows. Actions are reusable; scenes own the choice graph.

@@ -6,8 +6,8 @@
 
 # Flow:
 
-# 1) select eligible storylet(s) for current place
-# 2) if command is “enter” or “continue,” return storylet choices without applying effects
+# 1) select eligible scene(s) for current place
+# 2) if command is “enter” or “continue,” return scene choices without applying effects
 # 3) if command is “choose option,” apply chosen effects
 # 4) render JournalPage
 # 5) return StepResult:

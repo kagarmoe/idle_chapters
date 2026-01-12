@@ -79,21 +79,21 @@ Treat state like a database row, not an object with methods.
 
 ### Content repository (authoritative but passive)
 
-This is where storylets live.
+This is where scenes live.
 
 Responsibilities:
 
-- Store storylets/templates
+- Store scenes/templates
 - Validate schema
 - Provide lookup by tag / location / id
 
 It does not:
 
 - Decide eligibility
-- Pick “the best” storylet
+- Pick “the best” scene
 - Modify state
 
-ContentRepo.find_candidates(query) -> List[Storylet]
+ContentRepo.find_candidates(query) -> List[Scene]
 
 Key idea:
 
@@ -112,7 +112,7 @@ They only ever:
 - Insert them into the content repository
 - Or return candidates through the same interface as static content
 
-Generator.generate(state) -> List[Storylet]
+Generator.generate(state) -> List[Scene]
 
 You can have:
 
@@ -172,7 +172,7 @@ Engine can:
 ### Content (data only)
 
 ```pseudo
-Storylet {
+Scene {
   id: "kitchen_kettle_cold"
   tags: ["kitchen", "cozy", "idle"]
   priority: 10
@@ -218,15 +218,15 @@ Note: Content is declarative.
 
 ```pseudo
 def next_node(state):
-  candidates = content_repo.find_storylets(tags=[state.location])
+  candidates = content_repo.find_scenes(tags=[state.location])
   eligible = filter(candidates, s => eval_predicate(s.when, state))
   chosen = select_one(eligible, policy="highest_priority_then_weighted_random",
     seed=state.seed)
   return render_node(chosen, state)
 
-def apply_choice(state, storylet_id, choice_id):
-  storylet = content_repo.get(storylet_id)
-  choice = storylet.choice(choice_id)
+def apply_choice(state, scene_id, choice_id):
+  scene = content_repo.get(scene_id)
+  choice = scene.choice(choice_id)
 
   assert eval_predicate(choice.when, state)  // prevent tampering / stale UI
   new_state = apply_effects(state, choice.effects)
@@ -254,7 +254,7 @@ Selection policy must be engine side
 // engine selection policy
 sort eligible by priority desc
 top = take where priority == max
-chosen = weighted_random(top, weights=storylet.weight, seed=state.seed)
+chosen = weighted_random(top, weights=scene.weight, seed=state.seed)
 ```
 
 Randomness must be engine side
@@ -312,7 +312,7 @@ How to implement:
 3. Validate content at load time
 
   ```pseudo
-  validate_storylet(storylet):
+  validate_scene(scene):
     ensure id unique
     ensure all goto targets exist
     ensure predicates are parseable
@@ -321,7 +321,7 @@ How to implement:
 
 ## Content (story) boundaries
 
-Choices aren't alays explicit. When the content ends, the engine chooses the next storylet
+Choices aren't alays explicit. When the content ends, the engine chooses the next scene
 
 ```pseudo
 Choice { label:"Let it be", effects:[...], goto: "ENGINE_PICK_NEXT" }
