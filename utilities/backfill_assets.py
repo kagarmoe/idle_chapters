@@ -164,3 +164,98 @@ def backfill_all_assets(
 		if updates:
 			results[asset_stem] = updates
 	return results
+
+
+# Updated to use schema-to-file relationships for backfilling assets.
+SCHEMA_TO_FILE = {
+	"actions.schema.json": "actions.json",
+	"collectibles.schema.json": "collectibles.json",
+	"interactions.schema.json": "interactions.json",
+	"npcs.schema.json": "npcs.json",
+	"places.schema.json": "places.json",
+	"players.schema.json": "player.json",
+	"spells.schema.json": "spells.json",
+	"teas.schema.json": "tea.json",
+}
+
+
+def backfill_assets_from_schemas():
+	"""Backfill assets based on their corresponding schemas."""
+	tone_contract = _load_tone_contract()
+	lexicons = _load_lexicon_context()
+
+	for schema, asset_file in SCHEMA_TO_FILE.items():
+		asset_path = ASSETS_DIR / asset_file
+		if not asset_path.exists():
+			print(f"Asset file not found: {asset_file}")
+			continue
+
+		data = _load_json(asset_path)
+		updates = []
+
+		for key, entries in data.items():
+			if not isinstance(entries, list):
+				continue
+
+			for idx, entry in enumerate(entries):
+				missing = _missing_string_fields(entry)
+				if not missing:
+					continue
+
+				messages = _build_prompt(entry, missing, tone_contract, lexicons)
+				response, _ = ChatGPTQuery().ask(messages)
+				try:
+					completion = json.loads(response)
+				except json.JSONDecodeError:
+					print(f"Invalid JSON response for {asset_file}, entry {idx}")
+					continue
+
+				for field, value in completion.items():
+					if field in missing:
+						entry[field] = value
+						updates.append(f"{asset_file}[{idx}].{field}")
+
+		if updates:
+			_write_json(asset_path, data)
+			print(f"Backfilled asset: {asset_file}")
+
+
+def backfill_single_asset(asset_stem: str):
+	"""Backfill a single asset file using the ChatGPT API.
+
+	:param asset_stem: Base filename (without .json) of the target asset.
+	"""
+	asset_path = ASSETS_DIR / f"{asset_stem}.json"
+	if not asset_path.exists():
+		raise FileNotFoundError(f"Asset file not found: {asset_stem}.json")
+
+	data = _load_json(asset_path)
+	tone_contract = _load_tone_contract()
+	lexicons = _load_lexicon_context()
+	updates = []
+
+	for key, entries in data.items():
+		if not isinstance(entries, list):
+			continue
+
+		for idx, entry in enumerate(entries):
+			missing = _missing_string_fields(entry)
+			if not missing:
+				continue
+
+			messages = _build_prompt(entry, missing, tone_contract, lexicons)
+			response, _ = ChatGPTQuery().ask(messages)
+			try:
+				completion = json.loads(response)
+			except json.JSONDecodeError:
+				print(f"Invalid JSON response for {asset_stem}, entry {idx}")
+				continue
+
+			for field, value in completion.items():
+				if field in missing:
+					entry[field] = value
+					updates.append(f"{asset_stem}[{idx}].{field}")
+
+	if updates:
+		_write_json(asset_path, data)
+		print(f"Backfilled asset: {asset_stem}.json")

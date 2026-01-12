@@ -41,14 +41,20 @@
       "mood": "Safe",
       "profile": {
         "meaning": "A cottage represents tranquility, simplicity, and a desire for escape from the hustle and bustle of daily life.",
-        "sensory_focus": ["smell", "warmth", "light"],
+        "sensory_focus": [
+          "smell",
+          "warmth",
+          "light"
+        ],
         "social_level": null,
         "time_sensitivity": "None",
         "weather_sensitivity": "None",
         "emotional_range": "Relaxed -> Restored",
         "player_need_satisfied": "Permission to rest and recover"
       },
-      "notes": "Player starts and ends here"
+      "notes": "Player starts and ends here",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "forest",
@@ -59,14 +65,20 @@
       "mood": "Quiet",
       "profile": {
         "meaning": "A forest signifies a connection with nature and exploration of inner thoughts.",
-        "sensory_focus": ["smell", "light", "sound"],
+        "sensory_focus": [
+          "smell",
+          "light",
+          "sound"
+        ],
         "social_level": "Low",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "Low",
         "emotional_range": "Unsure -> Confident",
         "player_need_satisfied": "Permission to explore inner thoughts safely"
       },
-      "notes": "Transitional space"
+      "notes": "Transitional space",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "forest_trail",
@@ -77,14 +89,18 @@
       "mood": "Observant",
       "profile": {
         "meaning": "A forest trail symbolizes exploration and the gradual emergence of clarity.",
-        "sensory_focus": ["sight"],
+        "sensory_focus": [
+          "sight"
+        ],
         "social_level": "Low",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "Low",
         "emotional_range": "Confusing -> Clear",
         "player_need_satisfied": "Reassurance that uncertainty can become clarity"
       },
-      "notes": "Movement focused"
+      "notes": "Movement focused",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "forest_castle",
@@ -95,14 +111,19 @@
       "mood": "Admiring",
       "profile": {
         "meaning": "A tiny castle symbolizes protection, nostalgia, and acceptance of the past.",
-        "sensory_focus": ["sight", "temperature"],
+        "sensory_focus": [
+          "sight",
+          "temperature"
+        ],
         "social_level": "Low",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "Low",
         "emotional_range": "Mysterious -> Nostalgic",
         "player_need_satisfied": "Comfort in accepting the past without restoring it"
       },
-      "notes": "Enjoy the aesthetic; lore"
+      "notes": "Enjoy the aesthetic; lore",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "forest_waterfall",
@@ -113,14 +134,20 @@
       "mood": "Restorative",
       "profile": {
         "meaning": "A waterfall symbolizes emotional flow, cleansing, and renewal.",
-        "sensory_focus": ["sound", "water", "light"],
+        "sensory_focus": [
+          "sound",
+          "water",
+          "light"
+        ],
         "social_level": null,
         "time_sensitivity": "Low",
         "weather_sensitivity": "Low",
         "emotional_range": "Cleansing -> Renewal",
         "player_need_satisfied": "Emotional release without explanation"
       },
-      "notes": "Sound and light"
+      "notes": "Sound and light",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "meadow",
@@ -131,14 +158,20 @@
       "mood": "Open",
       "profile": {
         "meaning": "Meadows represent openness, abundance, and calm.",
-        "sensory_focus": ["sight", "color", "light"],
+        "sensory_focus": [
+          "sight",
+          "color",
+          "light"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "Medium",
         "emotional_range": "Simplicity -> Calm",
         "player_need_satisfied": "Permission to exist without urgency"
       },
-      "notes": "Safe, serene"
+      "notes": "Safe, serene",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "meadow_path",
@@ -149,14 +182,20 @@
       "mood": "Gentle",
       "profile": {
         "meaning": "A path that moves from difficulty to ease.",
-        "sensory_focus": ["sight", "color", "motion"],
+        "sensory_focus": [
+          "sight",
+          "color",
+          "motion"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "Medium",
         "emotional_range": "Unstable -> Stability",
         "player_need_satisfied": "Confidence that effort leads to ease"
       },
-      "notes": "Low traffic"
+      "notes": "Low traffic",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "meadow_hill",
@@ -167,14 +206,20 @@
       "mood": "Reflective",
       "profile": {
         "meaning": "A hill symbolizes perseverance and fulfillment.",
-        "sensory_focus": ["sight", "distance", "wind"],
+        "sensory_focus": [
+          "sight",
+          "distance",
+          "wind"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "Medium",
         "emotional_range": "Determination -> Fulfillment",
         "player_need_satisfied": "Validation of perseverance"
       },
-      "notes": "Long views"
+      "notes": "Long views",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "meadow_shrine",
@@ -185,14 +230,19 @@
       "mood": "Reverent",
       "profile": {
         "meaning": "A shrine is a space for reflection and honoring what matters.",
-        "sensory_focus": ["sight", "stillness"],
+        "sensory_focus": [
+          "sight",
+          "stillness"
+        ],
         "social_level": null,
         "time_sensitivity": "Medium",
         "weather_sensitivity": "Medium",
         "emotional_range": "Reflection -> Meaning",
         "player_need_satisfied": "Space to honor what matters privately"
       },
-      "notes": "History, gratitude"
+      "notes": "History, gratitude",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "beach",
@@ -203,14 +253,20 @@
       "mood": "Liminal",
       "profile": {
         "meaning": "A beach represents a reflective threshold between states.",
-        "sensory_focus": ["light", "water", "distance"],
+        "sensory_focus": [
+          "light",
+          "water",
+          "distance"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "High",
         "emotional_range": "Relaxed -> Restored",
         "player_need_satisfied": "Space to reflect at a threshold"
       },
-      "notes": "Edge of world"
+      "notes": "Edge of world",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "beach_boardwalk",
@@ -221,14 +277,20 @@
       "mood": "Social",
       "profile": {
         "meaning": "A boardwalk offers leisure and social connection.",
-        "sensory_focus": ["sound", "motion", "light"],
+        "sensory_focus": [
+          "sound",
+          "motion",
+          "light"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "High",
         "emotional_range": "Leisure -> Connection",
         "player_need_satisfied": "Permission to enjoy the present moment"
       },
-      "notes": "NPC traffic"
+      "notes": "NPC traffic",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "beach_tidepools",
@@ -239,14 +301,20 @@
       "mood": "Curious",
       "profile": {
         "meaning": "Tide pools invite quiet attention to small wonders.",
-        "sensory_focus": ["light", "water", "texture"],
+        "sensory_focus": [
+          "light",
+          "water",
+          "texture"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "High",
         "emotional_range": "Curiosity -> Peace",
         "player_need_satisfied": "Permission to notice small wonders"
       },
-      "notes": "Observation"
+      "notes": "Observation",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "beach_pier",
@@ -257,14 +325,20 @@
       "mood": "Engaged",
       "profile": {
         "meaning": "A pier represents readiness at the edge of change.",
-        "sensory_focus": ["wind", "distance", "light"],
+        "sensory_focus": [
+          "wind",
+          "distance",
+          "light"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Medium",
         "weather_sensitivity": "Medium",
         "emotional_range": "Quiet -> Engaging",
         "player_need_satisfied": "Readiness to stand at the edge of change"
       },
-      "notes": "Fishing and distance"
+      "notes": "Fishing and distance",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "town",
@@ -275,14 +349,20 @@
       "mood": "Busy",
       "profile": {
         "meaning": "A town symbolizes community and belonging.",
-        "sensory_focus": ["sound", "motion", "color"],
+        "sensory_focus": [
+          "sound",
+          "motion",
+          "color"
+        ],
         "social_level": "High",
         "time_sensitivity": "Low",
         "weather_sensitivity": "Low",
         "emotional_range": "Disconnected -> Belonging",
         "player_need_satisfied": "Reassurance of belonging"
       },
-      "notes": "Hub"
+      "notes": "Hub",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "town_store",
@@ -293,14 +373,20 @@
       "mood": "Practical",
       "profile": {
         "meaning": "A store represents calm decision-making among abundance.",
-        "sensory_focus": ["sight", "order", "texture"],
+        "sensory_focus": [
+          "sight",
+          "order",
+          "texture"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Low",
         "weather_sensitivity": "Low",
         "emotional_range": "Overwhelmed -> Settled",
         "player_need_satisfied": "Support in making choices calmly"
       },
-      "notes": "Supplies"
+      "notes": "Supplies",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "town_bakery",
@@ -311,14 +397,20 @@
       "mood": "Warm",
       "profile": {
         "meaning": "A bakery offers warmth, comfort, and familiarity.",
-        "sensory_focus": ["smell", "warmth", "sound"],
+        "sensory_focus": [
+          "smell",
+          "warmth",
+          "sound"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Low",
         "weather_sensitivity": "Low",
         "emotional_range": "Comfort -> Intimate",
         "player_need_satisfied": "Comfort through warmth and familiarity"
       },
-      "notes": "Familiar faces"
+      "notes": "Familiar faces",
+      "actions": [],
+      "visible_npcs": []
     },
     {
       "place_id": "town_vendor",
@@ -329,14 +421,20 @@
       "mood": "Chaotic fun",
       "profile": {
         "meaning": "A street vendor symbolizes intuitive choice and chance.",
-        "sensory_focus": ["color", "motion", "sound"],
+        "sensory_focus": [
+          "color",
+          "motion",
+          "sound"
+        ],
         "social_level": "Medium",
         "time_sensitivity": "Low",
         "weather_sensitivity": "Low",
         "emotional_range": "Lively -> Comforting",
         "player_need_satisfied": "Permission to choose intuitively"
       },
-      "notes": "Chance encounters"
+      "notes": "Chance encounters",
+      "actions": [],
+      "visible_npcs": []
     }
   ]
 }

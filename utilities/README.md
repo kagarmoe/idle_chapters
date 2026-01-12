@@ -9,8 +9,14 @@ In the IDE:
 ```py
 from utilities import update_assets
 
-update_assets.update_asset_file()
+# Update a single asset file
+update_assets.update_asset_file("collectibles")
+
+# Update all asset files
+update_assets.update_all_assets()
 ```
+
+The `update_all_assets` function ensures that each item in collection-based assets matches the schema, adding missing fields where necessary.
 
 ## Backfilling blank fields with ChatGPT
 

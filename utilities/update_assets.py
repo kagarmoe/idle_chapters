@@ -272,8 +272,104 @@ def update_asset_file() -> Dict[str, List[str]]:
 
 
 def update_all_assets():
-	"""Alias to `update_asset_file` kept for compatibility.
+	"""Update all assets based on their corresponding schemas.
 
-	Exactly delegates to `update_asset_file()` because the new implementation
-	already iterates every schema file."""
-	update_asset_file()
+	Iterates over all schema-to-file relationships and updates each asset file.
+	For collection-based assets, ensures each item in the collection matches the schema.
+	"""
+	for schema, asset_file in SCHEMA_TO_FILE.items():
+		try:
+			schema_path = SCHEMAS_DIR / schema
+			asset_path = ASSETS_DIR / asset_file
+
+			if not schema_path.exists():
+				print(f"Schema not found: {schema}")
+				continue
+
+			if not asset_path.exists():
+				print(f"Asset file not found: {asset_file}")
+				continue
+
+			schema_data = _load_json(schema_path)
+			asset_data = _load_json(asset_path)
+
+			# Ensure each item in the collection matches the schema
+			for key, entries in asset_data.items():
+				if isinstance(entries, list):
+					for idx, entry in enumerate(entries):
+						changed, added_fields = _ensure_matches_schema(
+							entry, schema_data.get("properties", {}).get(key, {}), schema_data, schema_path
+						)
+						if changed:
+							print(f"Updated item {idx} in {asset_file}: added fields {added_fields}")
+
+			_write_json(asset_path, asset_data)
+			print(f"Updated asset: {asset_file}")
+
+		except FileNotFoundError as e:
+			print(f"Warning: {e}")
+
+# Updated to use schema-to-file relationships for asset updates.
+SCHEMA_TO_FILE = {
+    "actions.schema.json": "actions.json",
+    "collectibles.schema.json": "collectibles.json",
+    "interactions.schema.json": "interactions.json",
+    "npcs.schema.json": "npcs.json",
+    "places.schema.json": "places.json",
+    "players.schema.json": "player.json",
+    "spells.schema.json": "spells.json",
+    "teas.schema.json": "tea.json",
+}
+
+def update_assets():
+    """Update assets based on their corresponding schemas."""
+    for schema, asset_file in SCHEMA_TO_FILE.items():
+        schema_path = SCHEMAS_DIR / schema
+        asset_path = ASSETS_DIR / asset_file
+
+        if not schema_path.exists():
+            print(f"Schema not found: {schema}")
+            continue
+
+        if not asset_path.exists():
+            print(f"Asset file not found: {asset_file}")
+            continue
+
+        schema_data = _load_json(schema_path)
+        asset_data = _load_json(asset_path)
+
+        # Example: Ensure all required fields exist in the asset data
+        for key, value in schema_data.get("properties", {}).items():
+            if key not in asset_data:
+                asset_data[key] = _default_for_schema(value, schema_data, schema_path)
+
+        _write_json(asset_path, asset_data)
+        print(f"Updated asset: {asset_file}")
+
+def update_asset_file(asset_stem: str):
+    """Update a single asset file based on its corresponding schema.
+
+    :param asset_stem: Base filename (without .json) of the target asset.
+    """
+    schema_file = f"{asset_stem}.schema.json"
+    asset_file = f"{asset_stem}.json"
+
+    schema_path = SCHEMAS_DIR / schema_file
+    asset_path = ASSETS_DIR / asset_file
+
+    if not schema_path.exists():
+        raise FileNotFoundError(f"Schema not found: {schema_file}")
+
+    if not asset_path.exists():
+        raise FileNotFoundError(f"Asset file not found: {asset_file}")
+
+    schema_data = _load_json(schema_path)
+    asset_data = _load_json(asset_path)
+
+    # Ensure all required fields exist in the asset data
+    for key, value in schema_data.get("properties", {}).items():
+        if key not in asset_data:
+            asset_data[key] = _default_for_schema(value, schema_data, schema_path)
+
+    _write_json(asset_path, asset_data)
+    print(f"Updated asset: {asset_file}")

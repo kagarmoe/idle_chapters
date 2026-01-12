@@ -1,29 +1,29 @@
 {
   "collectibles": [
-      {
-        "item_id": "bag",
-        "display_name": "Bag",
-        "item_type": "Tool",
-        "botanical_kind": null,
-        "symbolic_meaning": "Carrying",
-        "cozy_association": "A familiar strap on your shoulder",
-        "tags": [
-            "storage",
-            "travel",
-            "element_earth"
-        ],
-        "origin_scope": "starting",
-        "origin_ref": null,
-        "lore_place_hint": null,
-        "player_need_satisfied": "Ease in keeping essentials close",
-        "notes": "A simple bag that keeps your small belongings together.",
-        "safety_category": "non_ingestible",
-        "usable_in": [
-            "quest"
-        ],
-        "stock_behavior": "key_item",
-        "starting_quantity": 1,
-        "max_stack": 1
+    {
+      "item_id": "bag",
+      "display_name": "Bag",
+      "item_type": "Tool",
+      "botanical_kind": null,
+      "symbolic_meaning": "Carrying",
+      "cozy_association": "A familiar strap on your shoulder",
+      "tags": [
+        "storage",
+        "travel",
+        "element_earth"
+      ],
+      "origin_scope": "starting",
+      "origin_ref": null,
+      "lore_place_hint": null,
+      "player_need_satisfied": "Ease in keeping essentials close",
+      "notes": "A simple bag that keeps your small belongings together.",
+      "safety_category": "non_ingestible",
+      "usable_in": [
+        "quest"
+      ],
+      "stock_behavior": "key_item",
+      "starting_quantity": 1,
+      "max_stack": 1
     },
     {
       "item_id": "black_tea",
@@ -31,17 +31,25 @@
       "item_type": "Botanical",
       "symbolic_meaning": "Energy",
       "cozy_association": "Strength for the day",
-      "tags": ["element_fire", "energizing"],
+      "tags": [
+        "element_fire",
+        "energizing"
+      ],
       "origin_scope": "global",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence in navigating daily needs",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea", "spell", "gift"],
+      "usable_in": [
+        "tea",
+        "spell",
+        "gift"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
-      "max_stack": null
+      "max_stack": null,
+      "botanical_kind": null
     },
     {
       "item_id": "bluebell",
@@ -50,14 +58,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Constancy",
       "cozy_association": "Quiet promise",
-      "tags": ["element_earth", "steady"],
+      "tags": [
+        "element_earth",
+        "steady"
+      ],
       "origin_scope": "zone",
       "origin_ref": "meadow",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to exist without urgency",
       "notes": null,
       "safety_category": "pet_unsafe",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -69,14 +83,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Protection",
       "cozy_association": "Comforting care",
-      "tags": ["element_water", "protective", "warm"],
+      "tags": [
+        "element_water",
+        "protective",
+        "warm"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach_tidepools",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to notice small wonders",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -88,14 +108,22 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Peace, rest, gentle healing",
       "cozy_association": "A soft exhale at the end of the day",
-      "tags": ["calming", "element_earth", "gentle", "sleep"],
+      "tags": [
+        "calming",
+        "element_earth",
+        "gentle",
+        "sleep"
+      ],
       "origin_scope": "zone",
       "origin_ref": "forest_castle",
       "lore_place_hint": null,
       "player_need_satisfied": "Comfort in accepting the past without restoring it",
       "notes": null,
       "safety_category": "caution_humans",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
       "max_stack": null
@@ -107,14 +135,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Warmth",
       "cozy_association": "Cozy heat",
-      "tags": ["element_water", "warm"],
+      "tags": [
+        "element_water",
+        "warm"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach_tidepools",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to notice small wonders",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -126,14 +159,19 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Hope",
       "cozy_association": "Lightness",
-      "tags": ["element_earth", "hope"],
+      "tags": [
+        "element_earth",
+        "hope"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Support in making choices calmly",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -145,14 +183,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Simplicity",
       "cozy_association": "Bright joy",
-      "tags": ["cheer", "element_air", "simple"],
+      "tags": [
+        "cheer",
+        "element_air",
+        "simple"
+      ],
       "origin_scope": "zone",
       "origin_ref": "meadow_hill",
       "lore_place_hint": null,
       "player_need_satisfied": "Validation of perseverance",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -164,14 +208,19 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Wishes",
       "cozy_association": "Small hope",
-      "tags": ["element_water", "hope"],
+      "tags": [
+        "element_water",
+        "hope"
+      ],
       "origin_scope": "zone",
       "origin_ref": "forest_waterfall",
       "lore_place_hint": null,
       "player_need_satisfied": "Emotional release without explanation",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -183,14 +232,19 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Renewal",
       "cozy_association": "Spring freshness",
-      "tags": ["element_fire", "renewal"],
+      "tags": [
+        "element_fire",
+        "renewal"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_bakery",
       "lore_place_hint": null,
       "player_need_satisfied": "Comfort through warmth and familiarity",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -202,14 +256,19 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Memory",
       "cozy_association": "Gentle remembrance",
-      "tags": ["element_water", "memory"],
+      "tags": [
+        "element_water",
+        "memory"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach",
       "lore_place_hint": null,
       "player_need_satisfied": "Space to reflect at a threshold",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -221,14 +280,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Quiet love",
       "cozy_association": "Soft sweetness",
-      "tags": ["element_air", "tender"],
+      "tags": [
+        "element_air",
+        "tender"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town",
       "lore_place_hint": null,
       "player_need_satisfied": "Reassurance of belonging",
       "notes": null,
       "safety_category": "pet_unsafe",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -240,14 +305,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Energy",
       "cozy_association": "Warming reassurance",
-      "tags": ["element_water", "uplifting"],
+      "tags": [
+        "element_water",
+        "uplifting"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach_pier",
       "lore_place_hint": null,
       "player_need_satisfied": "Readiness to stand at the edge of change",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -258,17 +328,25 @@
       "item_type": "Botanical",
       "symbolic_meaning": "Balance",
       "cozy_association": "Gentle focus",
-      "tags": ["element_water", "balancing"],
+      "tags": [
+        "element_water",
+        "balancing"
+      ],
       "origin_scope": "global",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to rest and recover",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea", "spell", "gift"],
+      "usable_in": [
+        "tea",
+        "spell",
+        "gift"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
-      "max_stack": null
+      "max_stack": null,
+      "botanical_kind": null
     },
     {
       "item_id": "heather",
@@ -277,14 +355,19 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Solitude",
       "cozy_association": "Chosen calm",
-      "tags": ["calm", "element_air"],
+      "tags": [
+        "calm",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "forest_trail",
       "lore_place_hint": null,
       "player_need_satisfied": "Reassurance that uncertainty can become clarity",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -296,14 +379,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Wisdom",
       "cozy_association": "Insight",
-      "tags": ["element_fire", "wisdom"],
+      "tags": [
+        "element_fire",
+        "wisdom"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_vendor",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to choose intuitively",
       "notes": null,
       "safety_category": "pet_unsafe",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -315,14 +404,21 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Grace",
       "cozy_association": "Soft sweetness",
-      "tags": ["calming", "element_water", "sweet"],
+      "tags": [
+        "calming",
+        "element_water",
+        "sweet"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach_boardwalk",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to enjoy the present moment",
       "notes": null,
       "safety_category": "pet_unsafe",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -334,14 +430,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Serenity, devotion",
       "cozy_association": "Evening calm",
-      "tags": ["calming", "element_water", "sleep"],
+      "tags": [
+        "calming",
+        "element_water",
+        "sleep"
+      ],
       "origin_scope": "zone",
       "origin_ref": "forest_waterfall",
       "lore_place_hint": null,
       "player_need_satisfied": "Emotional release without explanation",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -353,14 +455,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Ease",
       "cozy_association": "Soothing calm",
-      "tags": ["calming", "element_air"],
+      "tags": [
+        "calming",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "meadow_hill",
       "lore_place_hint": null,
       "player_need_satisfied": "Validation of perseverance",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -372,14 +479,20 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Brightness",
       "cozy_association": "Sunlight in a cup",
-      "tags": ["citrus", "clarifying", "element_air"],
+      "tags": [
+        "citrus",
+        "clarifying",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence in navigating daily needs",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -391,14 +504,19 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Inner peace",
       "cozy_association": "Centered calm",
-      "tags": ["calming", "element_air"],
+      "tags": [
+        "calming",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "forest",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to explore inner thoughts safely",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -410,14 +528,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Clarity",
       "cozy_association": "Gentle reset",
-      "tags": ["clarity", "element_earth"],
+      "tags": [
+        "clarity",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "meadow_path",
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence that effort leads to ease",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -429,14 +552,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Strength",
       "cozy_association": "Green steadiness",
-      "tags": ["element_fire", "resilience"],
+      "tags": [
+        "element_fire",
+        "resilience"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_vendor",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to choose intuitively",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -448,14 +576,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Nourishment",
       "cozy_association": "Blanket calm",
-      "tags": ["comfort", "element_fire"],
+      "tags": [
+        "comfort",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_bakery",
       "lore_place_hint": null,
       "player_need_satisfied": "Comfort through warmth and familiarity",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -467,14 +600,20 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Letting go",
       "cozy_association": "Evening release",
-      "tags": ["calming", "element_earth"],
+      "tags": [
+        "calming",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Support in making choices calmly",
       "notes": null,
       "safety_category": "caution_humans",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -486,14 +625,19 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Compassion",
       "cozy_association": "Generous bloom",
-      "tags": ["abundance", "element_water"],
+      "tags": [
+        "abundance",
+        "element_water"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach_pier",
       "lore_place_hint": null,
       "player_need_satisfied": "Readiness to stand at the edge of change",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -505,14 +649,20 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Bright clarity",
       "cozy_association": "A brisk lift and a clear head",
-      "tags": ["clarity", "energizing", "element_air"],
+      "tags": [
+        "clarity",
+        "energizing",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_vendor",
       "lore_place_hint": null,
       "player_need_satisfied": "Support in making choices calmly",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -524,14 +674,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Rest",
       "cozy_association": "Dreamy calm",
-      "tags": ["element_fire", "sleep"],
+      "tags": [
+        "element_fire",
+        "sleep"
+      ],
       "origin_scope": "zone",
       "origin_ref": "cottage_home",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to rest and recover",
       "notes": null,
       "safety_category": "caution_humans",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -543,14 +699,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Love, remembrance",
       "cozy_association": "Heart warmth",
-      "tags": ["element_earth", "heart", "memory"],
+      "tags": [
+        "element_earth",
+        "heart",
+        "memory"
+      ],
       "origin_scope": "zone",
       "origin_ref": "meadow",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to exist without urgency",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -562,14 +724,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Memory",
       "cozy_association": "Kind focus",
-      "tags": ["element_earth", "memory"],
+      "tags": [
+        "element_earth",
+        "memory"
+      ],
       "origin_scope": "zone",
       "origin_ref": "meadow_shrine",
       "lore_place_hint": null,
       "player_need_satisfied": "Space to honor what matters privately",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -581,14 +748,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Wisdom",
       "cozy_association": "Gentle clearing",
-      "tags": ["element_water", "wisdom"],
+      "tags": [
+        "element_water",
+        "wisdom"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach_boardwalk",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to enjoy the present moment",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -600,14 +772,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Warmth",
       "cozy_association": "Golden steadiness",
-      "tags": ["element_earth", "optimism", "warm"],
+      "tags": [
+        "element_earth",
+        "optimism",
+        "warm"
+      ],
       "origin_scope": "zone",
       "origin_ref": "meadow_shrine",
       "lore_place_hint": null,
       "player_need_satisfied": "Space to honor what matters privately",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -619,14 +797,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Gratitude",
       "cozy_association": "Gentle thanks",
-      "tags": ["element_earth", "gratitude"],
+      "tags": [
+        "element_earth",
+        "gratitude"
+      ],
       "origin_scope": "zone",
       "origin_ref": "forest_castle",
       "lore_place_hint": null,
       "player_need_satisfied": "Comfort in accepting the past without restoring it",
       "notes": null,
       "safety_category": "pet_unsafe",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -638,14 +822,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Resilience",
       "cozy_association": "Quiet strength",
-      "tags": ["element_water", "resilience"],
+      "tags": [
+        "element_water",
+        "resilience"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach",
       "lore_place_hint": null,
       "player_need_satisfied": "Space to reflect at a threshold",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -657,14 +846,19 @@
       "botanical_kind": "Herb",
       "symbolic_meaning": "Comfort",
       "cozy_association": "Soft familiarity",
-      "tags": ["comfort", "element_fire"],
+      "tags": [
+        "comfort",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "cottage_home",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to rest and recover",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -676,14 +870,20 @@
       "botanical_kind": "Flower",
       "symbolic_meaning": "Inner truth",
       "cozy_association": "Quiet honesty",
-      "tags": ["element_earth", "gentle", "truth"],
+      "tags": [
+        "element_earth",
+        "gentle",
+        "truth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "meadow_path",
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence that effort leads to ease",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -695,14 +895,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Calm",
       "cozy_association": "Stillness",
-      "tags": ["calming", "element_water"],
+      "tags": [
+        "calming",
+        "element_water"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach_tidepools",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to notice small wonders",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -714,14 +920,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Flow",
       "cozy_association": "Ocean calm",
-      "tags": ["element_air", "flow"],
+      "tags": [
+        "element_air",
+        "flow"
+      ],
       "origin_scope": "zone",
       "origin_ref": "forest_trail",
       "lore_place_hint": null,
       "player_need_satisfied": "Reassurance that uncertainty can become clarity",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -733,14 +945,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Confidence",
       "cozy_association": "Sunny steadiness",
-      "tags": ["confidence", "element_air"],
+      "tags": [
+        "confidence",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "forest",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to explore inner thoughts safely",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -752,14 +970,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Clarity",
       "cozy_association": "Intent setting",
-      "tags": ["clarity", "element_water"],
+      "tags": [
+        "clarity",
+        "element_water"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach_pier",
       "lore_place_hint": null,
       "player_need_satisfied": "Readiness to stand at the edge of change",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
       "max_stack": null
@@ -771,14 +995,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Optimism",
       "cozy_association": "Open curiosity",
-      "tags": ["element_fire", "optimism"],
+      "tags": [
+        "element_fire",
+        "optimism"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_bakery",
       "lore_place_hint": null,
       "player_need_satisfied": "Comfort through warmth and familiarity",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -790,14 +1020,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Wonder",
       "cozy_association": "Soft magic",
-      "tags": ["element_air", "wonder"],
+      "tags": [
+        "element_air",
+        "wonder"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town",
       "lore_place_hint": null,
       "player_need_satisfied": "Reassurance of belonging",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -809,14 +1045,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Reflection",
       "cozy_association": "Liminal calm",
-      "tags": ["element_fire", "reflective"],
+      "tags": [
+        "element_fire",
+        "reflective"
+      ],
       "origin_scope": "zone",
       "origin_ref": "cottage_home",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to rest and recover",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -828,14 +1070,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Compassion",
       "cozy_association": "Emotional safety",
-      "tags": ["element_water", "heart"],
+      "tags": [
+        "element_water",
+        "heart"
+      ],
       "origin_scope": "zone",
       "origin_ref": "beach_boardwalk",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to enjoy the present moment",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -847,14 +1095,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Mental calm",
       "cozy_association": "Quiet space",
-      "tags": ["calming", "element_fire"],
+      "tags": [
+        "calming",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_vendor",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to choose intuitively",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -866,14 +1120,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Grounding",
       "cozy_association": "Safe release",
-      "tags": ["element_earth", "grounding"],
+      "tags": [
+        "element_earth",
+        "grounding"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Support in making choices calmly",
       "notes": null,
       "safety_category": "non_ingestible",
-      "usable_in": ["spell", "portal"],
+      "usable_in": [
+        "spell",
+        "portal"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -885,14 +1145,19 @@
       "botanical_kind": null,
       "symbolic_meaning": "Exchange",
       "cozy_association": "Preparedness",
-      "tags": ["currency"],
+      "tags": [
+        "currency"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town",
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence in navigating daily needs",
       "notes": "Lore TBD",
       "safety_category": "generally_safe",
-      "usable_in": ["quest", "gift"],
+      "usable_in": [
+        "quest",
+        "gift"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 10,
       "max_stack": null
@@ -904,14 +1169,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Self-reflection",
       "cozy_association": "Quiet clarity",
-      "tags": ["self_care", "reflective", "element_water"],
+      "tags": [
+        "self_care",
+        "reflective",
+        "element_water"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Support in making choices calmly",
       "notes": "Used in various rituals and spells for self-awareness.",
       "safety_category": "generally_safe",
-      "usable_in": ["spell"],
+      "usable_in": [
+        "spell"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
       "max_stack": null
@@ -923,14 +1194,19 @@
       "botanical_kind": null,
       "symbolic_meaning": "Life",
       "cozy_association": "Refreshing clarity",
-      "tags": ["self_care", "hydration"],
+      "tags": [
+        "self_care",
+        "hydration"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence in navigating daily needs",
       "notes": "Essential for maintaining physical well-being during adventures. Used in making tea or rituals requiring water.",
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
       "max_stack": null
@@ -942,14 +1218,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Preparation",
       "cozy_association": "The soft beginning of warmth",
-      "tags": ["tea_ritual", "warmth", "element_fire"],
+      "tags": [
+        "tea_ritual",
+        "warmth",
+        "element_fire"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence in navigating daily needs",
       "notes": "Used to prepare tea and warm water for simple rituals.",
       "safety_category": "non_ingestible",
-      "usable_in": ["tea", "quest"],
+      "usable_in": [
+        "tea",
+        "quest"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
       "max_stack": null
@@ -961,14 +1244,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Refinement",
       "cozy_association": "Leaves held back, comfort kept",
-      "tags": ["tea_ritual", "simple", "element_air"],
+      "tags": [
+        "tea_ritual",
+        "simple",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Support in making choices calmly",
       "notes": "Helps brew loose-leaf teas and herb blends.",
       "safety_category": "non_ingestible",
-      "usable_in": ["tea", "quest"],
+      "usable_in": [
+        "tea",
+        "quest"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 0,
       "max_stack": null
@@ -980,14 +1270,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Receiving",
       "cozy_association": "Warm hands, small pauses",
-      "tags": ["comfort", "ritual", "element_water"],
+      "tags": [
+        "comfort",
+        "ritual",
+        "element_water"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to rest and recover",
       "notes": "A familiar cup that makes any tea feel like home.",
       "safety_category": "non_ingestible",
-      "usable_in": ["tea", "gift"],
+      "usable_in": [
+        "tea",
+        "gift"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
       "max_stack": null
@@ -999,14 +1296,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Reflection",
       "cozy_association": "Ink and quiet honesty",
-      "tags": ["reflective", "memory", "element_air"],
+      "tags": [
+        "reflective",
+        "memory",
+        "element_air"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to explore inner thoughts safely",
       "notes": "Used to record recipes, omens, and small discoveries.",
       "safety_category": "non_ingestible",
-      "usable_in": ["quest", "spell"],
+      "usable_in": [
+        "quest",
+        "spell"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
       "max_stack": null
@@ -1018,14 +1322,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Intent",
       "cozy_association": "Warm wax, a satisfying press",
-      "tags": ["protective", "craft", "element_fire"],
+      "tags": [
+        "protective",
+        "craft",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Space to honor what matters privately",
       "notes": "Seals letters, charms, and small packets with a chosen mark.",
       "safety_category": "non_ingestible",
-      "usable_in": ["quest", "gift"],
+      "usable_in": [
+        "quest",
+        "gift"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1037,14 +1348,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Binding",
       "cozy_association": "Ties that keep things together",
-      "tags": ["craft", "tidy", "element_air"],
+      "tags": [
+        "craft",
+        "tidy",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Reassurance that uncertainty can become clarity",
       "notes": "Wraps gifts, bundles herbs, and marks pages.",
       "safety_category": "non_ingestible",
-      "usable_in": ["gift", "quest"],
+      "usable_in": [
+        "gift",
+        "quest"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1056,14 +1374,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Keeping",
       "cozy_association": "A soft bag for small treasures",
-      "tags": ["storage", "simple", "element_earth"],
+      "tags": [
+        "storage",
+        "simple",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_vendor",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to exist without urgency",
       "notes": "Holds loose ingredients, coins, or a single cherished item.",
       "safety_category": "non_ingestible",
-      "usable_in": ["quest", "gift"],
+      "usable_in": [
+        "quest",
+        "gift"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1075,14 +1400,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Transformation",
       "cozy_association": "A steady grind, a calming rhythm",
-      "tags": ["craft", "grounding", "element_earth"],
+      "tags": [
+        "craft",
+        "grounding",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_vendor",
       "lore_place_hint": null,
       "player_need_satisfied": "Support in making choices calmly",
       "notes": "Prepares spice, herbs, and powders for tea blends and spellwork.",
       "safety_category": "non_ingestible",
-      "usable_in": ["tea", "spell"],
+      "usable_in": [
+        "tea",
+        "spell"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1094,14 +1426,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Simple goodness",
       "cozy_association": "A crisp bite on a cold day",
-      "tags": ["comfort", "simple", "element_earth"],
+      "tags": [
+        "comfort",
+        "simple",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to enjoy the present moment",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea", "gift"],
+      "usable_in": [
+        "tea",
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1113,14 +1452,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Welcome",
       "cozy_association": "Warm slices shared without ceremony",
-      "tags": ["comfort", "warmth", "element_fire"],
+      "tags": [
+        "comfort",
+        "warmth",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_bakery",
       "lore_place_hint": null,
       "player_need_satisfied": "Comfort through warmth and familiarity",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["gift", "quest"],
+      "usable_in": [
+        "gift",
+        "quest"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1132,14 +1478,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Richness",
       "cozy_association": "The quiet luxury of something softened",
-      "tags": ["comfort", "richness", "element_earth"],
+      "tags": [
+        "comfort",
+        "richness",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to exist without urgency",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea", "quest"],
+      "usable_in": [
+        "tea",
+        "quest"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1151,14 +1504,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Indulgence",
       "cozy_association": "Sticky sweetness and warm spice",
-      "tags": ["comfort", "sweet", "warm", "element_fire"],
+      "tags": [
+        "comfort",
+        "sweet",
+        "warm",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_bakery",
       "lore_place_hint": null,
       "player_need_satisfied": "Comfort through warmth and familiarity",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["gift"],
+      "usable_in": [
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1170,14 +1530,22 @@
       "botanical_kind": null,
       "symbolic_meaning": "Comfort",
       "cozy_association": "Chocolate warmth stirred into milk",
-      "tags": ["comfort", "chocolate", "warm", "element_fire"],
+      "tags": [
+        "comfort",
+        "chocolate",
+        "warm",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to rest and recover",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea", "quest"],
+      "usable_in": [
+        "tea",
+        "quest"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1189,14 +1557,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Brightness",
       "cozy_association": "A small sun-sweet snack",
-      "tags": ["sweet", "simple", "element_air"],
+      "tags": [
+        "sweet",
+        "simple",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Validation of perseverance",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["gift"],
+      "usable_in": [
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1208,14 +1582,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Gentle sweetness",
       "cozy_association": "Warm comfort, softened edges",
-      "tags": ["sweetener", "comfort", "element_earth"],
+      "tags": [
+        "sweetener",
+        "comfort",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_bakery",
       "lore_place_hint": null,
       "player_need_satisfied": "Comfort through warmth and familiarity",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1227,14 +1607,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Preservation",
       "cozy_association": "Summer saved in a jar",
-      "tags": ["sweet", "comfort", "element_earth"],
+      "tags": [
+        "sweet",
+        "comfort",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Space to honor what matters privately",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["gift", "quest"],
+      "usable_in": [
+        "gift",
+        "quest"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1246,14 +1633,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Plenty",
       "cozy_association": "A savory bite beside warm tea",
-      "tags": ["comfort", "savory", "element_earth"],
+      "tags": [
+        "comfort",
+        "savory",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Reassurance of belonging",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["gift"],
+      "usable_in": [
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1265,14 +1658,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Steadiness",
       "cozy_association": "Warm bowl, slow morning",
-      "tags": ["nourishment", "comfort", "simple", "element_earth"],
+      "tags": [
+        "nourishment",
+        "comfort",
+        "simple",
+        "element_earth"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to rest and recover",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["quest"],
+      "usable_in": [
+        "quest"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1284,14 +1684,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Gentleness",
       "cozy_association": "Crumbly sweetness with a cup of tea",
-      "tags": ["comfort", "sweet", "simple", "element_air"],
+      "tags": [
+        "comfort",
+        "sweet",
+        "simple",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_bakery",
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to enjoy the present moment",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["gift"],
+      "usable_in": [
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1303,14 +1710,22 @@
       "botanical_kind": null,
       "symbolic_meaning": "Shelter",
       "cozy_association": "Steam, bread, and a quiet corner",
-      "tags": ["comfort", "warm", "savory", "element_fire"],
+      "tags": [
+        "comfort",
+        "warm",
+        "savory",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town",
       "lore_place_hint": null,
       "player_need_satisfied": "Comfort through warmth and familiarity",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["quest", "gift"],
+      "usable_in": [
+        "quest",
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1322,14 +1737,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Cheer",
       "cozy_association": "Sweet crumbs and a bright note of fruit",
-      "tags": ["cheer", "sweet", "comfort", "element_fire"],
+      "tags": [
+        "cheer",
+        "sweet",
+        "comfort",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_bakery",
       "lore_place_hint": null,
       "player_need_satisfied": "Validation of perseverance",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["gift"],
+      "usable_in": [
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1341,14 +1763,22 @@
       "botanical_kind": null,
       "symbolic_meaning": "Ease",
       "cozy_association": "A small sweetness, measured and tidy",
-      "tags": ["sweet", "comfort", "simple", "element_air"],
+      "tags": [
+        "sweet",
+        "comfort",
+        "simple",
+        "element_air"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_store",
       "lore_place_hint": null,
       "player_need_satisfied": "Support in making choices calmly",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["tea", "quest"],
+      "usable_in": [
+        "tea",
+        "quest"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1360,14 +1790,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Kindness",
       "cozy_association": "Soft crumb, gentle sweetness",
-      "tags": ["comfort", "sweet", "warm", "element_fire"],
+      "tags": [
+        "comfort",
+        "sweet",
+        "warm",
+        "element_fire"
+      ],
       "origin_scope": "zone",
       "origin_ref": "town_bakery",
       "lore_place_hint": null,
       "player_need_satisfied": "Reassurance of belonging",
       "notes": null,
       "safety_category": "generally_safe",
-      "usable_in": ["gift"],
+      "usable_in": [
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1379,14 +1816,20 @@
       "botanical_kind": null,
       "symbolic_meaning": "Life",
       "cozy_association": "Refreshing clarity",
-      "tags": ["self_care", "hydration"],
+      "tags": [
+        "self_care",
+        "hydration"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence in navigating daily needs",
       "notes": "Essential for maintaining physical well-being during adventures. Used in making tea or rituals requiring water.",
       "safety_category": "generally_safe",
-      "usable_in": ["tea", "spell"],
+      "usable_in": [
+        "tea",
+        "spell"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 1,
       "max_stack": null
@@ -1398,14 +1841,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Comfort",
       "cozy_association": "Warm hands, steady breath",
-      "tags": ["comfort", "warm", "element_water"],
+      "tags": [
+        "comfort",
+        "warm",
+        "element_water"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Permission to pause and settle",
       "notes": "A simple cup of tea, brewed to taste.",
       "safety_category": "generally_safe",
-      "usable_in": ["quest", "gift"],
+      "usable_in": [
+        "quest",
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1417,14 +1867,21 @@
       "botanical_kind": null,
       "symbolic_meaning": "Care",
       "cozy_association": "Gentle sweetness with tea",
-      "tags": ["comfort", "sweet", "warm"],
+      "tags": [
+        "comfort",
+        "sweet",
+        "warm"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "A small reminder that you are cared for",
       "notes": "A few simple biscuits, easy to share.",
       "safety_category": "generally_safe",
-      "usable_in": ["quest", "gift"],
+      "usable_in": [
+        "quest",
+        "gift"
+      ],
       "stock_behavior": "finite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1436,14 +1893,19 @@
       "botanical_kind": null,
       "symbolic_meaning": "Nourishment",
       "cozy_association": "Creamy comfort",
-      "tags": ["self_care", "nourishment"],
+      "tags": [
+        "self_care",
+        "nourishment"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence in navigating daily needs",
       "notes": "Used to enhance teas and certain rituals requiring richness.",
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 0,
       "max_stack": null
@@ -1455,14 +1917,19 @@
       "botanical_kind": null,
       "symbolic_meaning": "Nourishment",
       "cozy_association": "Creamy comfort",
-      "tags": ["self_care", "nourishment"],
+      "tags": [
+        "self_care",
+        "nourishment"
+      ],
       "origin_scope": "starting",
       "origin_ref": null,
       "lore_place_hint": null,
       "player_need_satisfied": "Confidence in navigating daily needs",
       "notes": "Used to enhance teas requiring richness.",
       "safety_category": "generally_safe",
-      "usable_in": ["tea"],
+      "usable_in": [
+        "tea"
+      ],
       "stock_behavior": "infinite",
       "starting_quantity": 0,
       "max_stack": null

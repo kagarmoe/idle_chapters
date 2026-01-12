@@ -11,7 +11,11 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["shop", "quest_giver", "hint"],
+      "interactions": [
+        "shop",
+        "quest_giver",
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 10,
@@ -25,14 +29,23 @@
           {
             "pool_id": "tea_bases",
             "weight": 60,
-            "quantity_range": { "min": 1, "max": 1 },
+            "quantity_range": {
+              "min": 1,
+              "max": 1
+            },
             "filters": {
-              "item_type": ["TeaBase"],
+              "item_type": [
+                "TeaBase"
+              ],
               "require": {
                 "usable_in": "tea",
                 "safety_category": "generally_safe"
               },
-              "tags_any": ["energizing", "balancing", "warm"],
+              "tags_any": [
+                "energizing",
+                "balancing",
+                "warm"
+              ],
               "tags_all": null,
               "exclude_tags_any": null
             }
@@ -40,22 +53,37 @@
           {
             "pool_id": "cozy_botanicals",
             "weight": 40,
-            "quantity_range": { "min": 1, "max": 2 },
+            "quantity_range": {
+              "min": 1,
+              "max": 2
+            },
             "filters": {
-              "item_type": ["Botanical"],
+              "item_type": [
+                "Botanical"
+              ],
               "require": {
                 "usable_in": "tea",
                 "safety_category": "generally_safe"
               },
-              "tags_any": ["comfort", "warm", "calming", "gentle", "sleep"],
+              "tags_any": [
+                "comfort",
+                "warm",
+                "calming",
+                "gentle",
+                "sleep"
+              ],
               "tags_all": null,
-              "exclude_tags_any": ["pet_unsafe", "toxic"]
+              "exclude_tags_any": [
+                "pet_unsafe",
+                "toxic"
+              ]
             }
           }
         ]
       },
       "gifts": null,
-      "notes": "Elise the Bake is behind the counter at the Bakery. Sells pastries, tea, and coffee. Occasionally hints about thresholds and the etiquette of portal-making."
+      "notes": "Elise the Bake is behind the counter at the Bakery. Sells pastries, tea, and coffee. Occasionally hints about thresholds and the etiquette of portal-making.",
+      "species": null
     },
     {
       "npc_id": "npc_herbalist_saoirse",
@@ -68,7 +96,11 @@
         "schedule_id": "schedule_market_days",
         "notes": "Present most mornings; occasionally absent after rain."
       },
-      "interactions": ["shop", "trade", "hint"],
+      "interactions": [
+        "shop",
+        "trade",
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 10,
@@ -82,29 +114,52 @@
           {
             "pool_id": "safe_herbs",
             "weight": 70,
-            "quantity_range": { "min": 1, "max": 2 },
+            "quantity_range": {
+              "min": 1,
+              "max": 2
+            },
             "filters": {
-              "item_type": ["Botanical"],
+              "item_type": [
+                "Botanical"
+              ],
               "require": {
                 "usable_in": "tea",
                 "safety_category": "generally_safe"
               },
-              "tags_any": ["clarity", "calming", "resilience", "memory", "comfort"],
+              "tags_any": [
+                "clarity",
+                "calming",
+                "resilience",
+                "memory",
+                "comfort"
+              ],
               "tags_all": null,
-              "exclude_tags_any": ["pet_unsafe", "toxic"]
+              "exclude_tags_any": [
+                "pet_unsafe",
+                "toxic"
+              ]
             }
           },
           {
             "pool_id": "spell_only_cautions",
             "weight": 30,
-            "quantity_range": { "min": 1, "max": 1 },
+            "quantity_range": {
+              "min": 1,
+              "max": 1
+            },
             "filters": {
-              "item_type": ["Botanical"],
+              "item_type": [
+                "Botanical"
+              ],
               "require": {
                 "usable_in": "spell",
                 "safety_category": "caution_humans"
               },
-              "tags_any": ["calming", "sleep", "letting_go"],
+              "tags_any": [
+                "calming",
+                "sleep",
+                "letting_go"
+              ],
               "tags_all": null,
               "exclude_tags_any": null
             }
@@ -112,7 +167,8 @@
         ]
       },
       "gifts": null,
-      "notes": "Runs the town tea vendor stall. Sells reliable tea basics. Explains safety, substitutions, and why some plants belong in spells, not cups."
+      "notes": "Runs the town tea vendor stall. Sells reliable tea basics. Explains safety, substitutions, and why some plants belong in spells, not cups.",
+      "species": null
     },
     {
       "npc_id": "npc_curio_marcel",
@@ -125,7 +181,11 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["shop", "quest_giver", "hint"],
+      "interactions": [
+        "shop",
+        "quest_giver",
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 10,
@@ -139,14 +199,27 @@
           {
             "pool_id": "crystals",
             "weight": 70,
-            "quantity_range": { "min": 1, "max": 1 },
+            "quantity_range": {
+              "min": 1,
+              "max": 1
+            },
             "filters": {
-              "item_type": ["Crystal"],
+              "item_type": [
+                "Crystal"
+              ],
               "require": {
                 "usable_in": "portal",
                 "safety_category": "non_ingestible"
               },
-              "tags_any": ["clarity", "grounding", "calming", "wonder", "confidence", "flow", "heart"],
+              "tags_any": [
+                "clarity",
+                "grounding",
+                "calming",
+                "wonder",
+                "confidence",
+                "flow",
+                "heart"
+              ],
               "tags_all": null,
               "exclude_tags_any": null
             }
@@ -154,11 +227,20 @@
           {
             "pool_id": "trinkets",
             "weight": 30,
-            "quantity_range": { "min": 1, "max": 1 },
+            "quantity_range": {
+              "min": 1,
+              "max": 1
+            },
             "filters": {
-              "item_type": ["Trinket"],
+              "item_type": [
+                "Trinket"
+              ],
               "require": null,
-              "tags_any": ["shiny", "old", "lucky"],
+              "tags_any": [
+                "shiny",
+                "old",
+                "lucky"
+              ],
               "tags_all": null,
               "exclude_tags_any": null
             }
@@ -166,7 +248,8 @@
         ]
       },
       "gifts": null,
-      "notes": "Runs the town curio shop stall. Provides crystals and oddities; often alludes to thin places without naming them."
+      "notes": "Runs the town curio shop stall. Provides crystals and oddities; often alludes to thin places without naming them.",
+      "species": null
     },
     {
       "npc_id": "npc_caretaker_iones",
@@ -179,13 +262,18 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Keeps the cottage in order without comment; speaks mostly about weather and light. He's seen visitors come and go over many years. He's outside the cottage in the afternoons"
+      "notes": "Keeps the cottage in order without comment; speaks mostly about weather and light. He's seen visitors come and go over many years. He's outside the cottage in the afternoons",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_woodcutter_alen",
@@ -198,13 +286,18 @@
         "schedule_id": "schedule_mornings",
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 5,
         "starting": 0
       },
-      "notes": "Knows paths and clearings; gives imprecise directions without expectation."
+      "notes": "Knows paths and clearings; gives imprecise directions without expectation.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_walker_mirela",
@@ -217,13 +310,18 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Walks slowly and often pauses; notices small changes in the trail."
+      "notes": "Walks slowly and often pauses; notices small changes in the trail.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_restorer_tamsin",
@@ -236,13 +334,18 @@
         "schedule_id": "schedule_afternoons",
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 6,
         "starting": 0
       },
-      "notes": "Cares for the tiny castle as it is, not as it was."
+      "notes": "Cares for the tiny castle as it is, not as it was.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_shepherd_rowan",
@@ -255,13 +358,18 @@
         "schedule_id": "schedule_midday",
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 6,
         "starting": 1
       },
-      "notes": "Spends long hours watching the grass move; rarely in a hurry."
+      "notes": "Spends long hours watching the grass move; rarely in a hurry.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_wayfinder_elinor",
@@ -274,13 +382,18 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Walks partway, never the whole path; offers gentle orientation without advice."
+      "notes": "Walks partway, never the whole path; offers gentle orientation without advice.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_watchman_bened",
@@ -293,13 +406,18 @@
         "schedule_id": "schedule_evenings",
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Stands quietly at the view; speaks only when addressed."
+      "notes": "Stands quietly at the view; speaks only when addressed.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_keeper_anwen",
@@ -312,13 +430,18 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Tends the shrine without ceremony; never asks questions. Hints this is a thin place where you can open a portal"
+      "notes": "Tends the shrine without ceremony; never asks questions. Hints this is a thin place where you can open a portal",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_beachcomber_silas",
@@ -331,13 +454,18 @@
         "schedule_id": "schedule_mornings",
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 5,
         "starting": 0
       },
-      "notes": "Walks the waterline; knows where things wash up."
+      "notes": "Walks the waterline; knows where things wash up.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_musician_lio",
@@ -350,13 +478,18 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 5,
         "starting": 1
       },
-      "notes": "Plays softly; stops often."
+      "notes": "Plays softly; stops often.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_observer_maeve",
@@ -369,13 +502,18 @@
         "schedule_id": "schedule_low_tide",
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Points out small wonders without commentary."
+      "notes": "Points out small wonders without commentary.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_fisher_orik",
@@ -388,13 +526,18 @@
         "schedule_id": "schedule_evenings",
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Watches the water more than his line."
+      "notes": "Watches the water more than his line.",
+      "species": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_cat_moss",
@@ -407,7 +550,11 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["gift", "companion", "hint"],
+      "interactions": [
+        "gift",
+        "companion",
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 10,
@@ -416,16 +563,28 @@
       "offers": null,
       "gifts": {
         "cooldown_days": 1,
-        "triggers": ["greet", "bring_food", "after_portal"],
+        "triggers": [
+          "greet",
+          "bring_food",
+          "after_portal"
+        ],
         "affinity_required": 1,
         "pools": [
           {
             "pool_id": "soft_trinkets",
             "weight": 70,
             "filters": {
-              "item_type": ["Trinket"],
+              "item_type": [
+                "Trinket"
+              ],
               "require": null,
-              "tags_any": ["soft", "lost", "button", "thread", "ribbon"],
+              "tags_any": [
+                "soft",
+                "lost",
+                "button",
+                "thread",
+                "ribbon"
+              ],
               "exclude_tags_any": null
             }
           },
@@ -433,18 +592,28 @@
             "pool_id": "herb_nudges",
             "weight": 30,
             "filters": {
-              "item_type": ["Botanical"],
+              "item_type": [
+                "Botanical"
+              ],
               "require": {
                 "usable_in": "tea",
                 "safety_category": "generally_safe"
               },
-              "tags_any": ["calming", "comfort", "gentle"],
-              "exclude_tags_any": ["pet_unsafe", "toxic"]
+              "tags_any": [
+                "calming",
+                "comfort",
+                "gentle"
+              ],
+              "exclude_tags_any": [
+                "pet_unsafe",
+                "toxic"
+              ]
             }
           }
         ]
       },
-      "notes": "Sometimes follows you a short distance, then 'discovers' something you were about to miss."
+      "notes": "Sometimes follows you a short distance, then 'discovers' something you were about to miss.",
+      "pronouns": null
     },
     {
       "npc_id": "npc_crow_ink",
@@ -457,7 +626,11 @@
         "schedule_id": "schedule_crow_visits",
         "notes": "Appears on bright mornings and after storms."
       },
-      "interactions": ["gift", "messenger", "hint"],
+      "interactions": [
+        "gift",
+        "messenger",
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 10,
@@ -466,16 +639,27 @@
       "offers": null,
       "gifts": {
         "cooldown_days": 2,
-        "triggers": ["random_day_event", "after_portal", "quest_step"],
+        "triggers": [
+          "random_day_event",
+          "after_portal",
+          "quest_step"
+        ],
         "affinity_required": 0,
         "pools": [
           {
             "pool_id": "shiny_bits",
             "weight": 80,
             "filters": {
-              "item_type": ["Trinket", "Currency"],
+              "item_type": [
+                "Trinket",
+                "Currency"
+              ],
               "require": null,
-              "tags_any": ["shiny", "lucky", "currency"],
+              "tags_any": [
+                "shiny",
+                "lucky",
+                "currency"
+              ],
               "exclude_tags_any": null
             }
           },
@@ -483,15 +667,23 @@
             "pool_id": "portal_hints",
             "weight": 20,
             "filters": {
-              "item_type": ["Trinket"],
+              "item_type": [
+                "Trinket"
+              ],
               "require": null,
-              "tags_any": ["rune", "note", "map", "feather"],
+              "tags_any": [
+                "rune",
+                "note",
+                "map",
+                "feather"
+              ],
               "exclude_tags_any": null
             }
           }
         ]
       },
-      "notes": "A cool bird with opinions. Sometimes delivers a scrap of paper that isn't yours."
+      "notes": "A cool bird with opinions. Sometimes delivers a scrap of paper that isn't yours.",
+      "pronouns": null
     },
     {
       "npc_id": "npc_dog_bram",
@@ -504,7 +696,11 @@
         "schedule_id": "schedule_evenings",
         "notes": "Most afternoons and evenings near the water."
       },
-      "interactions": ["companion", "gift", "hint"],
+      "interactions": [
+        "companion",
+        "gift",
+        "hint"
+      ],
       "affinity": {
         "enabled": true,
         "max": 10,
@@ -513,22 +709,35 @@
       "offers": null,
       "gifts": {
         "cooldown_days": 1,
-        "triggers": ["greet", "after_portal"],
+        "triggers": [
+          "greet",
+          "after_portal"
+        ],
         "affinity_required": 1,
         "pools": [
           {
             "pool_id": "beach_finds",
             "weight": 100,
             "filters": {
-              "item_type": ["Trinket", "Botanical", "Crystal"],
+              "item_type": [
+                "Trinket",
+                "Botanical",
+                "Crystal"
+              ],
               "require": null,
-              "tags_any": ["element_water", "flow", "calm", "grounding"],
+              "tags_any": [
+                "element_water",
+                "flow",
+                "calm",
+                "grounding"
+              ],
               "exclude_tags_any": null
             }
           }
         ]
       },
-      "notes": "Will lead you to something interesting if you walk with him (especially near the beach route)."
+      "notes": "Will lead you to something interesting if you walk with him (especially near the beach route).",
+      "pronouns": null
     },
     {
       "npc_id": "npc_deer_sable",
@@ -541,13 +750,18 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Appears briefly; lingers near clearings and water."
+      "notes": "Appears briefly; lingers near clearings and water.",
+      "pronouns": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_tortoise_marl",
@@ -560,13 +774,18 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["companion"],
+      "interactions": [
+        "companion"
+      ],
       "affinity": {
         "enabled": true,
         "max": 4,
         "starting": 0
       },
-      "notes": "Moves slowly along the trail; often indicates overlooked ground-level items."
+      "notes": "Moves slowly along the trail; often indicates overlooked ground-level items.",
+      "pronouns": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_owl_vesper",
@@ -579,13 +798,18 @@
         "schedule_id": "schedule_dusk",
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Watches quietly; sometimes drops feathers or small findings nearby."
+      "notes": "Watches quietly; sometimes drops feathers or small findings nearby.",
+      "pronouns": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_frog_pip",
@@ -598,13 +822,18 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["hint"],
+      "interactions": [
+        "hint"
+      ],
       "affinity": {
         "enabled": false,
         "max": 10,
         "starting": 0
       },
-      "notes": "Croaks rhythmically near the waterfall; seems to respond to sound and light changes."
+      "notes": "Croaks rhythmically near the waterfall; seems to respond to sound and light changes.",
+      "pronouns": null,
+      "offers": null,
+      "gifts": null
     },
     {
       "npc_id": "npc_rabbit_luna",
@@ -617,13 +846,18 @@
         "schedule_id": null,
         "notes": null
       },
-      "interactions": ["companion"],
+      "interactions": [
+        "companion"
+      ],
       "affinity": {
         "enabled": true,
         "max": 4,
         "starting": 1
       },
-      "notes": "Hops through the meadow; often near flowers and colorful plants."
+      "notes": "Hops through the meadow; often near flowers and colorful plants.",
+      "pronouns": null,
+      "offers": null,
+      "gifts": null
     }
   ]
 }
