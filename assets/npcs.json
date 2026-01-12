@@ -414,7 +414,7 @@
         "max": 10,
         "starting": 0
       },
-      "notes": "Stands quietly at the view; speaks only when addressed.",
+      "notes": "Stands quietly at the view; speaks only when player interacts.",
       "species": null,
       "offers": null,
       "gifts": null

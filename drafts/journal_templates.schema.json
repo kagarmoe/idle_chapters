@@ -85,7 +85,7 @@
             }
           ],
           "default": null,
-          "description": "Player need this template addresses"
+          "description": "Players need this template to address"
         }
       }
     }

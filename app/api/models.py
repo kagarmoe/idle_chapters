@@ -37,7 +37,7 @@ class SessionResponse(BaseModel):
     state_digest: str | None = None
 
 
-class Address(BaseModel):
+class PlayerInfo(BaseModel):
     display_name: str | None = None
     pronouns: str | None = None
 
@@ -62,7 +62,7 @@ class PlayerUpdateRequest(BaseModel):
 
 class PlayerResponse(BaseModel):
     player_id: str
-    address: Address | None = None
+    player_info: PlayerInfo | None = None
     state: PlayerState | None = None
 
 

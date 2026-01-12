@@ -9,7 +9,7 @@ def test_player_schema_accepts_counts(repo_root: Path) -> None:
     validator = load_validator(schema_path)
 
     player = {
-        "address": {"display_name": "Rowan", "pronouns": "they_them"},
+        "player_info": {"display_name": "Rowan", "pronouns": "they_them"},
         "state": {
             "current_location": "cottage_home",
             "inventory": ["journal"],
