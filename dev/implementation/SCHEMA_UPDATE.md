@@ -61,7 +61,7 @@ Add per-location declarations for:
 ### 4) Scene + manifest (new)
 
 - `scene.schema.json` for per-file scene graphs.
-- `scene_manifest.schema.json` for the list of scene files.
+- `scenes_manifest.schema.json` for the list of scene files.
 
 ### 5) View Model Schema (engine output)
 
@@ -74,7 +74,7 @@ Add a renderable view model structure:
 
 ## Example Action (make_tea)
 
-```
+```json
 {
   "action_id": "make_tea",
   "label": "Make a cup of tea",
@@ -95,7 +95,7 @@ Add a renderable view model structure:
 
 1. **Schema additions**
    - Add `actions.schema.json` (new).
-   - Add `scene.schema.json` and `scene_manifest.schema.json`.
+   - Add `scene.schema.json` and `scenes_manifest.schema.json`.
    - Add `conditions.schema.json` for `when` clauses.
    - Extend places with `visible_npcs`.
 2. **Content updates**

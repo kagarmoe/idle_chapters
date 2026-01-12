@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$title": "Cozy Game Lexicon Schema",
-  "$id": "https://example.com/schemas/lexicon.schema.json",
+  "$id": "https://example.com/schemas/lexicons.schema.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -12,7 +12,7 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "https://example.com/schemas/lexicon.schema.json#/$defs/lexicon_entry"
+        "$ref": "https://example.com/schemas/lexicons.schema.json#/$defs/lexicon_entry"
       }
     }
   },
@@ -43,7 +43,7 @@
           ]
         },
         {
-          "$ref": "https://example.com/schemas/lexicon.schema.json#/$defs/slug_id"
+          "$ref": "https://example.com/schemas/lexicons.schema.json#/$defs/slug_id"
         }
       ]
     },
@@ -73,14 +73,14 @@
       ],
       "properties": {
         "lexicon_type": {
-          "$ref": "https://example.com/schemas/lexicon.schema.json#/$defs/lexicon_type"
+          "$ref": "https://example.com/schemas/lexicons.schema.json#/$defs/lexicon_type"
         },
         "key": {
           "$ref": "common.schema.json#/$defs/nonempty_string",
           "description": "Logical key for the lexicon entry. Examples: smell_bakery, sight_forest, time_Morning, threat_words"
         },
         "scope": {
-          "$ref": "https://example.com/schemas/lexicon.schema.json#/$defs/scope",
+          "$ref": "https://example.com/schemas/lexicons.schema.json#/$defs/scope",
           "description": "Either 'Global' or a Place_ID. Place_ID must correspond to the Places table (validated separately)."
         },
         "extends": {
@@ -92,7 +92,7 @@
           "description": "Optional alias to another lexicon entry key. If provided, this entry reuses the referenced entry's words. Tooling should resolve chains; avoid cycles."
         },
         "words": {
-          "$ref": "https://example.com/schemas/lexicon.schema.json#/$defs/allowed_words"
+          "$ref": "https://example.com/schemas/lexicons.schema.json#/$defs/allowed_words"
         },
         "notes": {
           "type": [

@@ -15,13 +15,13 @@ class ContentManifest:
             "interactions": "schemas/interactions.schema.json",
             "actions": "schemas/actions.schema.json",
             "scene": "schemas/scene.schema.json",
-            "scene_manifest": "schemas/scene_manifest.schema.json",
-            "tea": "schemas/tea.schema.json",
-            "spells": "schemas/spell.schema.json",
+            "scene_manifest": "schemas/scenes_manifest.schema.json",
+            "tea": "schemas/teas.schema.json",
+            "spells": "schemas/spells.schema.json",
             "journal_page": "schemas/journal_page.schema.json",
             "journal_templates": "schemas/journal_templates.schema.json",
-            "session": "schemas/session.schema.json",
-            "lexicon": "schemas/lexicon.schema.json",
+            "session": "schemas/sessions.schema.json",
+            "lexicon": "schemas/lexicons.schema.json",
             "ingredient_substitutions": "schemas/ingredient_substitutions.schema.json",
         }
     )

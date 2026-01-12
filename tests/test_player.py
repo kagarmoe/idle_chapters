@@ -3,7 +3,7 @@ from app.scenes.welcome import _create_player
 
 
 def test_create_player_sets_player_id(monkeypatch, repo_root) -> None:
-    schema_path = repo_root / "schemas" / "player.schema.json"
+    schema_path = repo_root / "schemas" / "players.schema.json"
     validator = load_validator(schema_path)
 
     inputs = iter(["Rowan", "1"])

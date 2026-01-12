@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$title": "Tea Recipe Schema",
+  "$id": "https://example.com/schemas/teas.schema.json",
+  "type": "object",
+  "required": ["tea_recipes"],
+  "properties": {
+    "tea_recipes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["recipe_id", "display_name", "intent", "target_need", "allowed_times", "base_liquid", "ingredients", "steps", "serves", "repeatable"],
+        "properties": {
+          "recipe_id": { "$ref": "common.schema.json#/$defs/id" },
+          "display_name": { "$ref": "common.schema.json#/$defs/nonempty_string" },
+          "intent": { "$ref": "common.schema.json#/$defs/nonempty_string", "description": "Narrative intent (comfort, clarity, calm, gratitude...)" },
+          "target_need": { "$ref": "common.schema.json#/$defs/nonempty_string", "description": "Player_Need_Satisfied phrasing" },
+          "allowed_times": { "type": "array", "items": { "type": "string", "enum": ["Morning", "Afternoon", "Evening", "Night", "Any"] }, "minItems": 1 },
+          "base_liquid": { "type": "string", "enum": ["water", "milk", "oat_milk"] },
+          "ingredients": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 7,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["ingredient_ref", "role", "amount_hint"],
+              "properties": {
+                "ingredient_ref": { "type": "string", "description": "ingredient_id OR a substitution token like any:tag=calming&category=Herb. All ingredient references in Tea recipes must resolve to ingredients with safety_category = generally_safe." },
+                "role": { "type": "string", "enum": ["base", "note", "sweetener", "garnish", "focus", "support"] },
+                "amount_hint": { "$ref": "common.schema.json#/$defs/nonempty_string" }
+              }
+            }
+          },
+          "tools": { "type": "array", "items": { "type": "string" }, "default": [] },
+          "steps": { "type": "array", "minItems": 2, "items": { "$ref": "common.schema.json#/$defs/nonempty_string" } },
+          "sensory_prompt": { "oneOf": [ { "$ref": "common.schema.json#/$defs/nonempty_string" }, { "type": "null" } ], "default": null },
+          "outcome_tags": { "type": "array", "items": { "type": "string" }, "default": [] },
+          "serves": { "type": "integer", "minimum": 1, "maximum": 4 },
+          "repeatable": { "type": "string", "enum": ["Always", "Limited", "Once"] },
+          "unlocks": { "type": "array", "items": { "type": "string" }, "default": [] },
+          "notes": { "oneOf": [ { "$ref": "common.schema.json#/$defs/nonempty_string" }, { "type": "null" } ], "default": null }
+        }
+      }
+    }
+  }
+}

@@ -1,11 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$title": "Session Schema",
-  "$id": "https://example.com/schemas/session.schema.json",
+  "$id": "https://example.com/schemas/sessions.schema.json",
   "description": "Defines the runtime session stored in MongoDB. Combines player identity with game state.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["session_id", "state", "created_at"],
+  "required": [
+    "session_id",
+    "state",
+    "created_at"
+  ],
   "properties": {
     "session_id": {
       "type": "string",
@@ -19,14 +23,25 @@
       "properties": {
         "display_name": {
           "oneOf": [
-            { "$ref": "common.schema.json#/$defs/nonempty_string" },
-            { "type": "null" }
+            {
+              "$ref": "common.schema.json#/$defs/nonempty_string"
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Optional name or nickname"
         },
         "pronouns": {
           "type": "string",
-          "enum": ["unspecified", "they_them", "she_her", "he_him", "ze_hir", "you_your"],
+          "enum": [
+            "unspecified",
+            "they_them",
+            "she_her",
+            "he_him",
+            "ze_hir",
+            "you_your"
+          ],
           "default": "unspecified"
         }
       }
@@ -51,7 +66,9 @@
       "type": "object",
       "description": "Current game state",
       "additionalProperties": false,
-      "required": ["current_location"],
+      "required": [
+        "current_location"
+      ],
       "properties": {
         "current_location": {
           "$ref": "common.schema.json#/$defs/id",
@@ -59,19 +76,27 @@
         },
         "inventory_counts": {
           "type": "object",
-          "additionalProperties": { "type": "integer", "minimum": 0 },
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
           "default": {},
           "description": "Canonical inventory: { item_id: quantity }"
         },
         "flags": {
           "type": "array",
-          "items": { "$ref": "common.schema.json#/$defs/nonempty_string" },
+          "items": {
+            "$ref": "common.schema.json#/$defs/nonempty_string"
+          },
           "default": [],
           "description": "Set flags (milestones, discoveries, unlocks)"
         },
         "visit_counts": {
           "type": "object",
-          "additionalProperties": { "type": "integer", "minimum": 0 },
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
           "default": {},
           "description": "Visit counts per place: { place_id: count }"
         },
@@ -79,8 +104,14 @@
           "type": "object",
           "additionalProperties": {
             "oneOf": [
-              { "type": "integer", "minimum": 0 },
-              { "type": "string", "format": "date-time" }
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
             ]
           },
           "default": {},
@@ -88,22 +119,32 @@
         },
         "relationships": {
           "type": "object",
-          "additionalProperties": { "type": "number" },
+          "additionalProperties": {
+            "type": "number"
+          },
           "default": {},
           "description": "NPC affinity values: { npc_id: affinity }"
         },
         "current_scene_id": {
           "oneOf": [
-            { "$ref": "common.schema.json#/$defs/id" },
-            { "type": "null" }
+            {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
           ],
           "default": null,
           "description": "Active scene if in a scene graph"
         },
         "current_node_id": {
           "oneOf": [
-            { "$ref": "common.schema.json#/$defs/id" },
-            { "type": "null" }
+            {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
           ],
           "default": null,
           "description": "Current node within active scene"
@@ -123,16 +164,25 @@
     },
     "updated_at": {
       "oneOf": [
-        { "type": "string", "format": "date-time" },
-        { "type": "null" }
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
       ],
       "default": null,
       "description": "Last update timestamp"
     },
     "content_version": {
       "oneOf": [
-        { "type": "string" },
-        { "type": "null" }
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
       ],
       "default": null,
       "description": "Content manifest hash/version used by this session (for debugging)"
