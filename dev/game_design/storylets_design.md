@@ -1,18 +1,18 @@
-# Storylets and Assets: How They Work Together
+# Scenes and Assets: How They Work Together
 
-This document explains **how storylets use assets** in *idle_chapters*,
+This document explains **how scenes use assets** in *idle_chapters*,
 and why they are intentionally separate concepts.
 
-If this feels abstract at first, that’s normal — storylets are *not content*,
+If this feels abstract at first, that’s normal — scenes are *not content*,
 they are *logic shapes* that cause content to appear.
 
 ## One-sentence definition
 
-**Storylets don’t contain assets.
-Storylets reference assets, and the generator resolves those references at runtime.**
+**Scenes don’t contain assets.
+Scenes reference assets, and the generator resolves those references at runtime.**
 
 Assets are the *world*.
-Storylets are the *shapes of moments* that occur in that world.
+Scenes are the *shapes of moments* that occur in that world.
 
 ## Mental model: layered system
 
@@ -40,18 +40,18 @@ Key properties of assets:
 
 Assets are **ingredients**, not scenes.
 
-### 2. Storylets — moment logic (not prose)
+### 2. Scenes — moment logic (not prose)
 
-A **storylet describes what *kind* of thing happens next**, not the text of what happens.
+A **scene describes what *kind* of thing happens next**, not the text of what happens.
 
-A storylet:
+A scene:
 
 - Declares constraints (where, when, who)
 - Declares references (types of items, NPCs, interactions)
 - Declares effects (inventory changes, flags, movement)
 - Avoids concrete nouns when possible
 
-Example storylet shape:
+Example scene shape:
 
 ```yaml
 place_id: beach_tidepools
@@ -71,15 +71,15 @@ choices:
 
 Important:
 
-- The storylet does **not** name a specific herb
+- The scene does **not** name a specific herb
 - It does **not** contain prose
 - It defines *what must be resolved later*
 
-Storylets are intentionally underspecified.
+Scenes are intentionally underspecified.
 
-### 3. Generator — resolving storylets using assets
+### 3. Generator — resolving scenes using assets
 
-The generator is the glue between storylets and assets.
+The generator is the glue between scenes and assets.
 
 At runtime, it:
 
@@ -89,14 +89,14 @@ At runtime, it:
    - flags
    - time / phase
 
-2. Selects an appropriate storylet shape
+2. Selects an appropriate scene shape
 
-3. Resolves storylet references using assets
+3. Resolves scene references using assets
    - `any:calming_herb` → choose from `collectibles.yaml` with tag `calming`
    - NPC actions → choose from `interactions.yaml`
    - Sensory words → choose from `lexicons`
 
-4. Produces a fully concrete *storylet instance*
+4. Produces a fully concrete *scene instance*
    - Still schema-valid
    - Debuggable and traceable
 
@@ -104,25 +104,25 @@ This is the first point where assets become text-adjacent.
 
 ### 4. Journal renderer — assets → prose
 
-Only after a storylet is selected and resolved do we write prose.
+Only after a scene is selected and resolved do we write prose.
 
 The renderer:
 
-- Takes the resolved storylet
+- Takes the resolved scene
 - Pulls required asset details
 - Applies a journal template
 - Expands into Markdown
 
 Example mapping:
 
-| Storylet field | Asset source |
+| Scene field | Asset source |
 ||-|
 | `entry_type: tea` | tea journal template |
 | `need_hint: calm` | calming lexicon |
 | `ingredient_ref` | `collectibles.yaml` |
 | `place_id` | `places.yaml` sensory data |
 
-**Storylets never write sentences.
+**Scenes never write sentences.
 They cause sentences to be written.**
 
 ## End-to-end example
@@ -141,10 +141,10 @@ They cause sentences to be written.**
   sensory_focus: [salt, wind, light]
 ```
 
-### Generated storylet instance (runtime)
+### Generated scene instance (runtime)
 
 ```yaml
-storylet_id: gen_beach_quiet_014
+scene_id: gen_beach_quiet_014
 place_id: beach_tidepools
 entry_type: tea
 need_hint: calm
@@ -171,7 +171,7 @@ What do you do next?
 
 Note:
 
-- The storylet never knew chamomile’s prose
+- The scene never knew chamomile’s prose
 - The asset never knew it would be used
 - The renderer stitched them together
 
@@ -185,13 +185,13 @@ This architecture enables:
 - Later prose polish without logic refactors
 - Real game feel instead of branching-novel sprawl
 
-If storylets contained assets, this would become a branching novel.
+If scenes contained assets, this would become a branching novel.
 Instead, this is a **world engine**.
 
 ## Guiding slogan
 
 > **Assets are nouns.
-> Storylets are verbs.
+> Scenes are verbs.
 > The generator conjugates them.**
 
 ## Related directories
@@ -201,4 +201,3 @@ Instead, this is a **world engine**.
 - `assets/` — world data
 - `schemas/` — validation rules
 - `generators/` — runtime resolution logic
-  

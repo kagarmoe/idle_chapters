@@ -23,7 +23,7 @@ player.energy
 ### Energy
 
 A player's always has some energy, it rarely blocks activity.
-It exists mostly for narrative color, to influence available storylets, and encourage naps and snacks.
+It exists mostly for narrative color, to influence available scenes, and encourage naps and snacks.
 
 ### Time
 
@@ -190,7 +190,7 @@ Produces: ???
 
 Need: journaling endpoints.
 
-## Storylets
+## Scenes
 
 story.id
 story.location

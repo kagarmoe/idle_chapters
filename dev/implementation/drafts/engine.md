@@ -22,7 +22,7 @@ Handles:
 3. Eligibility logic
    1. The content says what could happen, but the engine determines if it can happen now.
    2. Eligibility = current state + preconditions + triggers/cooldowns
-   3. Determines which storylets are currently eligible
+   3. Determines which scenes are currently eligible
    4. Which operations are visible & which are hidden
    5. Which events are mutually exclusive
 4. Resolution rules - what changes as a result of an action

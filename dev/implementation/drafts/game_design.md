@@ -18,14 +18,14 @@ To achive this, I'll use:
 
 Session model: **Single-player, persistent save** (player resumes over days)
     - Single-player, ephemeral run (roguelike-ish, deletes after run)
-Game loop: Hybrid, emphasizes choice-based storylets but will also have some commands.
+Game loop: Hybrid, emphasizes choice-based scenes but will also have some commands.
 Determinism: The ititial version is mostly deterministic. RNG for ambiance or small things.
 
 ## Python Design
 
 ### Model: domain objects + rules (pure Python)
 
-- GameState, Player, Inventory, Location, Storylet, Effect, Condition
+- GameState, Player, Inventory, Location, Scene, Effect, Condition
 - A GameEngine that applies commands to state
 
 ### View: API response schemas (Pydantic) + optional UI later
@@ -88,11 +88,11 @@ Determinism: The ititial version is mostly deterministic. RNG for ambiance or sm
 1. Narrative Structure
 
   There is no required overarching plot, meaning emerges through accumulation.
-  The primary narrative unit is a storylet:
+  The primary narrative unit is a scene:
      - A small, self-contained piece of prose.
      -  May have simple conditions (location, inventory, mood, flags).
      -  May have simple effects (state changes, flags, item acquisition).
-  Storylets are:
+  Scenes are:
     - modular
     - reusable
     - non-linear
@@ -128,7 +128,7 @@ Player state is intentionally minimal.
 3. Observability as a Design Feature
 
    - Events are logged intentionally, such as:
-     - storylets triggered
+     - scenes triggered
      - locations visited
      - actions taken
    - Observability is framed as:
@@ -164,7 +164,7 @@ Player state is intentionally minimal.
    - Core resources include:
      - players (or sessions)
      - locations
-     - storylets
+     - scenes
      - items
      - events / invocations
    - Interactions are expressed as:
@@ -175,7 +175,7 @@ Player state is intentionally minimal.
 3. Clear Separation of Concerns
 
    - Content is treated as data:
-     - storylets, locations, items are authored independently.
+     - scenes, locations, items are authored independently.
    - State is treated as context:
      - player/session state is minimal and mutable.
    - Logic is limited to:
@@ -183,16 +183,16 @@ Player state is intentionally minimal.
      - applying small, explicit state changes
    - The API does not embed a scripting engine or complex rules engine.
 
-4. Storylets as First-Class API Objects
+4. Scenes as First-Class API Objects
 
-   - Storylets are the primary narrative unit exposed by the API.
-   - Each storylet:
+   - Scenes are the primary narrative unit exposed by the API.
+   - Each scene:
      - is addressable via an ID
      - may include optional conditions and effects
    - The API supports:
-     - listing storylets
-     - retrieving individual storylets
-     - selecting a storylet based on current state
+     - listing scenes
+     - retrieving individual scenes
+     - selecting a scene based on current state
    - Narrative progression is emergent, not linear.
 
 5. State-Driven Interaction Model
@@ -213,7 +213,7 @@ Player state is intentionally minimal.
 
 7. Observability Is Part of the API Surface
 
-   - Narrative events (storylet triggers, actions, state changes) are logged as domain events, not just HTTP requests.
+   - Narrative events (scene triggers, actions, state changes) are logged as domain events, not just HTTP requests.
    - The API exposes endpoints for:
      - basic analytics
      - event summaries

@@ -34,7 +34,7 @@ In both cases:
 
 Procedural Generation
         ↓
-Content (storylets, locations, text fragments)
+Content (scenes, locations, text fragments)
         ↓
 Engine (rules, eligibility, state changes)
         ↓
@@ -46,14 +46,14 @@ UI (what the player sees)
 
 Procedural generation creates many pieces of content, so I don't have to author all of it.
 
-Procedural generation is a function that produces storylet-shaped objects.
+Procedural generation is a function that produces scene-shaped objects.
 
 ### Example
 
 Hand-authored content
 
 ```json
-Storylet {
+Scene {
   id: "library_rain_evening"
   when: ALL(LOCATION("library"), TIME("evening"), WEATHER("rain"))
   text: "Rain taps softly against the tall windows."
@@ -67,7 +67,7 @@ generate_library_ambience(state):
   mood = weighted_pick(["quiet", "dusty", "warm"], seed=state.seed)
   sound = weighted_pick(["rain", "wind", "silence"], seed=state.seed)
 
-  return Storylet {
+  return Scene {
     id: hash(mood, sound, state.time)
     tags: ["library", "ambient"]
     when: LOCATION("library")
@@ -88,9 +88,9 @@ generate_library_ambience(state):
   Instead of:
 
   ```pseudo
-  Rain + Evening + Kitchen = one storylet
-  Rain + Morning + Kitchen = another storylet
-  Clear + Evening + Kitchen = another storylet
+  Rain + Evening + Kitchen = one scene
+  Rain + Morning + Kitchen = another scene
+  Clear + Evening + Kitchen = another scene
   ```
 
   Use a function like:
@@ -155,7 +155,7 @@ Bad engine logic cannot be saved by clever generation.
     Generate a pool of content once per day / chapter / session.
 
     ```pseudo
-    daily_ambience = generate_ambient_storylets(seed=day)
+    daily_ambience = generate_ambient_scenes(seed=day)
     content_repo.add(daily_ambience)
     ```
 
@@ -166,8 +166,8 @@ Bad engine logic cannot be saved by clever generation.
     Generate content when needed.
 
     ```pseudo
-      if no ambient storylet eligible:
-        inject(generate_ambient_storylet(state))
+      if no ambient scene eligible:
+        inject(generate_ambient_scene(state))
     ```
 
     Good for fallback

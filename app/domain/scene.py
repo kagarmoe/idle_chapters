@@ -5,8 +5,8 @@ from typing import Any
 
 
 @dataclass
-class Storylet:
-    storylet_id: str
+class Scene:
+    scene_id: str
     place_id: str
     entry_type: str
     choices: list[dict[str, Any]]
@@ -20,7 +20,7 @@ class Storylet:
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "storylet_id": self.storylet_id,
+            "scene_id": self.scene_id,
             "place_id": self.place_id,
             "entry_type": self.entry_type,
             "title": self.title,
