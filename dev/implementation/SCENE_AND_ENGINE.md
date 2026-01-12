@@ -13,7 +13,7 @@ location-dependent choices remain data-driven.
 Scenes and actions are inert data. They never execute logic or mutate state.
 They only declare eligibility, effects, and flow.
 
-### 1) Eligibility (`when`)
+### Eligibility (`when`)
 
 Scenes and actions declare **what is allowed** using declarative conditions:
 
@@ -25,7 +25,7 @@ Scenes and actions declare **what is allowed** using declarative conditions:
 
 Eligibility is **declarative** and **idempotent**. It never performs effects.
 
-### 2) Outcomes (`effects`)
+### Outcomes (`effects`)
 
 Actions may apply **state changes only**:
 
@@ -36,7 +36,7 @@ Actions may apply **state changes only**:
 
 Effects are declarative. The engine is the only component that applies them.
 
-### 3) Presentation (`prompt`, `result`, `result_variants`)
+### Presentation (`prompt`, `result`, `result_variants`)
 
 Actions provide text payloads:
 
@@ -44,14 +44,14 @@ Actions provide text payloads:
 - `result`: single stable outcome
 - `result_variants`: repeatable variation without escalation
 
-### 4) Repeatability
+### Repeatability
 
 - Repeatable actions are modeled with `result_variants` and eligibility gating (e.g., once-per-day).
 - Repeatability must not introduce pressure or escalation.
 
 ## Engine responsibilities (derived)
 
-### 1) Eligibility evaluation
+### Eligibility evaluation
 
 - Resolve `when` rules strictly from state.
 - Never make up new rules not represented in data.
@@ -59,18 +59,18 @@ Actions provide text payloads:
   - `pick_up_journal` is only eligible when `location=cottage_home` and `flags_not_set(journal_available)`.
   - `make_tea` is eligible when `location.capability.can_make_tea=true` (or `zone_not=town`).
 
-### 2) Selection
+### Selection
 
 - Choose among eligible content deterministically (seeded).
 - Prefer unseen or long-cooldown variants where available.
 
-### 3) Effect application
+### Effect application
 
 - Apply effects in a single, auditable step.
 - Preserve idempotency for “catch-all” actions (e.g., `head_to_town` adds missing items).
 - Reject effects that do not conform to schema.
 
-### 4) View model output
+### View model output
 
 - Emit renderable output:
   - `prompt`
@@ -78,7 +78,7 @@ Actions provide text payloads:
   - `visible_items` (takeable now)
   - `visible_npcs` (always-present + eligible)
 
-### 5) NPC selection policy (social level)
+### NPC selection policy (social level)
 
 - Use `places.profile.social_level` to decide how many NPCs surface and how often.
 - Keep **always-present** NPCs in `places.visible_npcs`.
