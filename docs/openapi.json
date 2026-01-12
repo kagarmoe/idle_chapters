@@ -645,7 +645,7 @@
                 ],
                 "title": "ActionRequest"
             },
-            "Address": {
+            "PlayerInfo": {
                 "properties": {
                     "display_name": {
                         "anyOf": [
@@ -671,7 +671,7 @@
                     }
                 },
                 "type": "object",
-                "title": "Address"
+                "title": "PlayerInfo"
             },
             "HTTPValidationError": {
                 "properties": {
@@ -733,10 +733,10 @@
                         "type": "string",
                         "title": "Player Id"
                     },
-                    "address": {
+                    "player_info": {
                         "anyOf": [
                             {
-                                "$ref": "#/components/schemas/Address"
+                                "$ref": "#/components/schemas/PlayerInfo"
                             },
                             {
                                 "type": "null"

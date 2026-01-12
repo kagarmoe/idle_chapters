@@ -1,0 +1,71 @@
+[
+  {
+    "player_info": {
+      "display_name": "Alex",
+      "pronouns": "they_them"
+    },
+    "premise": {
+      "facets": {
+        "curiosity": 0.8,
+        "kindness": 0.6
+      },
+      "last_bias_update": null
+    },
+    "state": {
+      "current_location": null,
+      "inventory": [],
+      "inventory_counts": {},
+      "visit_counts": {},
+      "seen_interactions": {},
+      "flags": [],
+      "relationships": {},
+      "journaling_enabled": true
+    }
+  },
+  {
+    "player_info": {
+      "display_name": "Jordan",
+      "pronouns": "he_him"
+    },
+    "premise": {
+      "facets": {
+        "bravery": 0.9,
+        "humor": 0.7
+      },
+      "last_bias_update": null
+    },
+    "state": {
+      "current_location": null,
+      "inventory": [],
+      "inventory_counts": {},
+      "visit_counts": {},
+      "seen_interactions": {},
+      "flags": [],
+      "relationships": {},
+      "journaling_enabled": true
+    }
+  },
+  {
+    "player_info": {
+      "display_name": "Taylor",
+      "pronouns": "she_her"
+    },
+    "premise": {
+      "facets": {
+        "creativity": 0.95,
+        "empathy": 0.85
+      },
+      "last_bias_update": null
+    },
+    "state": {
+      "current_location": null,
+      "inventory": [],
+      "inventory_counts": {},
+      "visit_counts": {},
+      "seen_interactions": {},
+      "flags": [],
+      "relationships": {},
+      "journaling_enabled": true
+    }
+  }
+]
