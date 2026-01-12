@@ -5,7 +5,10 @@
       "display_name": "Chamomile Tea",
       "intent": "comfort",
       "target_need": "Permission to rest",
-      "allowed_times": ["Evening", "Night"],
+      "allowed_times": [
+        "Evening",
+        "Night"
+      ],
       "base_liquid": "water",
       "ingredients": [
         {
@@ -25,7 +28,10 @@
         "Strain, sweeten gently, and drink while warm."
       ],
       "sensory_prompt": "Soft floral steam, golden color, gentle warmth in the chest.",
-      "outcome_tags": ["calming", "soothing"],
+      "outcome_tags": [
+        "calming",
+        "soothing"
+      ],
       "serves": 1,
       "repeatable": "Always",
       "notes": "A classic evening tea for winding down."
@@ -35,7 +41,10 @@
       "display_name": "Black Tea",
       "intent": "steadying",
       "target_need": "A gentle start to the day",
-      "allowed_times": ["Morning", "Afternoon"],
+      "allowed_times": [
+        "Morning",
+        "Afternoon"
+      ],
       "base_liquid": "water",
       "ingredients": [
         {
@@ -55,7 +64,10 @@
         "Pour and sip while warm."
       ],
       "sensory_prompt": "A warm, rounded aroma and a soft, steady warmth.",
-      "outcome_tags": ["steadying", "warming"],
+      "outcome_tags": [
+        "steadying",
+        "warming"
+      ],
       "serves": 1,
       "repeatable": "Always",
       "notes": "A simple cup that feels familiar and grounding."
@@ -65,7 +77,10 @@
       "display_name": "Meadow Calm Tea",
       "intent": "relaxation",
       "target_need": "Ease nervous tension",
-      "allowed_times": ["Afternoon", "Evening"],
+      "allowed_times": [
+        "Afternoon",
+        "Evening"
+      ],
       "base_liquid": "water",
       "ingredients": [
         {
@@ -90,7 +105,11 @@
         "Strain carefully to keep the lavender subtle."
       ],
       "sensory_prompt": "Light floral notes with soft citrus; a feeling of the shoulders dropping.",
-      "outcome_tags": ["calming", "grounding", "gentle"],
+      "outcome_tags": [
+        "calming",
+        "grounding",
+        "gentle"
+      ],
       "serves": 1,
       "repeatable": "Always",
       "notes": "Balanced relaxation without heaviness."
@@ -100,7 +119,10 @@
       "display_name": "Bright Step Herbal Tea",
       "intent": "clarity",
       "target_need": "Gentle energy and focus",
-      "allowed_times": ["Morning", "Afternoon"],
+      "allowed_times": [
+        "Morning",
+        "Afternoon"
+      ],
       "base_liquid": "water",
       "ingredients": [
         {
@@ -125,7 +147,11 @@
         "Steep for 3-4 minutes, then strain."
       ],
       "sensory_prompt": "Bright, clean aroma with warmth rising through the chest and throat.",
-      "outcome_tags": ["energizing", "clarifying", "warming"],
+      "outcome_tags": [
+        "energizing",
+        "clarifying",
+        "warming"
+      ],
       "serves": 1,
       "repeatable": "Always",
       "notes": "An alert but non-jittery herbal tea."

@@ -34,7 +34,8 @@
         "tone_quiet",
         "generic"
       ],
-      "notes": "Generic ambient acknowledgment; safe anywhere."
+      "notes": "Generic ambient acknowledgment; safe anywhere.",
+      "generator_hints": null
     },
     {
       "interaction_id": "human_ambient_weather_02",
@@ -70,7 +71,8 @@
         "tone_quiet",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "human_ambient_routine_01",
@@ -106,7 +108,8 @@
         "tone_plain",
         "generic"
       ],
-      "notes": "Once-per-day variation to avoid repetition spam."
+      "notes": "Once-per-day variation to avoid repetition spam.",
+      "generator_hints": null
     },
     {
       "interaction_id": "human_micro_offer_seat_01",
@@ -145,7 +148,8 @@
         "micro_offer",
         "generic"
       ],
-      "notes": "Choice handling lives in game logic; this is the offer line only."
+      "notes": "Choice handling lives in game logic; this is the offer line only.",
+      "generator_hints": null
     },
     {
       "interaction_id": "human_micro_offer_tea_01",
@@ -183,7 +187,8 @@
         "micro_offer",
         "generic"
       ],
-      "notes": "Shortest possible micro-offer; avoids implication."
+      "notes": "Shortest possible micro-offer; avoids implication.",
+      "generator_hints": null
     },
     {
       "interaction_id": "human_ritual_greeting_01",
@@ -221,7 +226,8 @@
         "ritual",
         "generic"
       ],
-      "notes": "Ritual greeting; should remain non-evaluative."
+      "notes": "Ritual greeting; should remain non-evaluative.",
+      "generator_hints": null
     },
     {
       "interaction_id": "human_ritual_greeting_02",
@@ -259,7 +265,8 @@
         "ritual",
         "generic"
       ],
-      "notes": "Use sparingly; 'Good' must not read as judgment (tone contract governs)."
+      "notes": "Use sparingly; 'Good' must not read as judgment (tone contract governs).",
+      "generator_hints": null
     },
     {
       "interaction_id": "human_light_request_chamomile_01",
@@ -299,7 +306,11 @@
       "effects": {
         "set_flags": [
           "learned_chamomile_hint"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "directional_guidance",
@@ -491,7 +502,11 @@
       "effects": {
         "set_flags": [
           "learned_water_stone_hint"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "directional_guidance",
@@ -540,7 +555,8 @@
         "threshold",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "human_threshold_adjacent_02",
@@ -578,7 +594,8 @@
         "threshold",
         "generic"
       ],
-      "notes": "Avoids readiness framing."
+      "notes": "Avoids readiness framing.",
+      "generator_hints": null
     },
     {
       "interaction_id": "human_threshold_adjacent_03",
@@ -617,7 +634,8 @@
         "threshold",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "human_threshold_adjacent_04",
@@ -656,7 +674,8 @@
         "threshold",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "human_threshold_adjacent_05",
@@ -695,7 +714,8 @@
         "threshold",
         "generic"
       ],
-      "notes": "Keeps the tone light; no readiness framing."
+      "notes": "Keeps the tone light; no readiness framing.",
+      "generator_hints": null
     },
     {
       "interaction_id": "human_threshold_adjacent_06",
@@ -735,7 +755,8 @@
         "threshold",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "animal_observed_pause_01",
@@ -773,7 +794,8 @@
         "observed",
         "generic"
       ],
-      "notes": "Non-dialogue description for animals."
+      "notes": "Non-dialogue description for animals.",
+      "generator_hints": null
     },
     {
       "interaction_id": "animal_observed_circle_01",
@@ -811,7 +833,8 @@
         "observed",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "animal_hint_ground_01",
@@ -894,7 +917,8 @@
         "threshold",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "animal_threshold_adjacent_02",
@@ -934,7 +958,8 @@
         "threshold",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "animal_threshold_adjacent_03",
@@ -974,7 +999,8 @@
         "threshold",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "animal_threshold_adjacent_04",
@@ -1014,7 +1040,8 @@
         "threshold",
         "generic"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "elin_shop_greeting_01",
@@ -1055,7 +1082,8 @@
         "shop",
         "ritual"
       ],
-      "notes": "Elin-specific shop greeting."
+      "notes": "Elin-specific shop greeting.",
+      "generator_hints": null
     },
     {
       "interaction_id": "elin_hint_threshold_01",
@@ -1094,7 +1122,8 @@
         "elin",
         "threshold"
       ],
-      "notes": "Subtle threshold-adjacent line; no readiness framing."
+      "notes": "Subtle threshold-adjacent line; no readiness framing.",
+      "generator_hints": null
     },
     {
       "interaction_id": "elin_micro_offer_pastry_01",
@@ -1130,7 +1159,11 @@
       "effects": {
         "set_flags": [
           "elin_offered_pastry"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "elin",
@@ -1179,7 +1212,11 @@
       "effects": {
         "set_flags": [
           "learned_substitution_calming"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "saoirse",
@@ -1227,7 +1264,11 @@
       "effects": {
         "set_flags": [
           "learned_mint_hint"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "saoirse",
@@ -1276,7 +1317,8 @@
         "curio",
         "hint"
       ],
-      "notes": "Curio flavor; non-directive."
+      "notes": "Curio flavor; non-directive.",
+      "generator_hints": null
     },
     {
       "interaction_id": "marcel_threshold_adjacent_01",
@@ -1312,7 +1354,11 @@
       "effects": {
         "set_flags": [
           "heard_marcel_door_line"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "marcel",
@@ -1362,7 +1408,8 @@
         "cottage",
         "tone_plain"
       ],
-      "notes": "Matter-of-fact, not evaluative."
+      "notes": "Matter-of-fact, not evaluative.",
+      "generator_hints": null
     },
     {
       "interaction_id": "iones_direction_firewood_01",
@@ -1402,7 +1449,11 @@
       "effects": {
         "set_flags": [
           "learned_kindling_hint"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "iones",
@@ -1451,7 +1502,11 @@
       "effects": {
         "set_flags": [
           "learned_forest_clearing_hint"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "alen",
@@ -1500,7 +1555,8 @@
         "mirela",
         "forest_trail"
       ],
-      "notes": "Weather token 'wind' must match your engine."
+      "notes": "Weather token 'wind' must match your engine.",
+      "generator_hints": null
     },
     {
       "interaction_id": "tamsin_threshold_castle_01",
@@ -1542,7 +1598,8 @@
         "threshold",
         "forest_castle"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "rowan_ritual_meadow_01",
@@ -1583,7 +1640,8 @@
         "meadow",
         "ritual"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "elinor_direction_meadow_path_01",
@@ -1625,7 +1683,8 @@
         "elinor",
         "directional_guidance"
       ],
-      "notes": "Guidance is metaphorical; still optional."
+      "notes": "Guidance is metaphorical; still optional.",
+      "generator_hints": null
     },
     {
       "interaction_id": "bened_ambient_view_01",
@@ -1665,7 +1724,8 @@
         "bened",
         "meadow_hill"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "anwen_threshold_shrine_01",
@@ -1701,7 +1761,11 @@
       "effects": {
         "set_flags": [
           "learned_shrine_thin_place"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "anwen",
@@ -1751,7 +1815,11 @@
       "effects": {
         "set_flags": [
           "learned_beach_foam_hint"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "silas",
@@ -1799,7 +1867,8 @@
         "lio",
         "beach_boardwalk"
       ],
-      "notes": "Quietly poetic; keep sparse."
+      "notes": "Quietly poetic; keep sparse.",
+      "generator_hints": null
     },
     {
       "interaction_id": "maeve_hint_tidepools_01",
@@ -1837,7 +1906,8 @@
         "maeve",
         "beach_tidepools"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "orik_ambient_pier_01",
@@ -1878,7 +1948,8 @@
         "orik",
         "beach_pier"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "moss_hint_stoop_01",
@@ -1917,7 +1988,8 @@
         "observed",
         "companion"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "moss_find_thread_01",
@@ -1955,7 +2027,11 @@
       "effects": {
         "set_flags": [
           "moss_found_thread_once"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "moss",
@@ -2003,7 +2079,11 @@
       "effects": {
         "set_flags": [
           "moss_found_button_once"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "moss",
@@ -2053,7 +2133,11 @@
       "effects": {
         "set_flags": [
           "moss_found_ribbon_once"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "moss",
@@ -2101,7 +2185,11 @@
       "effects": {
         "set_flags": [
           "ink_delivered_scrap"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "ink",
@@ -2147,7 +2235,11 @@
       "effects": {
         "set_flags": [
           "ink_dropped_coin"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "ink",
@@ -2193,7 +2285,11 @@
       "effects": {
         "set_flags": [
           "ink_left_feather"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "ink",
@@ -2245,7 +2341,11 @@
       "effects": {
         "set_flags": [
           "bram_invited_walk"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "bram",
@@ -2298,7 +2398,11 @@
       "effects": {
         "set_flags": [
           "bram_offered_company"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "bram",
@@ -2351,7 +2455,11 @@
       "effects": {
         "set_flags": [
           "bram_slow_walk_invite"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "bram",
@@ -2404,7 +2512,8 @@
         "observed",
         "forest"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "marl_trail_point_01",
@@ -2494,7 +2603,11 @@
       "effects": {
         "set_flags": [
           "vesper_dropped_feather"
-        ]
+        ],
+        "add_items": {},
+        "remove_items": {},
+        "clear_flags": [],
+        "move_to": null
       },
       "tags": [
         "vesper",
@@ -2544,7 +2657,8 @@
         "observed",
         "forest_waterfall"
       ],
-      "notes": null
+      "notes": null,
+      "generator_hints": null
     },
     {
       "interaction_id": "luna_meadow_follow_01",

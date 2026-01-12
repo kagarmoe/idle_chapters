@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$title": "Spell Recipe Schema",
-  "$id": "https://example.com/schemas/spell.schema.json",
+  "$id": "https://example.com/schemas/spells.schema.json",
   "type": "object",
   "required": ["spell_recipes"],
   "properties": {
@@ -100,11 +100,7 @@
               }
             }
           },
-          "ritual_steps": {
-            "type": "array",
-            "minItems": 3,
-            "items": { "$ref": "common.schema.json#/$defs/nonempty_string" }
-          },
+          "ritual_steps": { "type": "array", "minItems": 3, "items": { "$ref": "common.schema.json#/$defs/nonempty_string" } },
           "tone": { "type": "string", "enum": ["calm", "tender", "wonder", "reverent", "playful", "nostalgic"] },
           "repeatable": { "type": "string", "enum": ["Always", "Limited", "Once"] },
           "cooldown_hint": { "type": ["string", "null"], "default": null },
@@ -118,13 +114,7 @@
               "state_changes": { "type": "object", "description": "Flags/stats/inventory deltas (cozy-safe)", "additionalProperties": true }
             }
           },
-          "notes": {
-            "oneOf": [
-              { "$ref": "common.schema.json#/$defs/nonempty_string" },
-              { "type": "null" }
-            ],
-            "default": null
-          }
+          "notes": { "oneOf": [ { "$ref": "common.schema.json#/$defs/nonempty_string" }, { "type": "null" } ], "default": null }
         }
       }
     }

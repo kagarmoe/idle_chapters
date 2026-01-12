@@ -5,7 +5,7 @@ from app.content.schema_utils import load_validator
 
 
 def test_player_schema_accepts_counts(repo_root: Path) -> None:
-    schema_path = repo_root / "schemas" / "player.schema.json"
+    schema_path = repo_root / "schemas" / "players.schema.json"
     validator = load_validator(schema_path)
 
     player = {
