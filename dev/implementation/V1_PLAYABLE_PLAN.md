@@ -525,6 +525,46 @@ Acceptance criteria:
 
 ---
 
+## Plan for Tomorrow's Work
+
+## 1. Update API
+- **Goal**: Extend the API to handle player-related operations.
+- **Tasks**:
+  - Implement an endpoint for creating new players.
+  - Add functionality to save player progress and update player information as they move through the game.
+  - Ensure all player data is written to MongoDB.
+  - Write tests to validate the new endpoints.
+
+## 2. Create a CLI for Game Interactions
+- **Goal**: Build a command-line interface for interacting with the game.
+- **Tasks**:
+  - Use Typer to create the CLI.
+  - Implement fuzzy matching for commands to improve user experience.
+  - Add commands for starting the game, interacting with NPCs, and performing actions.
+  - Write documentation for the CLI commands.
+
+## 3. Update the SDK
+- **Goal**: Enhance the SDK to support CRUD operations for game content.
+- **Tasks**:
+  - Add CRUD functionality for the following:
+    - Scenes
+    - Actions
+    - Collectibles
+    - Interactions
+    - NPCs
+    - Places
+    - Spells
+    - Tea
+  - Ensure the SDK loads this content into memory efficiently.
+  - Write unit tests for the new SDK functionality.
+  - Update the SDK documentation to reflect the changes.
+
+## General Notes
+- Prioritize writing tests and documentation alongside implementation.
+- Ensure all new features are integrated with existing systems and follow the project’s coding standards.
+
+---
+
 ## Notes: “schema drift” policy (enforced)
 
 - JSON Schemas validate JSON assets at load time.

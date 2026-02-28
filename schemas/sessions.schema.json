@@ -16,9 +16,9 @@
       "pattern": "^[a-f0-9]{32}$",
       "description": "Unique session identifier (32-char hex)"
     },
-    "address": {
+    "player_info": {
       "type": "object",
-      "description": "Optional player address fields (how the player is addressed in text)",
+      "description": "Optional player player_info fields (how the player is addressed in text)",
       "additionalProperties": false,
       "properties": {
         "display_name": {

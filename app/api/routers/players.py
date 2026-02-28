@@ -15,7 +15,7 @@ router = APIRouter(prefix="/v1/players", tags=["players"])
 def _build_player_response(player_id: str, record: dict) -> PlayerResponse:
     return PlayerResponse(
         player_id=player_id,
-        address=record.get("address"),
+        player_info=record.get("player_info"),
         state=record.get("state"),
     )
 
@@ -25,13 +25,13 @@ def create_player(
     request: PlayerCreateRequest, db: Database = Depends(get_db)
 ) -> PlayerResponse:
     player_id = uuid4().hex
-    address = {
+    player_info = {
         "display_name": request.display_name,
         "pronouns": request.pronouns_key or "unspecified",
     }
     state = PlayerState().model_dump()
-    db["players"].insert_one({"_id": player_id, "address": address, "state": state})
-    return _build_player_response(player_id, {"address": address, "state": state})
+    db["players"].insert_one({"_id": player_id, "player_info": player_info, "state": state})
+    return _build_player_response(player_id, {"player_info": player_info, "state": state})
 
 
 @router.get("/{player_id}", response_model=PlayerResponse)
@@ -49,11 +49,11 @@ def update_player(
     record = db["players"].find_one({"_id": player_id})
     if record is None:
         raise HTTPException(status_code=404, detail="Player not found")
-    address = dict(record.get("address") or {})
+    player_info = dict(record.get("player_info") or {})
     if request.display_name is not None:
-        address["display_name"] = request.display_name
+        player_info["display_name"] = request.display_name
     if request.pronouns_key is not None:
-        address["pronouns"] = request.pronouns_key
-    db["players"].update_one({"_id": player_id}, {"$set": {"address": address}})
-    record["address"] = address
+        player_info["pronouns"] = request.pronouns_key
+    db["players"].update_one({"_id": player_id}, {"$set": {"player_info": player_info}})
+    record["player_info"] = player_info
     return _build_player_response(player_id, record)

@@ -23,7 +23,7 @@ def save_player(player_data):
     try:
         with open(PLAYER_FILE, "w", encoding="utf-8") as f:
             json.dump(player_data, f, indent=4)
-        display_name = player_data.get("address", {}).get("display_name") or "friend"
+        display_name = player_data.get("player_info", {}).get("display_name") or "friend"
         print(f"\nPlayer {display_name} saved to {PLAYER_FILE}")
     except IOError as e:
         print(f"Error saving file: {e}")
@@ -125,7 +125,7 @@ def player_menu():
     player = select_player()
     if player is None:
         return None
-    display_name = player.get("address", {}).get("display_name") or "friend"
+    display_name = player.get("player_info", {}).get("display_name") or "friend"
     print(f"\nHello, {display_name}! Let's begin your adventure.\n")
     return player
 
@@ -151,7 +151,7 @@ def select_player():
     while True:
         print("Select a player:")
         for idx, player in enumerate(players, start=1):
-            display_name = player.get("address", {}).get("display_name") or "friend"
+            display_name = player.get("player_info", {}).get("display_name") or "friend"
             print(f"{idx}. {display_name}")
         print(f"{len(players) + 1}. Create a new player")
         print(f"{len(players) + 2}. Exit game")
@@ -183,7 +183,7 @@ def _create_player():
         return None
     player = {
         "player_id": uuid.uuid4().hex,
-        "address": {
+        "player_info": {
             "display_name": name or None,
             "pronouns": pronouns["key"],
         }

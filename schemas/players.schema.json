@@ -8,22 +8,65 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "address": {
+    "player_info": {
       "type": "object",
       "description": "Optional fields that control how the player is addressed in text. These fields affect presentation only and carry no narrative meaning.",
       "required": [],
       "properties": {
-        "display_name": { "oneOf": [ { "$ref": "common.schema.json#/$defs/nonempty_string" }, { "type": "null" } ], "description": "Optional name or nickname used in rare, low-pressure address. If unset, the game defaults to second-person (\"you\")." },
-        "pronouns": { "type": "string", "enum": ["unspecified", "they_them", "she_her", "he_him", "ze_hir", "you_your"], "default": "unspecified", "description": "Preferred pronouns for third-person references. If unset or unspecified, the game defaults to second-person or neutral constructions." }
+        "display_name": {
+          "oneOf": [
+            {
+              "$ref": "common.schema.json#/$defs/nonempty_string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Optional name or nickname used in rare, low-pressure interactions. If unset, the game defaults to second-person (\"you\")."
+        },
+        "pronouns": {
+          "type": "string",
+          "enum": [
+            "unspecified",
+            "they_them",
+            "she_her",
+            "he_him",
+            "ze_hir",
+            "you_your"
+          ],
+          "default": "unspecified",
+          "description": "Preferred pronouns for third-person references. If unset or unspecified, the game defaults to second-person or neutral constructions."
+        }
       }
     },
     "premise": {
       "type": "object",
       "description": "Internal representation of the player's descriptive state. Premise values influence tone selection only and never imply direction, diagnosis, or completion.",
-      "required": ["facets"],
+      "required": [
+        "facets"
+      ],
       "properties": {
-        "facets": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0.0, "maximum": 1.0 }, "description": "Weighted facet map (facet_id -> weight). Facets describe conditions of play, not outcomes." },
-        "last_bias_update": { "oneOf": [ { "type": "string", "format": "date-time" }, { "type": "null" } ], "description": "Timestamp of the last premise bias adjustment (for debugging only)." }
+        "facets": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "description": "Weighted facet map (facet_id -> weight). Facets describe conditions of play, not outcomes."
+        },
+        "last_bias_update": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Timestamp of the last premise bias adjustment (for debugging only)."
+        }
       }
     },
     "state": {
@@ -31,14 +74,75 @@
       "description": "Mechanical state unrelated to identity or self-definition.",
       "required": [],
       "properties": {
-        "current_location": { "oneOf": [ { "$ref": "common.schema.json#/$defs/id" }, { "type": "null" } ] },
-        "inventory": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" }, "default": [], "description": "Derived list for display only; canonical counts live in inventory_counts." },
-        "inventory_counts": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 }, "default": {} },
-        "visit_counts": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 }, "default": {} },
-        "seen_interactions": { "type": "object", "additionalProperties": { "oneOf": [ { "type": "integer", "minimum": 0 }, { "type": "string", "minLength": 1 } ] }, "default": {} },
-        "flags": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/nonempty_string" }, "default": [] },
-        "relationships": { "type": "object", "additionalProperties": { "type": "number" }, "description": "Affinity values with NPCs. These reflect familiarity, not approval or improvement." },
-        "journaling_enabled": { "type": "boolean", "default": true, "description": "Controls whether reflective text is recorded. Journal entries are observational, not confessional." }
+        "current_location": {
+          "oneOf": [
+            {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "inventory": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "default": [],
+          "description": "Derived list for display only; canonical counts live in inventory_counts."
+        },
+        "inventory_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "default": {}
+        },
+        "visit_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "default": {}
+        },
+        "seen_interactions": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ]
+          },
+          "default": {}
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/nonempty_string"
+          },
+          "default": []
+        },
+        "relationships": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Affinity values with NPCs. These reflect familiarity, not approval or improvement."
+        },
+        "journaling_enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Controls whether reflective text is recorded. Journal entries are observational, not confessional."
+        }
       }
     }
   }
