@@ -1,11 +1,10 @@
 import pytest
 
+from app.domain.effects import apply_effects
+from app.domain.state import PlayerState
 
-@pytest.mark.skip(reason="Effects reducer not yet implemented")
+
 def test_apply_effects_updates_state() -> None:
-    from app.domain.effects import apply_effects
-    from app.domain.state import PlayerState
-
     state = PlayerState(
         session_id="session_1",
         current_place_id="cottage_home",
@@ -27,11 +26,7 @@ def test_apply_effects_updates_state() -> None:
     assert "flag_a" in new_state.flags
 
 
-@pytest.mark.skip(reason="Effects reducer not yet implemented")
 def test_apply_effects_prevents_negative_inventory() -> None:
-    from app.domain.effects import apply_effects
-    from app.domain.state import PlayerState
-
     state = PlayerState(
         session_id="session_1",
         current_place_id="cottage_home",

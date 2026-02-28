@@ -1,12 +1,16 @@
-# TODO:
+from __future__ import annotations
 
-#     ### 4.1 Define core state model
+from dataclasses import dataclass, field
 
-# File: `app/domain/state.py`
 
-# - PlayerState (Pydantic or dataclass):
-#   - session_id
-#   - current_place_id
-#   - inventory: {item_id: qty}
-#   - flags: set[str]
-#   - time_tick (optional)
+@dataclass
+class PlayerState:
+    session_id: str
+    current_place_id: str
+    inventory: dict[str, int]
+    flags: set[str]
+    time_tick: int = 0
+    visit_counts: dict[str, int] = field(default_factory=dict)
+    seen_interactions: dict[str, int] = field(default_factory=dict)
+    current_scene_id: str | None = None
+    current_node_id: str | None = None
