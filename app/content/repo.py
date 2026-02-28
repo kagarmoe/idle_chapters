@@ -39,6 +39,7 @@ class ContentRepo:
         self.spells_by_id: dict[str, dict[str, Any]] = {}
         self.journal_templates_by_entry_type: dict[str, list[dict[str, Any]]] = {}
         self.journal_templates_by_id: dict[str, dict[str, Any]] = {}
+        self.ingredient_substitutions_by_token: dict[str, dict[str, Any]] = {}
         self.lexicon_by_key: dict[str, dict[str, Any]] = {}
 
         self._load_all()
@@ -53,6 +54,7 @@ class ContentRepo:
         self._load_tea()
         self._load_spells()
         self._load_journal_templates()
+        self._load_ingredient_substitutions()
         self._load_lexicons()
 
     def _load_places(self) -> None:
@@ -184,6 +186,18 @@ class ContentRepo:
             if entry_type:
                 by_entry_type[str(entry_type)].append(template)
         self.journal_templates_by_entry_type = dict(by_entry_type)
+
+    def _load_ingredient_substitutions(self) -> None:
+        path = self.root / self.manifest.assets["ingredient_substitutions"]
+        schema = self.root / self.manifest.schemas["ingredient_substitutions"]
+        if not path.exists():
+            self.ingredient_substitutions_by_token = {}
+            return
+        data = load_json(path, schema_path=schema) or {}
+        substitutions = data.get("substitutions", [])
+        self.ingredient_substitutions_by_token = _index_by_id(
+            substitutions, "token", "ingredient_substitutions"
+        )
 
     def _load_lexicons(self) -> None:
         schema = self.root / self.manifest.schemas["lexicon"]

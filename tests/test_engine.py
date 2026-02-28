@@ -9,9 +9,11 @@ def test_engine_step_returns_journal_page() -> None:
         places_by_id={"cottage_home": {"place_id": "cottage_home", "zone_id": "cottage"}},
         scenes_by_place_id={},
         actions_by_id={},
-        journal_templates_by_entry_type={"tea": [{"template_id": "t1", "body": "{{prompt}}"}]},
+        journal_templates_by_entry_type={"tea": [{"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}]},
+        journal_templates_by_id={"t1": {"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}},
         lexicon_by_key={},
         collectibles_by_id={},
+        ingredient_substitutions_by_token={},
     )
 
     engine = Engine()
@@ -34,9 +36,11 @@ def test_engine_determinism() -> None:
         places_by_id={"cottage_home": {"place_id": "cottage_home", "zone_id": "cottage"}},
         scenes_by_place_id={},
         actions_by_id={},
-        journal_templates_by_entry_type={"tea": [{"template_id": "t1", "body": "{{prompt}}"}]},
+        journal_templates_by_entry_type={"tea": [{"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}]},
+        journal_templates_by_id={"t1": {"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}},
         lexicon_by_key={},
         collectibles_by_id={},
+        ingredient_substitutions_by_token={},
     )
 
     engine = Engine()
@@ -79,9 +83,11 @@ def test_engine_apply_effects_changes_state() -> None:
                 "effects": {"add_items": {"key": 1}, "set_flags": ["found_key"]},
             }
         },
-        journal_templates_by_entry_type={"tea": [{"template_id": "t1", "body": "{{prompt}}"}]},
+        journal_templates_by_entry_type={"tea": [{"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}]},
+        journal_templates_by_id={"t1": {"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}},
         lexicon_by_key={},
         collectibles_by_id={},
+        ingredient_substitutions_by_token={},
     )
 
     engine = Engine()
@@ -124,9 +130,11 @@ def test_engine_journal_page_reflects_step() -> None:
                 "effects": {"add_items": {"key": 1}, "set_flags": ["found_key"]},
             }
         },
-        journal_templates_by_entry_type={"tea": [{"template_id": "t1", "body": "{{prompt}}"}]},
+        journal_templates_by_entry_type={"tea": [{"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}]},
+        journal_templates_by_id={"t1": {"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}},
         lexicon_by_key={},
         collectibles_by_id={},
+        ingredient_substitutions_by_token={},
     )
 
     engine = Engine()

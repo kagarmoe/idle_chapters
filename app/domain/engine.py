@@ -4,6 +4,8 @@ from dataclasses import replace
 
 from app.domain.conditions import evaluate_conditions
 from app.domain.effects import apply_effects
+from app.domain.ingredient_picker import pick_ingredients
+from app.domain.journal_renderer import render_journal_page
 from app.domain.selector import (
     choose_scene,
     eligible_scenes,
@@ -49,7 +51,7 @@ class Engine:
             action = repo.actions_by_id.get(action_ref, {}) if action_ref else {}
 
             choices = self._choices_from_node(entry_node, nodes_by_id, new_state, repo)
-            journal_page = self._render_journal(action, new_state, repo)
+            journal_page = self._render_journal(action, new_state, repo, seed=seed)
 
             return StepResult(
                 journal_page=journal_page,
@@ -68,7 +70,7 @@ class Engine:
             )
 
             choices = scene.get("choices", [])
-            journal_page = self._render_journal_procedural(scene, new_state, repo)
+            journal_page = self._render_journal_procedural(scene, new_state, repo, seed=seed)
 
             return StepResult(
                 journal_page=journal_page,
@@ -106,7 +108,7 @@ class Engine:
                     target_node, nodes_by_id, new_state, repo
                 )
 
-        journal_page = self._render_journal(action, new_state, repo)
+        journal_page = self._render_journal(action, new_state, repo, seed=seed)
 
         return StepResult(
             journal_page=journal_page,
@@ -150,20 +152,61 @@ class Engine:
                 })
         return choices
 
-    def _render_journal(self, action: dict, state: PlayerState, repo) -> dict | None:
+    def _render_journal(
+        self, action: dict, state: PlayerState, repo, seed: int | None = None
+    ) -> dict | None:
         if not action:
             return None
-        return {
-            "body": action.get("result", ""),
-            "place_id": state.current_place_id,
-            "action_id": action.get("action_id"),
-        }
+
+        entry_type = self._infer_entry_type(action, state, repo)
+        ingredient_ids = pick_ingredients(state, repo, entry_type, seed=seed)
+
+        return render_journal_page(
+            place_id=state.current_place_id,
+            entry_type=entry_type,
+            action=action,
+            state=state,
+            repo=repo,
+            ingredient_picks=ingredient_ids,
+            seed=seed,
+        )
 
     def _render_journal_procedural(
-        self, scene: dict, state: PlayerState, repo
+        self, scene: dict, state: PlayerState, repo, seed: int | None = None
     ) -> dict | None:
-        return {
-            "body": scene.get("prompt", ""),
-            "place_id": state.current_place_id,
-            "scene_id": scene.get("scene_id"),
+        entry_type = scene.get("entry_type", "field_note")
+        ingredient_ids = pick_ingredients(state, repo, entry_type, seed=seed)
+
+        action_proxy = {
+            "action_id": scene.get("scene_id"),
+            "result": scene.get("prompt", ""),
         }
+
+        return render_journal_page(
+            place_id=state.current_place_id,
+            entry_type=entry_type,
+            action=action_proxy,
+            state=state,
+            repo=repo,
+            ingredient_picks=ingredient_ids,
+            seed=seed,
+        )
+
+    @staticmethod
+    def _infer_entry_type(action: dict, state: PlayerState, repo) -> str:
+        """Infer entry_type from action tags or place properties."""
+        intent = action.get("intent_signature", {})
+        if intent.get("entry_type"):
+            return intent["entry_type"]
+
+        tags = set(action.get("tags", []))
+        if "tea" in tags:
+            return "tea"
+        if "spell" in tags:
+            return "spell"
+
+        place = repo.places_by_id.get(state.current_place_id, {})
+        if place.get("is_threshold"):
+            return "spell"
+
+        return "tea"
