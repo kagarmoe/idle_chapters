@@ -1,208 +1,144 @@
 from __future__ import annotations
 
-from uuid import uuid4
-
 from fastapi import APIRouter, Depends, HTTPException
-from pymongo.database import Database
 
-from app.api.deps import get_content_repo, get_db
+from app.api.deps import get_session_service
 from app.api.models import (
     ActionRequest,
     IntentRequest,
     SessionCreateRequest,
-    SessionResponse,
+    SessionCreateResponse,
+    SessionGetResponse,
     StepResponse,
     ViewAction,
     ViewModel,
 )
-from app.content.repo import ContentRepo
-
+from app.domain.step_result import StepResult
+from app.services.session_service import SessionService
 
 router = APIRouter(prefix="/v1/sessions", tags=["sessions"])
 
 
-def _find_scene(repo: ContentRepo, scene_id: str) -> dict:
-    scene = repo.scenes_by_id.get(scene_id)
-    if scene is None:
-        raise HTTPException(status_code=404, detail="Scene not found")
-    return scene
+def _view_from_result(result: StepResult) -> ViewModel:
+    """Build a ViewModel from a StepResult."""
+    prompt = None
+    if result.journal_page:
+        prompt = result.journal_page.get("body") or result.journal_page.get("prompt")
 
-
-def _find_node(scene: dict, node_id: str) -> dict:
-    for node in scene.get("nodes", []):
-        if node.get("node_id") == node_id:
-            return node
-    raise HTTPException(status_code=404, detail="Scene node not found")
-
-
-def _action_for_node(repo: ContentRepo, node: dict) -> dict | None:
-    action_id = node.get("action_ref")
-    if not action_id:
-        return None
-    return repo.actions_by_id.get(str(action_id))
-
-
-def _build_view(repo: ContentRepo, scene: dict, node: dict) -> ViewModel:
-    action = _action_for_node(repo, node) or {}
-    prompt = action.get("result") or action.get("label")
-    choices = node.get("choices", [])
-    eligible_actions = []
-    for choice_id in choices:
-        choice_action = repo.actions_by_id.get(str(choice_id))
-        if choice_action:
-            eligible_actions.append(
-                ViewAction(action_id=choice_action["action_id"], label=choice_action["label"])
-            )
     return ViewModel(
         prompt=prompt,
-        scene_id=scene.get("scene_id"),
-        eligible_actions=eligible_actions,
-        visible_items=[],
-        visible_npcs=[],
+        scene_id=result.debug.get("selected_scene_id") if result.debug else None,
+        eligible_actions=[
+            ViewAction(action_id=c["action_id"], label=c.get("label", c["action_id"]))
+            for c in result.choices
+        ],
     )
 
 
-def _select_start_scene(repo: ContentRepo, player_state: dict | None) -> dict:
-    if player_state:
-        current_location = player_state.get("current_location")
-        if current_location:
-            scenes = repo.scenes_by_place_id.get(str(current_location))
-            if scenes:
-                return scenes[0]
-    if repo.scenes_by_id:
-        return next(iter(repo.scenes_by_id.values()))
-    raise HTTPException(status_code=404, detail="No scenes available")
-
-
-def _match_intent_action(input_text: str, node: dict, repo: ContentRepo) -> str | None:
-    text = input_text.lower()
-    for choice_id in node.get("choices", []):
-        action = repo.actions_by_id.get(str(choice_id))
-        if not action:
-            continue
-        label = str(action.get("label", "")).lower()
-        if label and label in text:
-            return action["action_id"]
-        signature = action.get("intent_signature") or {}
-        for phrase in signature.get("phrases", []):
-            if str(phrase).lower() in text:
-                return action["action_id"]
-        for keyword in signature.get("keywords", []):
-            if str(keyword).lower() in text:
-                return action["action_id"]
-    return None
-
-
-def _apply_action(session: dict, action_id: str, repo: ContentRepo, db: Database) -> StepResponse:
-    scene = _find_scene(repo, session["scene_id"])
-    current_node = _find_node(scene, session["node_id"])
-    choices = current_node.get("choices", [])
-    target_node = None
-    for node in scene.get("nodes", []):
-        if node.get("node_id") == action_id or node.get("action_ref") == action_id:
-            target_node = node
-            break
-    if target_node is None or action_id not in choices:
-        raise HTTPException(status_code=400, detail="Action not eligible")
-
-    session["node_id"] = target_node.get("node_id")
-    db["sessions"].update_one(
-        {"_id": session["_id"]},
-        {"$set": {"node_id": session["node_id"]}},
+def _step_response(result: StepResult) -> StepResponse:
+    """Build a StepResponse from a StepResult."""
+    view = _view_from_result(result)
+    return StepResponse(
+        view=view,
+        journal_page=result.journal_page,
+        choices=view.eligible_actions,
     )
-    view = _build_view(repo, scene, target_node)
-    return StepResponse(view=view, applied_actions=[action_id], state_delta={}, journal_entries=[])
 
 
-@router.post("", response_model=SessionResponse)
+@router.post("", response_model=SessionCreateResponse)
 def create_session(
-    request: SessionCreateRequest,
-    repo: ContentRepo = Depends(get_content_repo),
-    db: Database = Depends(get_db),
-) -> SessionResponse:
-    player = db["players"].find_one({"_id": request.player_id})
-    if player is None:
-        raise HTTPException(status_code=404, detail="Player not found")
-    scene = _select_start_scene(repo, player.get("state"))
-    node_id = scene.get("entry_node")
-    if node_id is None:
-        raise HTTPException(status_code=500, detail="Scene has no entry node")
-
-    session_id = uuid4().hex
-    db["sessions"].insert_one(
-        {
-            "_id": session_id,
-            "player_id": request.player_id,
-            "scene_id": scene.get("scene_id"),
-            "node_id": node_id,
-        }
+    request: SessionCreateRequest = None,
+    service: SessionService = Depends(get_session_service),
+) -> SessionCreateResponse:
+    place_id = request.place_id if request else "cottage_home"
+    session_id, result = service.create_session(place_id=place_id)
+    view = _view_from_result(result)
+    return SessionCreateResponse(
+        session_id=session_id,
+        view=view,
+        journal_page=result.journal_page,
     )
-    node = _find_node(scene, node_id)
-    view = _build_view(repo, scene, node)
-    return SessionResponse(session_id=session_id, player_id=request.player_id, view=view)
 
 
-@router.get("/{session_id}", response_model=SessionResponse)
+@router.get("/{session_id}", response_model=SessionGetResponse)
 def get_session(
     session_id: str,
-    repo: ContentRepo = Depends(get_content_repo),
-    db: Database = Depends(get_db),
-) -> SessionResponse:
-    session = db["sessions"].find_one({"_id": session_id})
-    if session is None:
+    service: SessionService = Depends(get_session_service),
+) -> SessionGetResponse:
+    state = service.get_session(session_id)
+    if state is None:
         raise HTTPException(status_code=404, detail="Session not found")
-    scene = _find_scene(repo, session["scene_id"])
-    node = _find_node(scene, session["node_id"])
-    view = _build_view(repo, scene, node)
-    return SessionResponse(
+    return SessionGetResponse(
         session_id=session_id,
-        player_id=session["player_id"],
-        view=view,
-        state_digest=None,
+        view=ViewModel(),
+        state={
+            "current_place_id": state.current_place_id,
+            "inventory": state.inventory,
+            "flags": sorted(state.flags),
+            "time_tick": state.time_tick,
+        },
     )
 
 
-@router.post("/{session_id}/intent", response_model=StepResponse)
-def submit_intent(
+@router.post("/{session_id}/enter", response_model=StepResponse)
+def enter_place(
     session_id: str,
-    request: IntentRequest,
-    repo: ContentRepo = Depends(get_content_repo),
-    db: Database = Depends(get_db),
+    service: SessionService = Depends(get_session_service),
 ) -> StepResponse:
-    session = db["sessions"].find_one({"_id": session_id})
-    if session is None:
-        raise HTTPException(status_code=404, detail="Session not found")
-    scene = _find_scene(repo, session["scene_id"])
-    node = _find_node(scene, session["node_id"])
-    action_id = _match_intent_action(request.input, node, repo)
-    if action_id is None:
-        raise HTTPException(status_code=400, detail="No eligible action matched")
-    return _apply_action(session, action_id, repo, db)
+    try:
+        result = service.enter(session_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    return _step_response(result)
 
 
 @router.post("/{session_id}/action", response_model=StepResponse)
 def submit_action(
     session_id: str,
     request: ActionRequest,
-    repo: ContentRepo = Depends(get_content_repo),
-    db: Database = Depends(get_db),
+    service: SessionService = Depends(get_session_service),
 ) -> StepResponse:
-    session = db["sessions"].find_one({"_id": session_id})
-    if session is None:
-        raise HTTPException(status_code=404, detail="Session not found")
-    return _apply_action(session, request.action_id, repo, db)
+    try:
+        result = service.perform_action(session_id, request.action_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return _step_response(result)
 
 
-@router.post("/{session_id}/peek", response_model=StepResponse)
-def peek_session(
+@router.post("/{session_id}/intent", response_model=StepResponse)
+def submit_intent(
     session_id: str,
-    repo: ContentRepo = Depends(get_content_repo),
-    db: Database = Depends(get_db),
+    request: IntentRequest,
+    service: SessionService = Depends(get_session_service),
 ) -> StepResponse:
-    session = db["sessions"].find_one({"_id": session_id})
-    if session is None:
+    try:
+        result = service.submit_intent(session_id, request.input)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return _step_response(result)
+
+
+@router.get("/{session_id}/journal")
+def list_journal_pages(
+    session_id: str,
+    service: SessionService = Depends(get_session_service),
+) -> list[dict]:
+    state = service.get_session(session_id)
+    if state is None:
         raise HTTPException(status_code=404, detail="Session not found")
-    scene = _find_scene(repo, session["scene_id"])
-    node = _find_node(scene, session["node_id"])
-    view = _build_view(repo, scene, node)
-    return StepResponse(view=view, applied_actions=[], state_delta={}, journal_entries=[])
+    return service._journal_store.list_pages(session_id)
+
+
+@router.get("/{session_id}/journal/{page_id}")
+def get_journal_page(
+    session_id: str,
+    page_id: str,
+    service: SessionService = Depends(get_session_service),
+) -> dict:
+    state = service.get_session(session_id)
+    if state is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    page = service._journal_store.get_page(session_id, page_id)
+    if page is None:
+        raise HTTPException(status_code=404, detail="Journal page not found")
+    return page
