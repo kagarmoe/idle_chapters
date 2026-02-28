@@ -1,7 +1,7 @@
 {
   "substitutions": [
     {
-      "token": "any:tag=calming&category=Botanical",
+      "token": "any:tag=calming&category=botanical",
       "selector": {
         "match_all": [
           { "tags": "calming" },
@@ -20,7 +20,7 @@
       "fallback": "lemon_balm"
     },
     {
-      "token": "any:tag=memory&category=Botanical",
+      "token": "any:tag=memory&category=botanical",
       "selector": {
         "match_all": [
           { "tags": "memory" },

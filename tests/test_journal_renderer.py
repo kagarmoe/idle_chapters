@@ -364,8 +364,8 @@ def test_pick_ingredients_field_note_no_usable_filter():
 def test_resolve_substitution_token_matches():
     repo = _make_repo(
         ingredient_substitutions_by_token={
-            "any:tag=calming&category=Botanical": {
-                "token": "any:tag=calming&category=Botanical",
+            "any:tag=calming&category=botanical": {
+                "token": "any:tag=calming&category=botanical",
                 "constraints": {
                     "category": "Botanical",
                     "tags": ["calming"],
@@ -379,7 +379,7 @@ def test_resolve_substitution_token_matches():
     state = _make_state()
 
     result = resolve_substitution_token(
-        "any:tag=calming&category=Botanical", state, repo, seed=42
+        "any:tag=calming&category=botanical", state, repo, seed=42
     )
 
     assert result is not None
