@@ -19,7 +19,7 @@ class ViewModel(BaseModel):
 
 
 class SessionCreateRequest(BaseModel):
-    player_id: str
+    place_id: str = "cottage_home"
 
 
 class IntentRequest(BaseModel):
@@ -30,11 +30,22 @@ class ActionRequest(BaseModel):
     action_id: str
 
 
-class SessionResponse(BaseModel):
+class SessionCreateResponse(BaseModel):
     session_id: str
-    player_id: str
     view: ViewModel
-    state_digest: str | None = None
+    journal_page: dict | None = None
+
+
+class SessionGetResponse(BaseModel):
+    session_id: str
+    view: ViewModel
+    state: dict | None = None
+
+
+class StepResponse(BaseModel):
+    view: ViewModel
+    journal_page: dict | None = None
+    choices: list[ViewAction] = Field(default_factory=list)
 
 
 class PlayerInfo(BaseModel):
@@ -64,10 +75,3 @@ class PlayerResponse(BaseModel):
     player_id: str
     player_info: PlayerInfo | None = None
     state: PlayerState | None = None
-
-
-class StepResponse(BaseModel):
-    view: ViewModel
-    applied_actions: list[str] = Field(default_factory=list)
-    state_delta: dict[str, Any] = Field(default_factory=dict)
-    journal_entries: list[dict[str, Any]] = Field(default_factory=list)
