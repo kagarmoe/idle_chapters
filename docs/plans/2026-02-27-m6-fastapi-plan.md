@@ -1,6 +1,6 @@
 # M6: FastAPI v1 — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **For Claude:**
 
 **Goal:** Wire FastAPI endpoints to the domain engine through a `SessionService`, making the game playable via HTTP.
 

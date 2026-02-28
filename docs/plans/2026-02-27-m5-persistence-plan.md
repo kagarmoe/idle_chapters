@@ -1,6 +1,6 @@
 # M5: MongoDB Persistence — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **For Claude:**
 
 **Goal:** Add MongoDB persistence so sessions, player state, journal pages, and events survive across app restarts.
 
