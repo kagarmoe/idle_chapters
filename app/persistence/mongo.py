@@ -1,8 +1,19 @@
-# TODO:
+from __future__ import annotations
 
-#     ### 5.1 Mongo connection
+import os
 
-# File: `app/persistence/mongo.py`
+from pymongo import MongoClient
+from pymongo.database import Database
 
-# - client init from env (MONGO_URI)
-# - db selection
+
+_CLIENT: MongoClient | None = None
+
+
+def get_db() -> Database:
+    """Return the MongoDB database, creating the client on first call."""
+    global _CLIENT
+    if _CLIENT is None:
+        mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+        _CLIENT = MongoClient(mongo_url)
+    db_name = os.getenv("MONGO_DB", "idle_chapters")
+    return _CLIENT[db_name]
