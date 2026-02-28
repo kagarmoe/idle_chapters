@@ -29,7 +29,10 @@ def _view_from_result(result: StepResult) -> ViewModel:
         prompt=prompt,
         scene_id=result.debug.get("selected_scene_id") if result.debug else None,
         eligible_actions=[
-            ViewAction(action_id=c["action_id"], label=c.get("label", c["action_id"]))
+            ViewAction(
+                action_id=c.get("action_id") or c.get("choice_id", ""),
+                label=c.get("label", c.get("action_id") or c.get("choice_id", "")),
+            )
             for c in result.choices
         ],
     )

@@ -86,7 +86,12 @@ class Engine:
             raise ValueError("choice_id required for 'choose option' command")
 
         action = repo.actions_by_id.get(choice_id)
+
+        # Procedural scenes have choices that aren't real actions.
+        # Choosing one just cycles to a new scene.
         if not action:
+            if state.current_node_id is None:
+                return self._handle_enter(state, repo, seed)
             raise ValueError(f"Unknown action: {choice_id}")
 
         new_state = apply_effects(state, action.get("effects", {}))
