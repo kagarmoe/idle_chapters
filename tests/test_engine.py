@@ -1,15 +1,10 @@
-import pytest
 from types import SimpleNamespace
 
-# Engine is not yet implemented - all tests are skipped
-# See V1_PLAYABLE_PLAN.md Milestone 4 for engine implementation plan
+from app.domain.engine import Engine
+from app.domain.state import PlayerState
 
 
-@pytest.mark.skip(reason="Engine not yet implemented")
 def test_engine_step_returns_journal_page() -> None:
-    from app.domain.engine import Engine
-    from app.domain.state import PlayerState
-
     repo = SimpleNamespace(
         places_by_id={"cottage_home": {"place_id": "cottage_home", "zone_id": "cottage"}},
         scenes_by_place_id={},
@@ -34,11 +29,7 @@ def test_engine_step_returns_journal_page() -> None:
     assert len(result.choices) == 3
 
 
-@pytest.mark.skip(reason="Engine not yet implemented")
 def test_engine_determinism() -> None:
-    from app.domain.engine import Engine
-    from app.domain.state import PlayerState
-
     repo = SimpleNamespace(
         places_by_id={"cottage_home": {"place_id": "cottage_home", "zone_id": "cottage"}},
         scenes_by_place_id={},
@@ -64,11 +55,7 @@ def test_engine_determinism() -> None:
     assert result_a.choices == result_b.choices
 
 
-@pytest.mark.skip(reason="Engine not yet implemented")
 def test_engine_apply_effects_changes_state() -> None:
-    from app.domain.engine import Engine
-    from app.domain.state import PlayerState
-
     repo = SimpleNamespace(
         places_by_id={"cottage_home": {"place_id": "cottage_home", "zone_id": "cottage"}},
         scenes_by_place_id={
@@ -113,11 +100,7 @@ def test_engine_apply_effects_changes_state() -> None:
     assert result.journal_page is not None
 
 
-@pytest.mark.skip(reason="Engine not yet implemented")
 def test_engine_journal_page_reflects_step() -> None:
-    from app.domain.engine import Engine
-    from app.domain.state import PlayerState
-
     repo = SimpleNamespace(
         places_by_id={"cottage_home": {"place_id": "cottage_home", "zone_id": "cottage"}},
         scenes_by_place_id={

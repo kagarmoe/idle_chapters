@@ -27,9 +27,13 @@ def eligible_scenes(state, repo) -> list[dict]:
 
 
 def eligible_actions(state, repo) -> list[dict]:
-    """Get actions eligible for the current state (basic implementation)."""
-    # TODO: implement full condition evaluation
-    return list(repo.actions_by_id.values())
+    """Get actions eligible for the current state with full condition evaluation."""
+    from app.domain.conditions import evaluate_conditions
+
+    return [
+        a for a in repo.actions_by_id.values()
+        if evaluate_conditions(state, a.get("when"), repo)
+    ]
 
 
 def choose_scene(scenes: list[dict], seed: int | None = None) -> dict:

@@ -1,11 +1,15 @@
-# TODO:
-#     ### 3.0 Define JournalPage as the step output
+from __future__ import annotations
 
-# File: `app/domain/step_result.py`
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
-# - Define `StepResult` to include:
-#   - `journal_page` (frontmatter dict + markdown body)
-#   - `choices` (exactly 3)
-#   - `debug` (seed, selected_scene_id, eligible_count)
+if TYPE_CHECKING:
+    from app.domain.state import PlayerState
 
-# This keeps the API/CLI thin: they render the returned journal page.
+
+@dataclass
+class StepResult:
+    journal_page: dict | None
+    choices: list[dict]
+    new_state: PlayerState
+    debug: dict | None = None

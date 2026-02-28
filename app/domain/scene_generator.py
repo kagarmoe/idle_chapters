@@ -1,11 +1,7 @@
 from __future__ import annotations
 
-import json
-from pathlib import Path
 import random
 from typing import Any
-
-from jsonschema import ValidationError, validate
 
 from app.domain.scene import Scene
 
@@ -26,14 +22,6 @@ SAFE_CHOICE_LABELS = [
     "Listen closely",
     "Jot a small note",
 ]
-
-
-def _load_scene_schema() -> dict[str, Any] | None:
-    """Load scene schema if it exists, otherwise return None."""
-    schema_path = Path(__file__).resolve().parents[2] / "schemas" / "scene.schema.json"
-    if not schema_path.exists():
-        return None
-    return json.loads(schema_path.read_text(encoding="utf-8"))
 
 
 def _not_allowed_words(repo) -> set[str]:
@@ -110,11 +98,8 @@ def generate_scene(state, repo, seed: int | None = None) -> Scene:
         },
     )
 
-    schema = _load_scene_schema()
-    if schema is not None:
-        try:
-            validate(instance=scene.to_dict(), schema=schema)
-        except ValidationError as exc:
-            raise ValueError(f"Generated scene failed schema validation: {exc.message}") from exc
+    # Note: scene.schema.json is for authored scenes (entry_node + nodes shape).
+    # Procedural Scene uses a different shape (choices + prompt), so we skip
+    # schema validation here. Authored scenes are validated at content load time.
 
     return scene
