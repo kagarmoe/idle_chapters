@@ -97,5 +97,5 @@ class SessionService:
         for choice in choices:
             label = choice.get("label", "").lower()
             if label and label in text_lower:
-                return choice["action_id"]
+                return choice.get("action_id") or choice.get("choice_id")
         return None
