@@ -259,3 +259,131 @@ def test_journal_get_missing_returns_none(service, stores) -> None:
     _, journal_store, _ = stores
     session_id, _ = service.create_session()
     assert journal_store.get_page(session_id, "nonexistent") is None
+
+
+# -- HTTP integration tests --
+
+
+def _make_test_app(repo, stores):
+    """Build a FastAPI app with dependency overrides for testing."""
+    from fastapi import FastAPI
+
+    from app.api.deps import get_session_service
+    from app.api.routers import sessions
+
+    app = FastAPI()
+    app.include_router(sessions.router)
+
+    state_store, journal_store, event_store = stores
+
+    def _override_service():
+        from app.services.session_service import SessionService as _SS
+
+        return _SS(
+            repo=repo,
+            engine=Engine(),
+            state_store=state_store,
+            journal_store=journal_store,
+            event_store=event_store,
+        )
+
+    app.dependency_overrides[get_session_service] = _override_service
+    return app
+
+
+try:
+    import httpx  # noqa: F401
+
+    _HAS_HTTPX = True
+except ImportError:
+    _HAS_HTTPX = False
+
+
+@pytest.fixture
+def client(repo, stores):
+    pytest.importorskip("httpx", reason="httpx required for HTTP tests")
+    from fastapi.testclient import TestClient
+
+    app = _make_test_app(repo, stores)
+    return TestClient(app)
+
+
+def test_http_create_session(client) -> None:
+    response = client.post("/v1/sessions", json={"place_id": "cottage_home"})
+    assert response.status_code == 200
+    data = response.json()
+    assert "session_id" in data
+    assert "view" in data
+    assert "journal_page" in data
+
+
+def test_http_get_session(client) -> None:
+    create = client.post("/v1/sessions", json={"place_id": "cottage_home"})
+    session_id = create.json()["session_id"]
+    response = client.get(f"/v1/sessions/{session_id}")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["session_id"] == session_id
+    assert "state" in data
+
+
+def test_http_get_session_not_found(client) -> None:
+    response = client.get("/v1/sessions/nonexistent")
+    assert response.status_code == 404
+
+
+def test_http_enter(client) -> None:
+    create = client.post("/v1/sessions", json={"place_id": "cottage_home"})
+    session_id = create.json()["session_id"]
+    response = client.post(f"/v1/sessions/{session_id}/enter")
+    assert response.status_code == 200
+    data = response.json()
+    assert "view" in data
+    assert "choices" in data
+    assert len(data["choices"]) == 2
+
+
+def test_http_action(client) -> None:
+    create = client.post("/v1/sessions", json={"place_id": "cottage_home"})
+    session_id = create.json()["session_id"]
+    enter = client.post(f"/v1/sessions/{session_id}/enter")
+    choices = enter.json()["choices"]
+    action_id = choices[0]["action_id"]
+    response = client.post(
+        f"/v1/sessions/{session_id}/action",
+        json={"action_id": action_id},
+    )
+    assert response.status_code == 200
+    assert "journal_page" in response.json()
+
+
+def test_http_intent(client) -> None:
+    create = client.post("/v1/sessions", json={"place_id": "cottage_home"})
+    session_id = create.json()["session_id"]
+    response = client.post(
+        f"/v1/sessions/{session_id}/intent",
+        json={"input": "look around"},
+    )
+    assert response.status_code == 200
+
+
+def test_http_journal_list(client) -> None:
+    create = client.post("/v1/sessions", json={"place_id": "cottage_home"})
+    session_id = create.json()["session_id"]
+    response = client.get(f"/v1/sessions/{session_id}/journal")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+
+
+def test_http_state_persists_across_calls(client) -> None:
+    create = client.post("/v1/sessions", json={"place_id": "cottage_home"})
+    session_id = create.json()["session_id"]
+
+    enter = client.post(f"/v1/sessions/{session_id}/enter")
+    choices = enter.json()["choices"]
+    action_id = choices[0]["action_id"]
+    client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
+
+    state_response = client.get(f"/v1/sessions/{session_id}")
+    assert state_response.status_code == 200
+    assert state_response.json()["session_id"] == session_id
