@@ -16,7 +16,8 @@ from app.domain.ingredient_picker import (
 from app.domain.journal_renderer import render_journal_page
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+_here = Path(__file__).resolve()
+REPO_ROOT = next(p for p in _here.parents if (p / "CLAUDE.md").exists())
 
 
 def _make_repo(**overrides) -> SimpleNamespace:

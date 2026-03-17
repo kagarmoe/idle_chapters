@@ -4,7 +4,8 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[1]
+_here = Path(__file__).resolve()
+ROOT = next(p for p in _here.parents if (p / "CLAUDE.md").exists())
 # Ensure utilities package is on sys.path when running tests directly
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))

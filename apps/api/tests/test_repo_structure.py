@@ -1,19 +1,21 @@
 from pathlib import Path
 
 
-def test_repo_structure(repo_root: Path) -> None:
-    expected_dirs = [
+def test_repo_structure(repo_root: Path, api_root: Path) -> None:
+    root_dirs = [
         "assets",
         "lexicons",
         "schemas",
-        "journal",
+    ]
+    api_dirs = [
         "app",
         "tests",
-        "dev/implementation",
     ]
 
-    for rel_path in expected_dirs:
+    for rel_path in root_dirs:
         assert (repo_root / rel_path).is_dir(), f"Missing directory: {rel_path}"
+    for rel_path in api_dirs:
+        assert (api_root / rel_path).is_dir(), f"Missing directory: apps/api/{rel_path}"
 
 
 def test_stable_content_locations(repo_root: Path) -> None:

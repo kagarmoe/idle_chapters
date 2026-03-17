@@ -7,7 +7,8 @@ from app.scenes.inventory import load_inventory, save_inventory
 from app.scenes.welcome import save_player
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+_here = Path(__file__).resolve()
+REPO_ROOT = next(p for p in _here.parents if (p / "assets").is_dir() and (p / "schemas").is_dir())
 TEA_FILE = REPO_ROOT / "assets" / "tea.json"
 
 

@@ -22,7 +22,14 @@ def _index_by_id(items: Iterable[dict[str, Any]], id_key: str, source: str) -> d
 
 class ContentRepo:
     def __init__(self, root: Path | str | None = None, manifest: ContentManifest | None = None) -> None:
-        self.root = Path(root) if root else Path(__file__).resolve().parents[2]
+        if root:
+            self.root = Path(root)
+        else:
+            here = Path(__file__).resolve()
+            self.root = next(
+                (p for p in here.parents if (p / "assets").is_dir() and (p / "schemas").is_dir()),
+                here.parents[4],
+            )
         self.manifest = manifest or ContentManifest()
 
         self.places_by_id: dict[str, dict[str, Any]] = {}

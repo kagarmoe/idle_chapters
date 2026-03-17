@@ -5,7 +5,8 @@ from jsonschema import SchemaError, ValidationError
 
 from app.content.loader import load_json
 from app.content.schema_utils import load_validator
-REPO_ROOT = Path(__file__).resolve().parents[1]
+_here = Path(__file__).resolve()
+REPO_ROOT = next(p for p in _here.parents if (p / "assets").is_dir() and (p / "schemas").is_dir())
 COLLECTIBLES_FILE = REPO_ROOT / "assets" / "collectibles.json"
 INVENTORY_DIR = REPO_ROOT / "assets" / "inventories"
 INVENTORY_SCHEMA = REPO_ROOT / "schemas" / "collectibles.schema.json"
