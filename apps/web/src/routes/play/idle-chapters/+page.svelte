@@ -1,9 +1,26 @@
+<script lang="ts">
+	import Splash from '$lib/Splash.svelte';
+
+	// TODO: detect existing save via localStorage or API
+	let hasSave = $state(false);
+
+	function handleNewGame() {
+		// Will be wired to sessions.create() in Task 7
+		console.log('New Game requested');
+	}
+
+	function handleContinue() {
+		// Will be wired to sessions.get() in Task 7
+		console.log('Continue requested');
+	}
+</script>
+
 <svelte:head>
 	<title>Idle Chapters — Play</title>
 </svelte:head>
 
-<h1 class="text-3xl tracking-wide mb-4">Idle Chapters</h1>
-<p class="text-[var(--color-ink-light)] leading-relaxed">
-	A cozy idle game of quiet places and gentle discoveries.
-	The game will be here when it is ready.
-</p>
+<Splash
+	{hasSave}
+	onnewgame={handleNewGame}
+	oncontinue={handleContinue}
+/>
