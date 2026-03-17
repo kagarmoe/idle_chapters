@@ -15,7 +15,9 @@ from app.content.loader import load_json
 from app.content.schema_utils import load_validator
 PLAYER_FILE = "assets/player.json"
 PLAYERS_FILE = "assets/players.json"
-PLAYER_SCHEMA = Path(__file__).resolve().parents[2] / "schemas" / "players.schema.json"
+_here = Path(__file__).resolve()
+_repo_root = next(p for p in _here.parents if (p / "assets").is_dir() and (p / "schemas").is_dir())
+PLAYER_SCHEMA = _repo_root / "schemas" / "players.schema.json"
 
 
 def save_player(player_data):
