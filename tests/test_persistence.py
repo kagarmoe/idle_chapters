@@ -3,6 +3,8 @@ import uuid
 
 import pytest
 
+mongo = pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
+
 
 @pytest.fixture
 def unique_session_id():
@@ -10,7 +12,17 @@ def unique_session_id():
     return f"test_{uuid.uuid4().hex[:12]}"
 
 
-@pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
+@mongo
+def test_mongo_connectivity() -> None:
+    """Smoke test: can we reach MongoDB and run a command?"""
+    from app.persistence.mongo import get_db
+
+    db = get_db()
+    result = db.command("ping")
+    assert result.get("ok") == 1.0
+
+
+@mongo
 def test_state_store_round_trip(unique_session_id) -> None:
     from app.domain.state import PlayerState
     from app.persistence.state_store import StateStore
@@ -39,7 +51,7 @@ def test_state_store_round_trip(unique_session_id) -> None:
     assert loaded.current_node_id == state.current_node_id
 
 
-@pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
+@mongo
 def test_state_store_returns_none_for_missing(unique_session_id) -> None:
     from app.persistence.state_store import StateStore
 
@@ -47,7 +59,7 @@ def test_state_store_returns_none_for_missing(unique_session_id) -> None:
     assert store.get_state(unique_session_id) is None
 
 
-@pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
+@mongo
 def test_state_store_upsert_overwrites(unique_session_id) -> None:
     from app.domain.state import PlayerState
     from app.persistence.state_store import StateStore
@@ -78,7 +90,7 @@ def test_state_store_upsert_overwrites(unique_session_id) -> None:
     assert loaded.time_tick == 3
 
 
-@pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
+@mongo
 def test_journal_store_round_trip(unique_session_id) -> None:
     from app.persistence.journal_store import JournalStore
 
@@ -109,7 +121,7 @@ def test_journal_store_round_trip(unique_session_id) -> None:
     assert loaded["entry_type"] == "tea"
 
 
-@pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
+@mongo
 def test_journal_store_list_ordering(unique_session_id) -> None:
     from app.persistence.journal_store import JournalStore
 
@@ -122,7 +134,7 @@ def test_journal_store_list_ordering(unique_session_id) -> None:
     assert page_ids.index("p1") < page_ids.index("p2")
 
 
-@pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
+@mongo
 def test_journal_store_get_missing_returns_none(unique_session_id) -> None:
     from app.persistence.journal_store import JournalStore
 
@@ -130,7 +142,7 @@ def test_journal_store_get_missing_returns_none(unique_session_id) -> None:
     assert store.get_page(unique_session_id, "nonexistent") is None
 
 
-@pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
+@mongo
 def test_event_store_round_trip(unique_session_id) -> None:
     from app.persistence.event_store import EventStore
 
@@ -149,7 +161,7 @@ def test_event_store_round_trip(unique_session_id) -> None:
     assert "created_at" in events[0]
 
 
-@pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
+@mongo
 def test_event_store_ordering(unique_session_id) -> None:
     from app.persistence.event_store import EventStore
 
