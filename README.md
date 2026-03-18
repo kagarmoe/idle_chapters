@@ -4,8 +4,6 @@ A cozy text-based adventure game. Play in your browser at [kimberlygarmoe.com/pl
 
 ## Architecture
 
-Monorepo with two apps:
-
 ```
 apps/
 ├── api/    ← FastAPI backend (Python)
@@ -16,6 +14,10 @@ apps/
 - **Backend**: FastAPI + PyMongo, deployed to Railway
 - **Database**: MongoDB Atlas (free tier)
 - **CI**: GitHub Actions (`.github/workflows/`)
+
+This repo is referenced as a git submodule from
+[kagarmoe/kimberlygarmoe.com](https://github.com/kagarmoe/kimberlygarmoe.com),
+which owns deployment configuration. See `docs/plans/2026-03-17-deployment-design.md`.
 
 ## Local Development
 
@@ -86,17 +88,29 @@ npm run build
 
 ## Deployment
 
+This repo is deployed via [kagarmoe/kimberlygarmoe.com](https://github.com/kagarmoe/kimberlygarmoe.com),
+which references it as a git submodule.
+
+### Site repo setup (kimberlygarmoe.com)
+
+```bash
+# In the kimberlygarmoe.com repo:
+git submodule add https://github.com/kagarmoe/idle_chapters.git apps/idle-chapters
+git submodule update --init --recursive
+```
+
 ### Frontend (Vercel)
 
-1. Connect the repo to Vercel
-2. Set root directory to `apps/web`
+1. Connect `kagarmoe/kimberlygarmoe.com` to Vercel
+2. Set root directory to `apps/idle-chapters/apps/web`
 3. Set environment variable: `VITE_API_URL=https://<your-railway-domain>`
 4. Add custom domain: `kimberlygarmoe.com`
+5. Enable git submodules in Vercel project settings
 
 ### Backend (Railway)
 
-1. Create a Railway project from the repo
-2. Set root directory to `apps/api`
+1. Create a Railway project from `kagarmoe/kimberlygarmoe.com`
+2. Set root directory to `apps/idle-chapters/apps/api`
 3. Start command: `python -m uvicorn app.api.app:app --host 0.0.0.0 --port $PORT`
 4. Set environment variables:
    - `MONGO_URL` — Atlas connection string
@@ -109,6 +123,21 @@ npm run build
 2. Create a database user
 3. Allow network access (Railway IPs or `0.0.0.0/0` for free tier)
 4. Copy the connection string to Railway's `MONGO_URL` env var
+
+### Updating the submodule
+
+When idle_chapters is updated, bump the submodule ref in the site repo:
+
+```bash
+cd apps/idle-chapters
+git pull origin main
+cd ../..
+git add apps/idle-chapters
+git commit -m "chore: update idle-chapters submodule"
+git push
+```
+
+Vercel and Railway will redeploy automatically.
 
 ### Verify
 
