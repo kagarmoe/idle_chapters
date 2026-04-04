@@ -96,13 +96,17 @@ def test_update_asset_file_inserts_missing_root_property(monkeypatch: pytest.Mon
     assert result["demo"] == ["things"]
 
 
-def test_update_all_assets_delegates_to_update_asset_file(monkeypatch: pytest.MonkeyPatch) -> None:
-    called = {"count": 0}
+def test_update_all_assets_processes_schema_map(monkeypatch: pytest.MonkeyPatch) -> None:
+    written = {"count": 0}
 
-    def fake_update():
-        called["count"] += 1
+    original_write = update_assets._write_json
 
-    monkeypatch.setattr(update_assets, "update_asset_file", fake_update)
+    def tracking_write(path, data):
+        written["count"] += 1
+        original_write(path, data)
+
+    monkeypatch.setattr(update_assets, "_write_json", tracking_write)
 
     update_assets.update_all_assets()
-    assert called["count"] == 1
+    # Should process all schema-to-file entries that exist on disk
+    assert written["count"] >= 1

@@ -346,7 +346,7 @@ def update_assets():
         _write_json(asset_path, asset_data)
         print(f"Updated asset: {asset_file}")
 
-def update_asset_file(asset_stem: str):
+def update_single_asset_file(asset_stem: str):
     """Update a single asset file based on its corresponding schema.
 
     :param asset_stem: Base filename (without .json) of the target asset.
