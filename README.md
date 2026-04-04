@@ -47,3 +47,9 @@ python -m app.main
 
 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 [http://127.0.0.1:8000/openapi.json](http://127.0.0.1:8000/openapi.json)
+
+
+# For Linux/macOS
+export PYTHONPATH=$PWD
+# For Windows PowerShell
+$env:PYTHONPATH = $PWD
