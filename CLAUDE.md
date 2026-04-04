@@ -4,7 +4,6 @@
 - Load `design-docs/game_design/tone_contract.md` into context after compacting context.
 - If the user mentions new items that are not present in `assets/collectibles.json`, add them there (following `schemas/collectibles.schema.json`) before continuing.
 
-
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
 ## Beads Issue Tracker
 
@@ -51,3 +50,6 @@ bd close <id>         # Complete work
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
 <!-- END BEADS INTEGRATION -->
+
+- Schema-first design: JSON schemas in `schemas/` are the source of truth. If data in `assets/` fails validation, fix the data to conform to the schema. Do not modify schemas to accommodate invalid data. If a schema genuinely needs updating, create an issue to discuss the change.
+
