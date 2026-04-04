@@ -8,6 +8,10 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "player_id": {
+      "$ref": "common.schema.json#/$defs/nonempty_string",
+      "description": "Unique identifier for this player profile."
+    },
     "player_info": {
       "type": "object",
       "description": "Optional fields that control how the player is addressed in text. These fields affect presentation only and carry no narrative meaning.",
