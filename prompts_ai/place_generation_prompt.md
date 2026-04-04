@@ -1,3 +1,5 @@
+<!-- Requires tone_system_prompt.md as system message -->
+
 Location: {{Place_Display_Name}}
 
 This place exists to satisfy the following player need:
@@ -28,6 +30,4 @@ Curiosity -> Peace
 Guidance:
 - Favor small-scale, close-up details.
 - Emphasize stillness and quiet presence.
-- Do not imply fragility, danger, or responsibility.
-
 Write a calm, observational passage.
