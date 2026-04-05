@@ -114,7 +114,7 @@ def create_session(
 
 **curl:**
 ```bash
-curl http://localhost:8000/v1/sessions/{session_id}
+curl http://localhost:8000/v1/sessions/a1b2c3d4
 ```
 """,
 )
@@ -141,6 +141,13 @@ def get_session(
     "/{session_id}/enter",
     response_model=StepResponse,
     responses=SESSION_NOT_FOUND_RESPONSES,
+    description="""Re-enter the current place to refresh the scene and get new choices.
+
+**curl:**
+```bash
+curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/enter
+```
+""",
 )
 def enter_place(
     session_id: str,
@@ -158,14 +165,14 @@ def enter_place(
 
 **curl:**
 ```bash
-curl -X POST http://localhost:8000/v1/sessions/{session_id}/action \\
+curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/action \\
   -H "Content-Type: application/json" \\
   -d '{"action_id": "rest_longer"}'
 ```
 
 To see developer error details, add the projection header:
 ```bash
-curl -H "Accept-Projection: developer" http://localhost:8000/v1/sessions/{session_id}/action ...
+curl -H "Accept-Projection: developer" http://localhost:8000/v1/sessions/a1b2c3d4/action ...
 ```
 """,
 )
@@ -182,6 +189,27 @@ def submit_action(
     "/{session_id}/intent",
     response_model=StepResponse,
     responses={**SESSION_NOT_FOUND_RESPONSES, **INTENT_NO_MATCH_RESPONSES},
+    description="""Match free-text input to an eligible action and execute it.
+
+The input is matched against the labels of currently eligible actions.
+If no match is found, a 422 error is returned with the available actions.
+
+**curl:**
+```bash
+curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/intent \\
+  -H "Content-Type: application/json" \\
+  -d '{"input": "rest a bit longer"}'
+```
+
+**Python (httpx):**
+```python
+import httpx
+resp = httpx.post(
+    "http://localhost:8000/v1/sessions/a1b2c3d4/intent",
+    json={"input": "brew some tea"},
+)
+```
+""",
 )
 def submit_intent(
     session_id: str,

@@ -78,8 +78,8 @@ class SessionGetResponse(BaseModel):
     model_config = ConfigDict(json_schema_extra={"example": {
         "session_id": "a1b2c3d4e5f67890abcdef1234567890",
         "view": {
-            "prompt": None,
-            "scene_id": None,
+            "prompt": "(no active scene)",
+            "scene_id": "",
             "eligible_actions": [],
             "visible_items": [],
             "visible_npcs": [],

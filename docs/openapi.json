@@ -411,7 +411,7 @@
           "sessions"
         ],
         "summary": "Get Session",
-        "description": "Get the current state of a game session.\n\n**curl:**\n```bash\ncurl http://localhost:8000/v1/sessions/{session_id}\n```",
+        "description": "Get the current state of a game session.\n\n**curl:**\n```bash\ncurl http://localhost:8000/v1/sessions/a1b2c3d4\n```",
         "operationId": "get_session_v1_sessions__session_id__get",
         "parameters": [
           {
@@ -487,6 +487,7 @@
           "sessions"
         ],
         "summary": "Enter Place",
+        "description": "Re-enter the current place to refresh the scene and get new choices.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/enter\n```",
         "operationId": "enter_place_v1_sessions__session_id__enter_post",
         "parameters": [
           {
@@ -562,7 +563,7 @@
           "sessions"
         ],
         "summary": "Submit Action",
-        "description": "Execute a chosen action in the current scene.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/{session_id}/action \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"action_id\": \"rest_longer\"}'\n```\n\nTo see developer error details, add the projection header:\n```bash\ncurl -H \"Accept-Projection: developer\" http://localhost:8000/v1/sessions/{session_id}/action ...\n```",
+        "description": "Execute a chosen action in the current scene.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/action \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"action_id\": \"rest_longer\"}'\n```\n\nTo see developer error details, add the projection header:\n```bash\ncurl -H \"Accept-Projection: developer\" http://localhost:8000/v1/sessions/a1b2c3d4/action ...\n```",
         "operationId": "submit_action_v1_sessions__session_id__action_post",
         "parameters": [
           {
@@ -685,6 +686,7 @@
           "sessions"
         ],
         "summary": "Submit Intent",
+        "description": "Match free-text input to an eligible action and execute it.\n\nThe input is matched against the labels of currently eligible actions.\nIf no match is found, a 422 error is returned with the available actions.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/intent \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"input\": \"rest a bit longer\"}'\n```\n\n**Python (httpx):**\n```python\nimport httpx\nresp = httpx.post(\n    \"http://localhost:8000/v1/sessions/a1b2c3d4/intent\",\n    json={\"input\": \"brew some tea\"},\n)\n```",
         "operationId": "submit_intent_v1_sessions__session_id__intent_post",
         "parameters": [
           {
@@ -983,7 +985,7 @@
     "/v1/players/{player_id}/inventory": {
       "get": {
         "tags": [
-          "journal"
+          "players"
         ],
         "summary": "Get Player Inventory",
         "operationId": "get_player_inventory_v1_players__player_id__inventory_get",
@@ -1062,7 +1064,7 @@
     "/v1/players/{player_id}/journal": {
       "get": {
         "tags": [
-          "journal"
+          "players"
         ],
         "summary": "Get Player Journal",
         "operationId": "get_player_journal_v1_players__player_id__journal_get",
@@ -1507,6 +1509,8 @@
           },
           "view": {
             "eligible_actions": [],
+            "prompt": "(no active scene)",
+            "scene_id": "",
             "visible_items": [],
             "visible_npcs": []
           }

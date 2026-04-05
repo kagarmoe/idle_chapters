@@ -7,7 +7,7 @@ from idle_chapters.api.deps import get_db
 from idle_chapters.api.routers.error_helpers import PLAYER_NOT_FOUND_RESPONSES, raise_player_not_found
 
 
-router = APIRouter(prefix="/v1/players", tags=["journal"])
+router = APIRouter(prefix="/v1/players", tags=["players"])
 
 
 @router.get("/{player_id}/inventory", responses=PLAYER_NOT_FOUND_RESPONSES)
