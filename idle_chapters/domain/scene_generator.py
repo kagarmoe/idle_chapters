@@ -3,6 +3,7 @@ from __future__ import annotations
 import random
 from typing import Any
 
+from idle_chapters.domain.errors import InvalidLocation
 from idle_chapters.domain.scene import Scene
 
 
@@ -62,7 +63,7 @@ def _choices(rng: random.Random) -> list[dict[str, Any]]:
 
 def generate_scene(state, repo, seed: int | None = None) -> Scene:
     if state.current_place_id not in repo.places_by_id:
-        raise ValueError(f"Unknown place_id: {state.current_place_id}")
+        raise InvalidLocation(location_id=state.current_place_id)
 
     place = repo.places_by_id[state.current_place_id]
     zone_id = place.get("zone_id")

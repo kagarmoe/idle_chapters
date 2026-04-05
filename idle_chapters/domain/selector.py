@@ -3,6 +3,7 @@ from __future__ import annotations
 import random
 from typing import Iterable
 
+from idle_chapters.domain.errors import SceneNotAvailable
 from idle_chapters.domain.scene_generator import generate_scene
 
 
@@ -38,6 +39,6 @@ def eligible_actions(state, repo) -> list[dict]:
 
 def choose_scene(scenes: list[dict], seed: int | None = None) -> dict:
     if not scenes:
-        raise ValueError("No eligible scenes")
+        raise SceneNotAvailable(session_id="")
     rng = random.Random(seed)
     return rng.choice(scenes)

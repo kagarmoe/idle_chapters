@@ -4,6 +4,7 @@ from dataclasses import replace
 
 from idle_chapters.domain.conditions import evaluate_conditions
 from idle_chapters.domain.effects import apply_effects
+from idle_chapters.domain.errors import ActionNotEligible
 from idle_chapters.domain.ingredient_picker import pick_ingredients
 from idle_chapters.domain.journal_renderer import render_journal_page
 from idle_chapters.domain.selector import (
@@ -83,7 +84,11 @@ class Engine:
         self, state: PlayerState, choice_id: str | None, repo, seed
     ) -> StepResult:
         if not choice_id:
-            raise ValueError("choice_id required for 'choose option' command")
+            raise ActionNotEligible(
+                action_id="(none)",
+                session_id=state.session_id,
+                unmet_conditions=["choice_id is required"],
+            )
 
         action = repo.actions_by_id.get(choice_id)
 
@@ -92,7 +97,11 @@ class Engine:
         if not action:
             if state.current_node_id is None:
                 return self._handle_enter(state, repo, seed)
-            raise ValueError(f"Unknown action: {choice_id}")
+            raise ActionNotEligible(
+                action_id=choice_id,
+                session_id=state.session_id,
+                unmet_conditions=["action not found in current scene"],
+            )
 
         new_state = apply_effects(state, action.get("effects", {}))
 

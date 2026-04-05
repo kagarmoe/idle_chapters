@@ -1,6 +1,7 @@
 import pytest
 
 from idle_chapters.domain.effects import apply_effects
+from idle_chapters.domain.errors import InsufficientInventory
 from idle_chapters.domain.state import PlayerState
 
 
@@ -37,5 +38,8 @@ def test_apply_effects_prevents_negative_inventory() -> None:
 
     effects = {"remove_items": {"item_1": 1}}
 
-    with pytest.raises(ValueError):
+    with pytest.raises(InsufficientInventory) as exc_info:
         apply_effects(state, effects)
+    assert exc_info.value.item_id == "item_1"
+    assert exc_info.value.required == 1
+    assert exc_info.value.available == 0
