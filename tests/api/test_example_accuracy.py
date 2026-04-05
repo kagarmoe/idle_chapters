@@ -16,6 +16,12 @@ import pytest
 from fastapi.testclient import TestClient
 
 from idle_chapters.api.server import create_app
+from idle_chapters.api.models import (
+    SessionCreateResponse,
+    SessionGetResponse,
+    StepResponse,
+    PlayerResponse,
+)
 from idle_chapters.api.routers.error_helpers import (
     ACTION_NOT_ELIGIBLE_RESPONSES,
     INTENT_NO_MATCH_RESPONSES,
@@ -30,15 +36,20 @@ def _mongo_available() -> bool:
         from pymongo import MongoClient
 
         c = MongoClient("localhost", 27017, serverSelectionTimeoutMS=1000)
-        c.admin.command("ping")
-        return True
+        try:
+            c.admin.command("ping")
+            return True
+        finally:
+            c.close()
     except Exception:
         return False
 
 
+# Skip the entire module when MongoDB is unreachable.
+# CI sets MONGO_URL; locally we probe the default port as a fallback.
 pytestmark = pytest.mark.skipif(
     not os.environ.get("MONGO_URL", "").strip() and not _mongo_available(),
-    reason="MongoDB not available",
+    reason="MongoDB not available (set MONGO_URL or run mongod locally)",
 )
 
 
@@ -49,10 +60,46 @@ def _example_keys(responses_dict: dict, status_code: int, example_name: str) -> 
     )
 
 
+def _compare_shape(label: str, actual, example, errors: list[str], path: str = "") -> None:
+    """Recursively compare the shape (keys and value types) of actual vs example."""
+    if isinstance(example, dict) and isinstance(actual, dict):
+        actual_keys = set(actual.keys())
+        example_keys = set(example.keys())
+        extra = actual_keys - example_keys
+        missing = example_keys - actual_keys
+        if extra:
+            errors.append(f"{label}{path}: response has fields not in example: {extra}")
+        if missing:
+            errors.append(f"{label}{path}: example has fields not in response: {missing}")
+        for key in actual_keys & example_keys:
+            _compare_shape(label, actual[key], example[key], errors, f"{path}.{key}")
+    elif isinstance(example, list) and isinstance(actual, list):
+        # Check first element shape if both non-empty
+        if actual and example:
+            _compare_shape(label, actual[0], example[0], errors, f"{path}[0]")
+    elif type(actual).__name__ != type(example).__name__:
+        # Allow None vs any type (None is valid for optional fields)
+        if actual is not None and example is not None:
+            errors.append(
+                f"{label}{path}: type mismatch: response is {type(actual).__name__}, "
+                f"example is {type(example).__name__}"
+            )
+
+
 @pytest.fixture(scope="module")
 def client():
     app = create_app()
     return TestClient(app)
+
+
+@pytest.fixture(scope="module")
+def openapi_examples():
+    return {
+        "SessionCreateResponse": SessionCreateResponse.model_config["json_schema_extra"]["example"],
+        "SessionGetResponse": SessionGetResponse.model_config["json_schema_extra"]["example"],
+        "StepResponse": StepResponse.model_config["json_schema_extra"]["example"],
+        "PlayerResponse": PlayerResponse.model_config["json_schema_extra"]["example"],
+    }
 
 
 @pytest.fixture(scope="module")
@@ -75,52 +122,52 @@ def player_id(client):
 class TestSuccessExamples:
     """Verify success response fields match Pydantic model examples."""
 
-    def test_create_session_fields(self, client):
+    def test_create_session_fields(self, client, openapi_examples):
         resp = client.post("/v1/sessions", json={"place_id": "cottage_home"})
         assert resp.status_code == 200
-        actual = set(resp.json().keys())
-        spec = create_app().openapi()
-        example = set(spec["components"]["schemas"]["SessionCreateResponse"]["example"].keys())
-        assert actual == example, f"actual {actual} != example {example}"
+        errs: list[str] = []
+        _compare_shape("SessionCreateResponse", resp.json(), openapi_examples["SessionCreateResponse"], errs)
+        assert errs == [], "\n".join(errs)
 
-    def test_get_session_fields(self, client, session_id):
+    def test_get_session_fields(self, client, session_id, openapi_examples):
         resp = client.get(f"/v1/sessions/{session_id}")
         assert resp.status_code == 200
-        actual = set(resp.json().keys())
-        spec = create_app().openapi()
-        example = set(spec["components"]["schemas"]["SessionGetResponse"]["example"].keys())
-        assert actual == example
+        errs: list[str] = []
+        _compare_shape("SessionGetResponse", resp.json(), openapi_examples["SessionGetResponse"], errs)
+        assert errs == [], "\n".join(errs)
 
-    def test_get_session_state_fields(self, client, session_id):
+    def test_get_session_state_fields(self, client, session_id, openapi_examples):
         resp = client.get(f"/v1/sessions/{session_id}")
-        actual = set(resp.json()["state"].keys())
-        spec = create_app().openapi()
-        example = set(spec["components"]["schemas"]["SessionGetResponse"]["example"]["state"].keys())
-        assert actual == example, f"state: actual {actual} != example {example}"
+        assert resp.status_code == 200
+        errs: list[str] = []
+        _compare_shape(
+            "SessionGetResponse.state",
+            resp.json()["state"],
+            openapi_examples["SessionGetResponse"]["state"],
+            errs,
+        )
+        assert errs == [], "\n".join(errs)
 
-    def test_enter_fields(self, client, session_id):
+    def test_enter_fields(self, client, session_id, openapi_examples):
         resp = client.post(f"/v1/sessions/{session_id}/enter")
         assert resp.status_code == 200
-        actual = set(resp.json().keys())
-        spec = create_app().openapi()
-        example = set(spec["components"]["schemas"]["StepResponse"]["example"].keys())
-        assert actual == example
+        errs: list[str] = []
+        _compare_shape("StepResponse", resp.json(), openapi_examples["StepResponse"], errs)
+        assert errs == [], "\n".join(errs)
 
-    def test_create_player_fields(self, client):
+    def test_create_player_fields(self, client, openapi_examples):
         resp = client.post("/v1/players", json={"display_name": "FieldTest"})
         assert resp.status_code == 200
-        actual = set(resp.json().keys())
-        spec = create_app().openapi()
-        example = set(spec["components"]["schemas"]["PlayerResponse"]["example"].keys())
-        assert actual == example
+        errs: list[str] = []
+        _compare_shape("PlayerResponse", resp.json(), openapi_examples["PlayerResponse"], errs)
+        assert errs == [], "\n".join(errs)
 
-    def test_get_player_fields(self, client, player_id):
+    def test_get_player_fields(self, client, player_id, openapi_examples):
         resp = client.get(f"/v1/players/{player_id}")
         assert resp.status_code == 200
-        actual = set(resp.json().keys())
-        spec = create_app().openapi()
-        example = set(spec["components"]["schemas"]["PlayerResponse"]["example"].keys())
-        assert actual == example
+        errs: list[str] = []
+        _compare_shape("PlayerResponse", resp.json(), openapi_examples["PlayerResponse"], errs)
+        assert errs == [], "\n".join(errs)
 
 
 # --- Error response field checks (player projection) ---
@@ -151,6 +198,16 @@ class TestErrorExamplesPlayerProjection:
         assert resp.status_code == 422
         actual = set(resp.json().keys())
         expected = _example_keys(INTENT_NO_MATCH_RESPONSES, 422, "player")
+        assert actual == expected
+
+    def test_action_not_eligible(self, client, session_id):
+        resp = client.post(
+            f"/v1/sessions/{session_id}/action",
+            json={"action_id": "nonexistent_action"},
+        )
+        assert resp.status_code == 409
+        actual = set(resp.json().keys())
+        expected = _example_keys(ACTION_NOT_ELIGIBLE_RESPONSES, 409, "player")
         assert actual == expected
 
 
@@ -189,6 +246,17 @@ class TestErrorExamplesDeveloperProjection:
         assert resp.status_code == 422
         actual = set(resp.json().keys())
         expected = _example_keys(INTENT_NO_MATCH_RESPONSES, 422, "developer")
+        assert actual == expected
+
+    def test_action_not_eligible(self, client, session_id):
+        resp = client.post(
+            f"/v1/sessions/{session_id}/action",
+            json={"action_id": "nonexistent_action"},
+            headers={"Accept-Projection": "developer"},
+        )
+        assert resp.status_code == 409
+        actual = set(resp.json().keys())
+        expected = _example_keys(ACTION_NOT_ELIGIBLE_RESPONSES, 409, "developer")
         assert actual == expected
 
     def test_journal_page_not_found(self, client, session_id):

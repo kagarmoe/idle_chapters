@@ -411,7 +411,7 @@
           "sessions"
         ],
         "summary": "Get Session",
-        "description": "Get the current state of a game session.\n\n**curl:**\n```bash\ncurl http://localhost:8000/v1/sessions/a1b2c3d4\n```",
+        "description": "Get the current state of a game session.\n\n**curl:**\n```bash\ncurl http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890\n```",
         "operationId": "get_session_v1_sessions__session_id__get",
         "parameters": [
           {
@@ -487,7 +487,7 @@
           "sessions"
         ],
         "summary": "Enter Place",
-        "description": "Re-enter the current place to refresh the scene and get new choices.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/enter\n```",
+        "description": "Re-enter the current place to refresh the scene and get new choices.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/enter\n```",
         "operationId": "enter_place_v1_sessions__session_id__enter_post",
         "parameters": [
           {
@@ -563,7 +563,7 @@
           "sessions"
         ],
         "summary": "Submit Action",
-        "description": "Execute a chosen action in the current scene.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/action \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"action_id\": \"rest_longer\"}'\n```\n\nTo see developer error details, add the projection header:\n```bash\ncurl -H \"Accept-Projection: developer\" http://localhost:8000/v1/sessions/a1b2c3d4/action ...\n```",
+        "description": "Execute a chosen action in the current scene.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"action_id\": \"rest_longer\"}'\n```\n\nTo see developer error details, add the projection header:\n```bash\ncurl -H \"Accept-Projection: developer\" http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action ...\n```",
         "operationId": "submit_action_v1_sessions__session_id__action_post",
         "parameters": [
           {
@@ -686,7 +686,7 @@
           "sessions"
         ],
         "summary": "Submit Intent",
-        "description": "Match free-text input to an eligible action and execute it.\n\nThe input is matched against the labels of currently eligible actions.\nIf no match is found, a 422 error is returned with the available actions.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/intent \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"input\": \"rest a bit longer\"}'\n```\n\n**Python (httpx):**\n```python\nimport httpx\nresp = httpx.post(\n    \"http://localhost:8000/v1/sessions/a1b2c3d4/intent\",\n    json={\"input\": \"brew some tea\"},\n)\n```",
+        "description": "Match free-text input to an eligible action and execute it.\n\nThe input is matched against the labels of currently eligible actions.\nIf no match is found, a 422 error is returned with the available actions.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/intent \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"input\": \"rest a bit longer\"}'\n```\n\n**Python (httpx):**\n```python\nimport httpx\nresp = httpx.post(\n    \"http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/intent\",\n    json={\"input\": \"brew some tea\"},\n)\n```",
         "operationId": "submit_intent_v1_sessions__session_id__intent_post",
         "parameters": [
           {
@@ -1434,11 +1434,18 @@
         "example": {
           "journal_page": {
             "body": "The kettle sang softly. You watched the steam curl and disappear.",
+            "date": "2026-04-04",
             "entry_type": "tea",
+            "ingredients": [
+              "chamomile",
+              "lavender"
+            ],
             "mood": "Home",
             "need": "Permission to rest and recover",
             "page_id": "jp-a1b2c3",
-            "place_id": "cottage_home"
+            "place_id": "cottage_home",
+            "prompt": "What softened today? What can wait until tomorrow?",
+            "tags": []
           },
           "session_id": "a1b2c3d4e5f67890abcdef1234567890",
           "view": {
@@ -1491,19 +1498,12 @@
           "session_id": "a1b2c3d4e5f67890abcdef1234567890",
           "state": {
             "current_place_id": "cottage_home",
-            "flags": [
-              "visited_forest"
-            ],
-            "inventory": {
-              "black_tea": 1,
-              "chamomile": 2
-            },
-            "time_tick": 5
+            "flags": [],
+            "inventory": {},
+            "time_tick": 0
           },
           "view": {
             "eligible_actions": [],
-            "prompt": "(no active scene)",
-            "scene_id": "",
             "visible_items": [],
             "visible_npcs": []
           }
@@ -1548,11 +1548,18 @@
           ],
           "journal_page": {
             "body": "A thin curl of steam rises. Nothing needs to happen yet.",
+            "date": "2026-04-04",
             "entry_type": "tea",
+            "ingredients": [
+              "chamomile",
+              "lavender"
+            ],
             "mood": "Home",
             "need": "Permission to rest and recover",
             "page_id": "jp-d4e5f6",
-            "place_id": "cottage_home"
+            "place_id": "cottage_home",
+            "prompt": "What softened today? What can wait until tomorrow?",
+            "tags": []
           },
           "view": {
             "eligible_actions": [

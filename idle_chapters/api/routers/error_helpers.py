@@ -23,6 +23,32 @@ def raise_player_not_found(player_id: str) -> NoReturn:
 
 # --- OpenAPI error response examples ---
 
+# Shared session-not-found examples (used in both SESSION_NOT_FOUND_RESPONSES
+# and JOURNAL_PAGE_404_RESPONSES to avoid duplication).
+_SESSION_NOT_FOUND_PLAYER_EXAMPLE = {
+    "summary": "Session not found — player projection",
+    "value": {
+        "type": "urn:idle-chapters:error:session_not_found",
+        "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+        "status": 404,
+    },
+}
+
+_SESSION_NOT_FOUND_DEVELOPER_EXAMPLE = {
+    "summary": "Session not found — developer projection",
+    "value": {
+        "type": "urn:idle-chapters:error:session_not_found",
+        "title": "Session Not Found",
+        "status": 404,
+        "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
+        "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "effect": "none",
+        "recovery": "terminal",
+        "signal": "NOTICE",
+        "context": {"session_id": "abc123"},
+    },
+}
+
 SESSION_NOT_FOUND_RESPONSES = {
     404: {
         "description": "Session not found",
@@ -31,25 +57,11 @@ SESSION_NOT_FOUND_RESPONSES = {
                 "examples": {
                     "player": {
                         "summary": "Player projection (default)",
-                        "value": {
-                            "type": "urn:idle-chapters:error:session_not_found",
-                            "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
-                            "status": 404,
-                        },
+                        "value": _SESSION_NOT_FOUND_PLAYER_EXAMPLE["value"],
                     },
                     "developer": {
                         "summary": "Developer projection (Accept-Projection: developer)",
-                        "value": {
-                            "type": "urn:idle-chapters:error:session_not_found",
-                            "title": "Session Not Found",
-                            "status": 404,
-                            "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
-                            "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                            "effect": "none",
-                            "recovery": "terminal",
-                            "signal": "NOTICE",
-                            "context": {"session_id": "abc123"},
-                        },
+                        "value": _SESSION_NOT_FOUND_DEVELOPER_EXAMPLE["value"],
                     },
                 },
             },
@@ -165,28 +177,8 @@ JOURNAL_PAGE_404_RESPONSES = {
         "content": {
             "application/json": {
                 "examples": {
-                    "session_not_found_player": {
-                        "summary": "Session not found — player projection",
-                        "value": {
-                            "type": "urn:idle-chapters:error:session_not_found",
-                            "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
-                            "status": 404,
-                        },
-                    },
-                    "session_not_found_developer": {
-                        "summary": "Session not found — developer projection",
-                        "value": {
-                            "type": "urn:idle-chapters:error:session_not_found",
-                            "title": "Session Not Found",
-                            "status": 404,
-                            "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
-                            "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                            "effect": "none",
-                            "recovery": "terminal",
-                            "signal": "NOTICE",
-                            "context": {"session_id": "abc123"},
-                        },
-                    },
+                    "session_not_found_player": _SESSION_NOT_FOUND_PLAYER_EXAMPLE,
+                    "session_not_found_developer": _SESSION_NOT_FOUND_DEVELOPER_EXAMPLE,
                     "journal_page_not_found_player": {
                         "summary": "Journal page not found — player projection",
                         "value": {

@@ -61,11 +61,15 @@ class SessionCreateResponse(BaseModel):
         },
         "journal_page": {
             "page_id": "jp-a1b2c3",
+            "date": "2026-04-04",
             "place_id": "cottage_home",
             "entry_type": "tea",
             "mood": "Home",
             "need": "Permission to rest and recover",
+            "ingredients": ["chamomile", "lavender"],
+            "prompt": "What softened today? What can wait until tomorrow?",
             "body": "The kettle sang softly. You watched the steam curl and disappear.",
+            "tags": [],
         },
     }})
 
@@ -78,17 +82,17 @@ class SessionGetResponse(BaseModel):
     model_config = ConfigDict(json_schema_extra={"example": {
         "session_id": "a1b2c3d4e5f67890abcdef1234567890",
         "view": {
-            "prompt": "(no active scene)",
-            "scene_id": "",
+            "prompt": None,
+            "scene_id": None,
             "eligible_actions": [],
             "visible_items": [],
             "visible_npcs": [],
         },
         "state": {
             "current_place_id": "cottage_home",
-            "inventory": {"chamomile": 2, "black_tea": 1},
-            "flags": ["visited_forest"],
-            "time_tick": 5,
+            "inventory": {},
+            "flags": [],
+            "time_tick": 0,
         },
     }})
 
@@ -110,11 +114,15 @@ class StepResponse(BaseModel):
         },
         "journal_page": {
             "page_id": "jp-d4e5f6",
+            "date": "2026-04-04",
             "place_id": "cottage_home",
             "entry_type": "tea",
             "mood": "Home",
             "need": "Permission to rest and recover",
+            "ingredients": ["chamomile", "lavender"],
+            "prompt": "What softened today? What can wait until tomorrow?",
             "body": "A thin curl of steam rises. Nothing needs to happen yet.",
+            "tags": [],
         },
         "choices": [
             {"action_id": "cottage_wake", "label": "Wake in the cottage"},
@@ -157,6 +165,7 @@ class PlayerResponse(BaseModel):
             "pronouns": "they/them",
         },
         "state": {
+            "current_location": None,
             "inventory_counts": {},
             "visit_counts": {},
             "seen_interactions": {},

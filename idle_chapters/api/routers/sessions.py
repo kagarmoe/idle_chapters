@@ -114,7 +114,7 @@ def create_session(
 
 **curl:**
 ```bash
-curl http://localhost:8000/v1/sessions/a1b2c3d4
+curl http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890
 ```
 """,
 )
@@ -145,7 +145,7 @@ def get_session(
 
 **curl:**
 ```bash
-curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/enter
+curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/enter
 ```
 """,
 )
@@ -165,14 +165,14 @@ def enter_place(
 
 **curl:**
 ```bash
-curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/action \\
+curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action \\
   -H "Content-Type: application/json" \\
   -d '{"action_id": "rest_longer"}'
 ```
 
 To see developer error details, add the projection header:
 ```bash
-curl -H "Accept-Projection: developer" http://localhost:8000/v1/sessions/a1b2c3d4/action ...
+curl -H "Accept-Projection: developer" http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action ...
 ```
 """,
 )
@@ -196,7 +196,7 @@ If no match is found, a 422 error is returned with the available actions.
 
 **curl:**
 ```bash
-curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/intent \\
+curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/intent \\
   -H "Content-Type: application/json" \\
   -d '{"input": "rest a bit longer"}'
 ```
@@ -205,7 +205,7 @@ curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4/intent \\
 ```python
 import httpx
 resp = httpx.post(
-    "http://localhost:8000/v1/sessions/a1b2c3d4/intent",
+    "http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/intent",
     json={"input": "brew some tea"},
 )
 ```
