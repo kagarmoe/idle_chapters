@@ -195,7 +195,7 @@ git commit -m "feat: add typed domain exception classes"
 # apps/api/tests/test_game_error.py
 import pytest
 
-from app.services.errors import GameError, ErrorKind, Effect, Recovery
+from app.services.errors import GameError, ErrorKind, Effect, Recovery, Signal
 
 
 class TestGameErrorConstruction:
@@ -228,18 +228,6 @@ class TestGameErrorConstruction:
         ).http_status == 404
 
         assert GameError(
-            kind=ErrorKind.ACTION_NOT_ELIGIBLE,
-            effect=Effect.NONE,
-            recovery=Recovery.CORRECTABLE,
-        ).http_status == 409
-
-        assert GameError(
-            kind=ErrorKind.INTENT_NO_MATCH,
-            effect=Effect.NONE,
-            recovery=Recovery.CORRECTABLE,
-        ).http_status == 422
-
-        assert GameError(
             kind=ErrorKind.ENGINE_FAILURE,
             effect=Effect.UNKNOWN,
             recovery=Recovery.ESCALATE,
@@ -252,8 +240,35 @@ class TestGameErrorConstruction:
         ).http_status == 503
 
 
+class TestSignalDerivation:
+    """Signal word derived from effect + recovery per Z535 mapping."""
+
+    def test_unknown_effect_is_always_danger(self):
+        for recovery in Recovery:
+            err = GameError(kind=ErrorKind.ENGINE_FAILURE, effect=Effect.UNKNOWN, recovery=recovery)
+            assert err.signal == Signal.DANGER
+
+    def test_partial_escalate_is_danger(self):
+        err = GameError(kind=ErrorKind.PERSISTENCE_FAILURE, effect=Effect.PARTIAL, recovery=Recovery.ESCALATE)
+        assert err.signal == Signal.DANGER
+
+    def test_partial_retryable_is_warning(self):
+        err = GameError(kind=ErrorKind.PERSISTENCE_FAILURE, effect=Effect.PARTIAL, recovery=Recovery.RETRYABLE)
+        assert err.signal == Signal.WARNING
+
+    def test_none_correctable_is_caution(self):
+        err = GameError(kind=ErrorKind.ACTION_NOT_ELIGIBLE, effect=Effect.NONE, recovery=Recovery.CORRECTABLE)
+        assert err.signal == Signal.CAUTION
+
+    def test_none_terminal_is_notice(self):
+        err = GameError(kind=ErrorKind.SESSION_NOT_FOUND, effect=Effect.NONE, recovery=Recovery.TERMINAL)
+        assert err.signal == Signal.NOTICE
+
+
 class TestPlayerProjection:
-    def test_renders_template_with_context(self):
+    """Player projection: minimal RFC 9457 (type, title, status)."""
+
+    def test_renders_rfc9457_with_template(self):
         err = GameError(
             kind=ErrorKind.INTENT_NO_MATCH,
             effect=Effect.NONE,
@@ -261,9 +276,14 @@ class TestPlayerProjection:
             context={"input": "dance", "available_actions": "brew tea, rest"},
         )
         projection = err.project_player()
-        assert projection["kind"] == "intent_no_match"
-        assert "dance" in projection["message"]
-        assert "brew tea, rest" in projection["message"]
+        assert projection["type"] == "urn:idle-chapters:error:intent_no_match"
+        assert projection["status"] == 422
+        assert "dance" in projection["title"]
+        assert "brew tea, rest" in projection["title"]
+        # Player projection must NOT include extension members
+        assert "effect" not in projection
+        assert "recovery" not in projection
+        assert "signal" not in projection
 
     def test_falls_back_when_placeholder_missing(self):
         err = GameError(
@@ -273,14 +293,14 @@ class TestPlayerProjection:
             context={},  # missing placeholders
         )
         projection = err.project_player()
-        assert "kind" in projection
-        assert "message" in projection
-        # Should use fallback, not crash
-        assert len(projection["message"]) > 0
+        assert projection["type"] == "urn:idle-chapters:error:intent_no_match"
+        assert len(projection["title"]) > 0
 
 
 class TestDeveloperProjection:
-    def test_includes_all_structured_fields(self):
+    """Developer projection: full RFC 9457 + Z535 extensions."""
+
+    def test_includes_all_rfc9457_and_extension_fields(self):
         err = GameError(
             kind=ErrorKind.PERSISTENCE_FAILURE,
             effect=Effect.PARTIAL,
@@ -289,10 +309,16 @@ class TestDeveloperProjection:
             context={"session_id": "abc-123"},
         )
         projection = err.project_developer()
-        assert projection["kind"] == "persistence_failure"
+        # RFC 9457 required members
+        assert projection["type"] == "urn:idle-chapters:error:persistence_failure"
+        assert projection["title"] == "Persistence Failure"
+        assert projection["status"] == 503
+        assert "WHAT" in projection["detail"]
+        assert projection["instance"].startswith("urn:idle-chapters:occurrence:")
+        # Extension members
         assert projection["effect"] == "partial"
         assert projection["recovery"] == "retryable"
-        assert "WHAT" in projection["detail"]
+        assert projection["signal"] == "WARNING"
         assert projection["context"]["session_id"] == "abc-123"
 ```
 
@@ -307,22 +333,24 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'app.services.errors'`
 # apps/api/app/services/errors.py
 """Structured error model for Idle Chapters.
 
-GameError is the single source of truth for all errors in the system.
-It carries classification (kind), state impact (effect), recovery
-guidance (recovery), developer detail (Z535), and machine context.
+Profiles RFC 9457 (Problem Details for HTTP APIs) with extension members
+for state semantics (effect), recovery guidance, and ANSI Z535 signal
+word severity classification.
 
 Projections transform a GameError for different audiences:
-- player: tone-contract-compliant template string
-- developer: full structured detail (Z535: WHAT/MEANS/DO)
-- agent (future): kind + effect + recovery + context only
+- player: minimal RFC 9457 (type, title, status)
+- developer: full RFC 9457 + Z535 extensions
+- agent (future): RFC 9457 + extensions, no prose detail
 """
 
 from __future__ import annotations
 
 import json
 from enum import StrEnum
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 
 class ErrorKind(StrEnum):
@@ -350,6 +378,14 @@ class Recovery(StrEnum):
     ESCALATE = "escalate"
 
 
+class Signal(StrEnum):
+    """ANSI Z535 signal word hierarchy, adapted for software state severity."""
+    DANGER = "DANGER"
+    WARNING = "WARNING"
+    CAUTION = "CAUTION"
+    NOTICE = "NOTICE"
+
+
 _HTTP_STATUS: dict[ErrorKind, int] = {
     ErrorKind.SESSION_NOT_FOUND: 404,
     ErrorKind.ACTION_NOT_ELIGIBLE: 409,
@@ -361,20 +397,52 @@ _HTTP_STATUS: dict[ErrorKind, int] = {
     ErrorKind.PERSISTENCE_FAILURE: 503,
 }
 
-# Loaded once on first use; module-level cache.
-_templates: dict[str, dict[str, str]] | None = None
+# Human-readable titles per kind, used in RFC 9457 `title` member.
+_TITLES: dict[ErrorKind, str] = {
+    ErrorKind.SESSION_NOT_FOUND: "Session Not Found",
+    ErrorKind.ACTION_NOT_ELIGIBLE: "Action Not Eligible",
+    ErrorKind.INTENT_NO_MATCH: "Intent No Match",
+    ErrorKind.INSUFFICIENT_INVENTORY: "Insufficient Inventory",
+    ErrorKind.INVALID_LOCATION: "Invalid Location",
+    ErrorKind.SCENE_NOT_AVAILABLE: "Scene Not Available",
+    ErrorKind.ENGINE_FAILURE: "Engine Failure",
+    ErrorKind.PERSISTENCE_FAILURE: "Persistence Failure",
+}
+
+_URN_PREFIX = "urn:idle-chapters:error:"
+_INSTANCE_PREFIX = "urn:idle-chapters:occurrence:"
 
 
+def _derive_signal(effect: Effect, recovery: Recovery) -> Signal:
+    """Derive Z535 signal word from effect + recovery.
+
+    Exhaustive mapping per design doc signal derivation table.
+    Effect determines the floor; recovery can raise it.
+    """
+    if effect == Effect.UNKNOWN:
+        return Signal.DANGER
+    if effect == Effect.PARTIAL:
+        if recovery == Recovery.ESCALATE:
+            return Signal.DANGER
+        return Signal.WARNING
+    if effect == Effect.APPLIED:
+        if recovery in (Recovery.ESCALATE, Recovery.RETRYABLE):
+            return Signal.WARNING
+        if recovery == Recovery.TERMINAL:
+            return Signal.NOTICE
+        return Signal.CAUTION
+    # effect == NONE
+    if recovery == Recovery.TERMINAL:
+        return Signal.NOTICE
+    return Signal.CAUTION
+
+
+@lru_cache(maxsize=1)
 def _load_templates() -> dict[str, dict[str, str]]:
-    global _templates
-    if _templates is not None:
-        return _templates
     path = Path(__file__).resolve().parents[3] / "assets" / "error_templates.json"
     if path.exists():
-        _templates = json.loads(path.read_text(encoding="utf-8"))
-    else:
-        _templates = {}
-    return _templates
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {}
 
 
 class GameError(Exception):
@@ -397,7 +465,20 @@ class GameError(Exception):
     def http_status(self) -> int:
         return _HTTP_STATUS.get(self.kind, 500)
 
-    def project_player(self) -> dict[str, str]:
+    @property
+    def signal(self) -> Signal:
+        return _derive_signal(self.effect, self.recovery)
+
+    @property
+    def type_uri(self) -> str:
+        return f"{_URN_PREFIX}{self.kind.value}"
+
+    @property
+    def title(self) -> str:
+        return _TITLES.get(self.kind, str(self.kind))
+
+    def project_player(self) -> dict[str, Any]:
+        """Minimal RFC 9457: type, title (rendered template), status."""
         templates = _load_templates()
         entry = templates.get(self.kind.value, {})
         template = entry.get("template", "")
@@ -406,14 +487,23 @@ class GameError(Exception):
             message = template.format(**self.context) if template else fallback
         except (KeyError, IndexError):
             message = fallback
-        return {"kind": self.kind.value, "message": message}
+        return {
+            "type": self.type_uri,
+            "title": message,
+            "status": self.http_status,
+        }
 
     def project_developer(self) -> dict[str, Any]:
+        """Full RFC 9457 + Z535 extensions."""
         return {
-            "kind": self.kind.value,
+            "type": self.type_uri,
+            "title": self.title,
+            "status": self.http_status,
+            "detail": self.detail,
+            "instance": f"{_INSTANCE_PREFIX}{uuid4()}",
             "effect": self.effect.value,
             "recovery": self.recovery.value,
-            "detail": self.detail,
+            "signal": self.signal.value,
             "context": self.context,
         }
 ```
@@ -421,7 +511,7 @@ class GameError(Exception):
 **Step 4: Run tests to verify they pass**
 
 Run: `cd apps/api && python -m pytest tests/test_game_error.py -v`
-Expected: 6 passed
+Expected: 10 passed
 
 **Step 5: Commit**
 
@@ -801,7 +891,7 @@ from app.domain.errors import (
     SessionNotFound,
 )
 from app.domain.state import PlayerState
-from app.services.errors import Effect, ErrorKind, GameError, Recovery
+from app.services.errors import Effect, ErrorKind, GameError, Recovery, Signal
 from app.services.session_service import SessionService
 
 
@@ -923,7 +1013,7 @@ from app.domain.errors import (
 )
 from app.domain.state import PlayerState
 from app.domain.step_result import StepResult
-from app.services.errors import Effect, ErrorKind, GameError, Recovery
+from app.services.errors import Effect, ErrorKind, GameError, Recovery, Signal
 
 logger = logging.getLogger(__name__)
 
@@ -1235,40 +1325,46 @@ def client(repo_root) -> TestClient:
 
 
 class TestPlayerProjection:
-    def test_session_not_found_returns_player_message(self, client):
+    def test_session_not_found_returns_rfc9457_player(self, client):
         resp = client.get("/v1/sessions/nonexistent")
         assert resp.status_code == 404
         body = resp.json()
-        assert "error" in body
-        assert body["error"]["kind"] == "session_not_found"
-        assert "message" in body["error"]
-        # Must not contain developer detail
-        assert "WHAT" not in body["error"].get("detail", "")
+        assert body["type"] == "urn:idle-chapters:error:session_not_found"
+        assert body["status"] == 404
+        assert "title" in body
+        # Player projection must NOT include extension members
+        assert "effect" not in body
+        assert "recovery" not in body
+        assert "signal" not in body
 
     def test_default_projection_is_player(self, client):
         resp = client.get("/v1/sessions/nonexistent")
         body = resp.json()
-        # Player projection: kind + message only
-        assert set(body["error"].keys()) == {"kind", "message"}
+        # Player projection: type + title + status only
+        assert set(body.keys()) == {"type", "title", "status"}
 
 
 class TestDeveloperProjection:
-    def test_session_not_found_returns_structured_detail(self, client):
+    def test_session_not_found_returns_full_rfc9457(self, client):
         resp = client.get(
             "/v1/sessions/nonexistent",
             headers={"Accept-Projection": "developer"},
         )
         assert resp.status_code == 404
         body = resp.json()
-        assert "error" in body
-        err = body["error"]
-        assert err["kind"] == "session_not_found"
-        assert err["effect"] == "none"
-        assert err["recovery"] == "terminal"
-        assert "WHAT" in err["detail"]
-        assert "MEANS" in err["detail"]
-        assert "DO" in err["detail"]
-        assert "session_id" in err["context"]
+        # RFC 9457 required members
+        assert body["type"] == "urn:idle-chapters:error:session_not_found"
+        assert body["title"] == "Session Not Found"
+        assert body["status"] == 404
+        assert "WHAT" in body["detail"]
+        assert "MEANS" in body["detail"]
+        assert "DO" in body["detail"]
+        assert body["instance"].startswith("urn:idle-chapters:occurrence:")
+        # Extension members
+        assert body["effect"] == "none"
+        assert body["recovery"] == "terminal"
+        assert body["signal"] == "NOTICE"
+        assert "session_id" in body["context"]
 ```
 
 **Step 2: Run tests to verify they fail**
@@ -1278,24 +1374,27 @@ Expected: FAIL (router still returns old `{"detail": "..."}` format)
 
 **Step 3: Add Pydantic error response models**
 
-Add to `apps/api/app/api/models.py`:
+Add to `apps/api/app/api/models.py` (RFC 9457 response models):
 
 ```python
-class PlayerErrorBody(BaseModel):
-    kind: str
-    message: str
+class ProblemDetailPlayer(BaseModel):
+    """Minimal RFC 9457 response for player projection."""
+    type: str
+    title: str
+    status: int
 
 
-class DeveloperErrorBody(BaseModel):
-    kind: str
+class ProblemDetailDeveloper(BaseModel):
+    """Full RFC 9457 response with Z535 extensions for developer projection."""
+    type: str
+    title: str
+    status: int
+    detail: str
+    instance: str
     effect: str
     recovery: str
-    detail: str
+    signal: str
     context: dict[str, Any] = Field(default_factory=dict)
-
-
-class ErrorResponse(BaseModel):
-    error: PlayerErrorBody | DeveloperErrorBody
 ```
 
 **Step 4: Update sessions router**
@@ -1318,11 +1417,13 @@ from app.services.errors import GameError
 async def handle_game_error(request: Request, exc: GameError) -> JSONResponse:
     projection = request.headers.get("Accept-Projection", "player")
     if projection == "developer":
-        body = {"error": exc.project_developer()}
+        body = exc.project_developer()
     else:
-        body = {"error": exc.project_player()}
+        body = exc.project_player()
     return JSONResponse(status_code=exc.http_status, content=body)
 ```
+
+Note: RFC 9457 responses are flat JSON objects — no `{"error": {...}}` wrapper. The `type`, `title`, `status` members sit at the top level.
 
 Then simplify `sessions.py` — remove all `try/except ValueError` blocks. Let `GameError` propagate to the exception handler. Replace the full router file:
 
@@ -1344,7 +1445,7 @@ from app.api.models import (
     ViewModel,
 )
 from app.domain.step_result import StepResult
-from app.services.errors import Effect, ErrorKind, GameError, Recovery
+from app.services.errors import Effect, ErrorKind, GameError, Recovery, Signal
 from app.services.session_service import SessionService
 
 router = APIRouter(prefix="/v1/sessions", tags=["sessions"])
@@ -1513,29 +1614,12 @@ def get_journal_page(
 
 ```json
 // schemas/error_response.schema.json
-{
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "Error Response",
-    "description": "API error response envelope. Shape varies by Accept-Projection header.",
-    "type": "object",
-    "required": ["error"],
-    "properties": {
-        "error": {
-            "type": "object",
-            "required": ["kind"],
-            "properties": {
-                "kind": { "type": "string" },
-                "message": { "type": "string" },
-                "effect": { "type": "string", "enum": ["none", "applied", "partial", "unknown"] },
-                "recovery": { "type": "string", "enum": ["retryable", "correctable", "terminal", "escalate"] },
-                "detail": { "type": "string" },
-                "context": { "type": "object" }
-            }
-        }
-    },
-    "additionalProperties": false
-}
+// See design doc for full schema with oneOf for player vs developer shapes.
+// The schema is defined in design-docs/plans/2026-04-04-structured-errors-design.md
+// under "Error Response Schema" and should be copied from there.
 ```
+
+The full schema is maintained in the design doc to avoid duplication. Copy it from the "Error Response Schema" section during implementation.
 
 **Step 6: Run tests to verify they pass**
 
@@ -1566,44 +1650,47 @@ git commit -m "feat: add GameError exception handler with Accept-Projection supp
 Add to `apps/web/src/lib/api.ts` after the existing interfaces:
 
 ```typescript
-export interface PlayerError {
-    kind: string;
-    message: string;
+/** RFC 9457 Problem Details — player projection (minimal). */
+export interface ProblemDetailPlayer {
+    type: string;
+    title: string;
+    status: number;
 }
 
-export interface DeveloperError {
-    kind: string;
+/** RFC 9457 Problem Details — developer projection (full + Z535 extensions). */
+export interface ProblemDetailDeveloper {
+    type: string;
+    title: string;
+    status: number;
+    detail: string;
+    instance: string;
     effect: 'none' | 'applied' | 'partial' | 'unknown';
     recovery: 'retryable' | 'correctable' | 'terminal' | 'escalate';
-    detail: string;
+    signal: 'DANGER' | 'WARNING' | 'CAUTION' | 'NOTICE';
     context: Record<string, unknown>;
 }
 
-export interface ErrorResponse {
-    error: PlayerError | DeveloperError;
-}
+export type ProblemDetail = ProblemDetailPlayer | ProblemDetailDeveloper;
 ```
 
-**Step 2: Update ApiError to parse structured response**
+**Step 2: Update ApiError to parse RFC 9457 response**
 
 Replace the `ApiError` class:
 
 ```typescript
 class ApiError extends Error {
-    public playerError: PlayerError | null;
+    public problemDetail: ProblemDetailPlayer | null;
 
     constructor(
         public status: number,
         public body: unknown
     ) {
-        const parsed = body as ErrorResponse | null;
-        const message = parsed?.error && 'message' in parsed.error
-            ? parsed.error.message
-            : `API error ${status}`;
+        const parsed = body as ProblemDetail | null;
+        const message = parsed?.title ?? `API error ${status}`;
         super(message);
         this.name = 'ApiError';
-        this.playerError = parsed?.error && 'message' in parsed.error
-            ? parsed.error as PlayerError
+        this.problemDetail = parsed && 'type' in parsed
+            ? parsed as ProblemDetailPlayer
             : null;
     }
 }
