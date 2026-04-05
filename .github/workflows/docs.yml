@@ -1,0 +1,25 @@
+name: Docs CI
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+  pull_request:
+    paths:
+      - 'docs/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check docs/index.html exists
+        run: test -f docs/index.html
+
+      - name: Check docs/openapi.json exists
+        run: test -f docs/openapi.json
+
+      - name: Validate openapi.json is valid JSON
+        run: python3 -c "import json, pathlib; json.loads(pathlib.Path('docs/openapi.json').read_text())"
