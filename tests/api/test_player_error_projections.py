@@ -36,34 +36,50 @@ def client() -> TestClient:
     return TestClient(_make_test_app())
 
 
-def test_get_player_not_found_returns_rfc9457(client):
-    resp = client.get("/v1/players/nonexistent")
-    assert resp.status_code == 404
-    body = resp.json()
-    assert body["type"] == "urn:idle-chapters:error:player_not_found"
-    assert body["status"] == 404
-    assert set(body.keys()) == {"type", "title", "status"}
+class TestPlayerProjection:
+    def test_get_player_not_found_returns_rfc9457(self, client):
+        resp = client.get("/v1/players/nonexistent")
+        assert resp.status_code == 404
+        body = resp.json()
+        assert body["type"] == "urn:idle-chapters:error:player_not_found"
+        assert body["status"] == 404
+        assert set(body.keys()) == {"type", "title", "status"}
+
+    def test_patch_player_not_found_returns_rfc9457(self, client):
+        resp = client.patch("/v1/players/nonexistent", json={"display_name": "New Name"})
+        assert resp.status_code == 404
+        body = resp.json()
+        assert body["type"] == "urn:idle-chapters:error:player_not_found"
+        assert body["status"] == 404
+        assert set(body.keys()) == {"type", "title", "status"}
+
+    def test_get_inventory_player_not_found(self, client):
+        resp = client.get("/v1/players/nonexistent/inventory")
+        assert resp.status_code == 404
+        assert resp.json()["type"] == "urn:idle-chapters:error:player_not_found"
+
+    def test_get_journal_player_not_found(self, client):
+        resp = client.get("/v1/players/nonexistent/journal")
+        assert resp.status_code == 404
+        assert resp.json()["type"] == "urn:idle-chapters:error:player_not_found"
 
 
-def test_get_player_not_found_developer_projection(client):
-    resp = client.get(
-        "/v1/players/nonexistent",
-        headers={"Accept-Projection": "developer"},
-    )
-    assert resp.status_code == 404
-    body = resp.json()
-    assert body["type"] == "urn:idle-chapters:error:player_not_found"
-    assert body["signal"] == "NOTICE"
-    assert "WHAT" in body["detail"]
-
-
-def test_get_inventory_player_not_found(client):
-    resp = client.get("/v1/players/nonexistent/inventory")
-    assert resp.status_code == 404
-    assert resp.json()["type"] == "urn:idle-chapters:error:player_not_found"
-
-
-def test_get_journal_player_not_found(client):
-    resp = client.get("/v1/players/nonexistent/journal")
-    assert resp.status_code == 404
-    assert resp.json()["type"] == "urn:idle-chapters:error:player_not_found"
+class TestDeveloperProjection:
+    def test_get_player_not_found_developer_projection(self, client):
+        resp = client.get(
+            "/v1/players/nonexistent",
+            headers={"Accept-Projection": "developer"},
+        )
+        assert resp.status_code == 404
+        body = resp.json()
+        assert body["type"] == "urn:idle-chapters:error:player_not_found"
+        assert body["title"] == "Player Not Found"
+        assert body["status"] == 404
+        assert "WHAT" in body["detail"]
+        assert "MEANS" in body["detail"]
+        assert "DO" in body["detail"]
+        assert body["instance"].startswith("urn:idle-chapters:occurrence:")
+        assert body["effect"] == "none"
+        assert body["recovery"] == "terminal"
+        assert body["signal"] == "NOTICE"
+        assert "player_id" in body["context"]
