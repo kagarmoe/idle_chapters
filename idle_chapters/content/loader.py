@@ -6,7 +6,7 @@ from typing import Any
 
 from jsonschema import SchemaError, ValidationError
 
-from app.content.schema_utils import load_validator
+from idle_chapters.content.schema_utils import load_validator
 
 def load_json(path: Path | str, schema_path: Path | str | None = None) -> Any:
     path = Path(path)

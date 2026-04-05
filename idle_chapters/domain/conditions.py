@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.domain.state import PlayerState
+    from idle_chapters.domain.state import PlayerState
 
 
 def evaluate_conditions(state: PlayerState, when: dict | None, repo) -> bool:

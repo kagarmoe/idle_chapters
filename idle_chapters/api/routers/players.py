@@ -5,8 +5,8 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException
 from pymongo.database import Database
 
-from app.api.deps import get_db
-from app.api.models import PlayerCreateRequest, PlayerResponse, PlayerState, PlayerUpdateRequest
+from idle_chapters.api.deps import get_db
+from idle_chapters.api.models import PlayerCreateRequest, PlayerResponse, PlayerState, PlayerUpdateRequest
 
 
 router = APIRouter(prefix="/v1/players", tags=["players"])

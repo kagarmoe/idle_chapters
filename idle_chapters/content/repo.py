@@ -4,8 +4,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable
 
-from app.content.loader import load_json
-from app.content.manifest import ContentManifest
+from idle_chapters.content.loader import load_json
+from idle_chapters.content.manifest import ContentManifest
 
 
 def _index_by_id(items: Iterable[dict[str, Any]], id_key: str, source: str) -> dict[str, dict[str, Any]]:

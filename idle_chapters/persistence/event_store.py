@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from app.persistence.mongo import get_db
+from idle_chapters.persistence.mongo import get_db
 
 if TYPE_CHECKING:
     from pymongo.database import Database

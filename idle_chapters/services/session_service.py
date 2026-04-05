@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-from app.domain.engine import Engine
-from app.domain.state import PlayerState
-from app.domain.step_result import StepResult
+from idle_chapters.domain.engine import Engine
+from idle_chapters.domain.state import PlayerState
+from idle_chapters.domain.step_result import StepResult
 
 
 class SessionService:

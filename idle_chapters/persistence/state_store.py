@@ -3,12 +3,12 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from app.persistence.mongo import get_db
+from idle_chapters.persistence.mongo import get_db
 
 if TYPE_CHECKING:
     from pymongo.database import Database
 
-    from app.domain.state import PlayerState
+    from idle_chapters.domain.state import PlayerState
 
 
 class StateStore:
@@ -50,7 +50,7 @@ class StateStore:
         Maps schema field names back to domain field names.
         Returns None if session not found.
         """
-        from app.domain.state import PlayerState
+        from idle_chapters.domain.state import PlayerState
 
         doc = self._collection.find_one({"session_id": session_id})
         if doc is None:

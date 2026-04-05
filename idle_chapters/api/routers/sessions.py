@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.deps import get_session_service
-from app.api.models import (
+from idle_chapters.api.deps import get_session_service
+from idle_chapters.api.models import (
     ActionRequest,
     IntentRequest,
     SessionCreateRequest,
@@ -13,8 +13,8 @@ from app.api.models import (
     ViewAction,
     ViewModel,
 )
-from app.domain.step_result import StepResult
-from app.services.session_service import SessionService
+from idle_chapters.domain.step_result import StepResult
+from idle_chapters.services.session_service import SessionService
 
 router = APIRouter(prefix="/v1/sessions", tags=["sessions"])
 

@@ -2,9 +2,9 @@ import json
 import textwrap
 from pathlib import Path
 
-from app.ui.text import PADDING, fill_width, print_block
-from app.scenes.inventory import load_inventory, save_inventory
-from app.scenes.welcome import save_player
+from idle_chapters.ui.text import PADDING, fill_width, print_block
+from idle_chapters.scenes.inventory import load_inventory, save_inventory
+from idle_chapters.scenes.welcome import save_player
 
 
 _here = Path(__file__).resolve()

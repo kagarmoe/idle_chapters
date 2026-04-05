@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
-from app.api.routers import journal, players, sessions, world
+from idle_chapters.api.routers import journal, players, sessions, world
 
 
 def create_app() -> FastAPI:

@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from app.domain.conditions import evaluate_conditions
-from app.domain.effects import apply_effects
-from app.domain.ingredient_picker import pick_ingredients
-from app.domain.journal_renderer import render_journal_page
-from app.domain.selector import (
+from idle_chapters.domain.conditions import evaluate_conditions
+from idle_chapters.domain.effects import apply_effects
+from idle_chapters.domain.ingredient_picker import pick_ingredients
+from idle_chapters.domain.journal_renderer import render_journal_page
+from idle_chapters.domain.selector import (
     choose_scene,
     eligible_scenes,
     generate_candidates,
 )
-from app.domain.state import PlayerState
-from app.domain.step_result import StepResult
+from idle_chapters.domain.state import PlayerState
+from idle_chapters.domain.step_result import StepResult
 
 
 class Engine:

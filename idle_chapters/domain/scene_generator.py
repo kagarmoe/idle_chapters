@@ -3,7 +3,7 @@ from __future__ import annotations
 import random
 from typing import Any
 
-from app.domain.scene import Scene
+from idle_chapters.domain.scene import Scene
 
 
 FAMILIES = [

@@ -11,8 +11,8 @@ from pathlib import Path
 
 from jsonschema import SchemaError, ValidationError
 
-from app.content.loader import load_json
-from app.content.schema_utils import load_validator
+from idle_chapters.content.loader import load_json
+from idle_chapters.content.schema_utils import load_validator
 PLAYER_FILE = "assets/player.json"
 PLAYERS_FILE = "assets/players.json"
 _here = Path(__file__).resolve()

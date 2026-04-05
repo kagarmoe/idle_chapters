@@ -4,7 +4,7 @@ from dataclasses import replace
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.domain.state import PlayerState
+    from idle_chapters.domain.state import PlayerState
 
 
 def apply_effects(state: PlayerState, effects: dict) -> PlayerState:

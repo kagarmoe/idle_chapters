@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException
 from pymongo.database import Database
 
-from app.api.deps import get_db
+from idle_chapters.api.deps import get_db
 
 
 router = APIRouter(prefix="/v1/players", tags=["journal"])

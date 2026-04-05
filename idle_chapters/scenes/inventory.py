@@ -3,8 +3,8 @@ from pathlib import Path
 
 from jsonschema import SchemaError, ValidationError
 
-from app.content.loader import load_json
-from app.content.schema_utils import load_validator
+from idle_chapters.content.loader import load_json
+from idle_chapters.content.schema_utils import load_validator
 _here = Path(__file__).resolve()
 REPO_ROOT = next(p for p in _here.parents if (p / "assets").is_dir() and (p / "schemas").is_dir())
 COLLECTIBLES_FILE = REPO_ROOT / "assets" / "collectibles.json"

@@ -3,7 +3,7 @@ from __future__ import annotations
 import random
 from typing import Iterable
 
-from app.domain.scene_generator import generate_scene
+from idle_chapters.domain.scene_generator import generate_scene
 
 
 def generate_candidates(state, repo, seed: int | None, n: int = 3) -> list[dict]:
@@ -28,7 +28,7 @@ def eligible_scenes(state, repo) -> list[dict]:
 
 def eligible_actions(state, repo) -> list[dict]:
     """Get actions eligible for the current state with full condition evaluation."""
-    from app.domain.conditions import evaluate_conditions
+    from idle_chapters.domain.conditions import evaluate_conditions
 
     return [
         a for a in repo.actions_by_id.values()

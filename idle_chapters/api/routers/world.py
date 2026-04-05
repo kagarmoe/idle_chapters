@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends
 
-from app.api.deps import get_content_repo
-from app.content.repo import ContentRepo
+from idle_chapters.api.deps import get_content_repo
+from idle_chapters.content.repo import ContentRepo
 
 
 router = APIRouter(prefix="/v1/world", tags=["world"])
