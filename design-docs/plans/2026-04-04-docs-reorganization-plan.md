@@ -152,7 +152,53 @@ git commit -m "docs: add Documentation section and update paths in README"
 
 ---
 
-### Task 5: Verify GitHub Pages deployment
+### Task 5: Add CI workflow for docs validation
+
+**Files:**
+- Create: `.github/workflows/docs.yml`
+
+**Step 1: Create the workflow**
+
+Write `.github/workflows/docs.yml`:
+
+```yaml
+name: Docs CI
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+  pull_request:
+    paths:
+      - 'docs/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check docs/index.html exists
+        run: test -f docs/index.html
+
+      - name: Check docs/openapi.json exists
+        run: test -f docs/openapi.json
+
+      - name: Validate openapi.json is valid JSON
+        run: python3 -c "import json, pathlib; json.loads(pathlib.Path('docs/openapi.json').read_text())"
+```
+
+**Step 2: Commit**
+
+```bash
+git add .github/workflows/docs.yml
+git commit -m "ci: add docs validation workflow"
+```
+
+---
+
+### Task 6: Verify GitHub Pages deployment
 
 **Step 1: Check that docs/ contains only the GitHub Pages files**
 
