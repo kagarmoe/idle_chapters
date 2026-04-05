@@ -4,11 +4,12 @@ import json
 import os
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
 from idle_chapters.api.routers import journal, players, sessions, world
+from idle_chapters.services.errors import GameError
 
 
 def create_app() -> FastAPI:
@@ -30,6 +31,15 @@ def create_app() -> FastAPI:
     app.include_router(players.router)
     app.include_router(sessions.router)
     app.include_router(journal.router)
+
+    @app.exception_handler(GameError)
+    async def handle_game_error(request: Request, exc: GameError) -> JSONResponse:
+        projection = request.headers.get("Accept-Projection", "player")
+        if projection == "developer":
+            body = exc.project_developer()
+        else:
+            body = exc.project_player()
+        return JSONResponse(status_code=exc.http_status, content=body)
 
     @app.on_event("startup")
     def export_openapi():

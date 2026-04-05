@@ -266,13 +266,24 @@ def test_journal_get_missing_returns_none(service, stores) -> None:
 
 def _make_test_app(repo, stores):
     """Build a FastAPI app with dependency overrides for testing."""
-    from fastapi import FastAPI
+    from fastapi import FastAPI, Request
+    from fastapi.responses import JSONResponse
 
     from idle_chapters.api.deps import get_session_service
     from idle_chapters.api.routers import sessions
+    from idle_chapters.services.errors import GameError
 
     app = FastAPI()
     app.include_router(sessions.router)
+
+    @app.exception_handler(GameError)
+    async def handle_game_error(request: Request, exc: GameError) -> JSONResponse:
+        projection = request.headers.get("Accept-Projection", "player")
+        if projection == "developer":
+            body = exc.project_developer()
+        else:
+            body = exc.project_player()
+        return JSONResponse(status_code=exc.http_status, content=body)
 
     state_store, journal_store, event_store = stores
 

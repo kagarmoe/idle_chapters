@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import TYPE_CHECKING
 
+from idle_chapters.domain.errors import InsufficientInventory
+
 if TYPE_CHECKING:
     from idle_chapters.domain.state import PlayerState
 
@@ -19,8 +21,8 @@ def apply_effects(state: PlayerState, effects: dict) -> PlayerState:
     for item, qty in (effects.get("remove_items") or {}).items():
         current = inventory.get(item, 0)
         if current < qty:
-            raise ValueError(
-                f"Cannot remove {qty} of '{item}': only {current} in inventory"
+            raise InsufficientInventory(
+                item_id=item, required=qty, available=current,
             )
         new_qty = current - qty
         if new_qty == 0:
