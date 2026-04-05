@@ -4,6 +4,15 @@
 
 **Approved design** — ready for implementation planning.
 
+## Standards
+
+This design profiles two standards:
+
+- **RFC 9457** (Problem Details for HTTP APIs) — defines a machine-readable error response format for HTTP APIs. This design implements a full RFC 9457 profile with extension members for state semantics and recovery guidance.
+- **ANSI Z535** (Safety Signs and Colors) — defines a hazard communication hierarchy (DANGER, WARNING, CAUTION, NOTICE) and a three-panel message structure (hazard, consequence, avoidance). This design adopts the signal word hierarchy for error severity classification and the three-panel structure for developer-facing detail.
+
+These standards were chosen because they solve complementary problems: RFC 9457 answers "how do I describe an API error to machines?" while Z535 answers "how do I communicate a hazard to humans so they understand the severity, consequence, and required action?"
+
 ## Problem
 
 The current error flow is: `ValueError` (domain) -> `HTTPException` (router) -> `{"detail": "..."}` (JSON) -> `ApiError` (frontend). This creates:
@@ -29,7 +38,7 @@ An error is not a message. It is a state transition with consequences and possib
 
 Location: `apps/api/app/domain/errors.py`
 
-The domain raises typed exceptions that carry only domain-relevant data. The domain has no knowledge of the structured error model.
+The domain raises typed exceptions that carry only domain-relevant data. The domain has no knowledge of RFC 9457, Z535, or the structured error model.
 
 ```python
 class SessionNotFound(Exception):
@@ -55,19 +64,27 @@ class SceneNotAvailable(Exception):
 
 Location: `apps/api/app/services/errors.py`
 
-The service layer catches typed domain exceptions and constructs a `GameError` — the single structured model for all errors in the system.
+The service layer catches typed domain exceptions and constructs a `GameError` — the single structured model for all errors in the system. GameError is an internal representation that serializes to RFC 9457 at the API boundary.
 
-**Fields:**
+#### RFC 9457 Profile
 
-| Field | Type | Purpose |
-|-------|------|---------|
-| `kind` | `str` (enum) | Stable, machine-usable classification |
-| `effect` | `str` (enum) | What happened to system state |
-| `recovery` | `str` (enum) | Whether and how the failure can be resolved |
-| `detail` | `str` | Z535-style: WHAT / MEANS / DO (developer-facing) |
-| `context` | `dict` | Structured data for machine consumers (IDs, counts, timestamps) |
+GameError maps to RFC 9457 Problem Details as follows:
 
-**Effect values:**
+| RFC 9457 Member | GameError Field | Description |
+|---|---|---|
+| `type` (required) | `kind` | URI: `urn:idle-chapters:error:{kind}`. Stable, machine-usable classification per RFC 9457 Section 3.1.1. |
+| `title` (required) | derived from `kind` | Human-readable summary, one per type, per RFC 9457 Section 3.1.2. |
+| `status` (required) | `http_status` | HTTP status code per RFC 9110. |
+| `detail` (required) | `detail` | Z535 three-panel message (see below). Per RFC 9457 Section 3.1.4. |
+| `instance` (optional) | generated | URI identifying this specific occurrence, per RFC 9457 Section 3.1.5. |
+| `effect` (extension) | `effect` | What happened to system state. Not in RFC 9457; added as extension member per Section 4. |
+| `recovery` (extension) | `recovery` | Whether and how the failure can be resolved. Extension member. |
+| `context` (extension) | `context` | Structured domain data (IDs, counts, timestamps). Extension member. |
+| `signal` (extension) | `signal` | Z535 signal word indicating severity. Extension member. |
+
+#### Extension Member: `effect`
+
+Answers the question RFC 9457 does not address: **what happened to system state?**
 
 | Value | Meaning |
 |-------|---------|
@@ -76,7 +93,9 @@ The service layer catches typed domain exceptions and constructs a `GameError` �
 | `partial` | State was computed but not fully persisted (divergence) |
 | `unknown` | Cannot determine what happened to state |
 
-**Recovery values:**
+#### Extension Member: `recovery`
+
+Encodes whether and how a failure can be resolved — information that neither RFC 9457 nor HTTP status codes provide.
 
 | Value | Meaning |
 |-------|---------|
@@ -85,37 +104,77 @@ The service layer catches typed domain exceptions and constructs a `GameError` �
 | `terminal` | This path is closed; a different action is needed |
 | `escalate` | Requires operator or developer intervention |
 
+#### Extension Member: `signal` (ANSI Z535)
+
+Maps error severity to the Z535 signal word hierarchy. Signal words are ordered by severity and carry specific meaning per ANSI Z535.4:
+
+| Signal Word | Z535 Definition | GameError Mapping |
+|---|---|---|
+| **DANGER** | Will cause death or serious injury | `effect=unknown` — state is indeterminate, system may be inconsistent |
+| **WARNING** | Could cause death or serious injury | `effect=partial` — state has diverged, data integrity at risk |
+| **CAUTION** | Could cause minor injury | `effect=none` + `recovery=correctable` or `retryable` — no damage, user action needed |
+| **NOTICE** | Important information, no injury risk | `effect=none` + `recovery=terminal` — operation cannot proceed, but system is healthy |
+
+The mapping is determined by `effect` and `recovery`:
+
+| Effect | Recovery | Signal |
+|---|---|---|
+| `unknown` | `escalate` | DANGER |
+| `partial` | `retryable` | WARNING |
+| `none` | `retryable` | CAUTION |
+| `none` | `correctable` | CAUTION |
+| `none` | `terminal` | NOTICE |
+
+#### Z535 Three-Panel Detail
+
+The `detail` field follows the ANSI Z535.4 three-panel product safety label structure, adapted for software:
+
+| Z535 Panel | Adapted Label | Purpose |
+|---|---|---|
+| **Hazard** | `WHAT` | What happened — the specific failure |
+| **Consequence** | `MEANS` | What it means for the system — the state impact |
+| **Avoidance** | `DO` | What to do next — the recovery action |
+
+Example:
+```
+WHAT: Write failed after engine applied effects to session abc-123.
+MEANS: Player state was computed but not persisted. In-memory and database have diverged.
+DO: Retry the request. If it persists, check database connectivity.
+```
+
+This structure ensures that every developer-facing error message answers three questions in a fixed, scannable order. The signal word (WARNING, in this case) indicates severity at a glance.
+
 ### Exception-to-GameError Mapping
 
-| Domain Exception | Kind | HTTP Status | Conventional Meaning | Effect | Recovery |
-|---|---|---|---|---|---|
-| `SessionNotFound` | `session_not_found` | 404 | Not Found -- resource does not exist | `none` | `terminal` |
-| `ActionNotEligible` | `action_not_eligible` | 409 | Conflict -- request conflicts with current resource state | `none` | `correctable` |
-| `IntentNoMatch` | `intent_no_match` | 422 | Unprocessable Entity -- request understood but semantically invalid | `none` | `correctable` |
-| `InsufficientInventory` | `insufficient_inventory` | 409 | Conflict -- request conflicts with current resource state | `none` | `correctable` |
-| `InvalidLocation` | `invalid_location` | 422 | Unprocessable Entity -- request understood but semantically invalid | `none` | `correctable` |
-| `SceneNotAvailable` | `scene_not_available` | 503 | Service Unavailable -- server cannot handle the request right now | `none` | `retryable` |
-| Unexpected (engine) | `engine_failure` | 500 | Internal Server Error -- unexpected server-side failure | `unknown` | `escalate` |
-| Unexpected (persist) | `persistence_failure` | 503 | Service Unavailable -- server cannot handle the request right now | `partial` | `retryable` |
+| Domain Exception | Kind | Status | RFC 9110 Meaning | Effect | Recovery | Signal |
+|---|---|---|---|---|---|---|
+| `SessionNotFound` | `session_not_found` | 404 | Not Found — resource does not exist | `none` | `terminal` | NOTICE |
+| `ActionNotEligible` | `action_not_eligible` | 409 | Conflict — request conflicts with current resource state | `none` | `correctable` | CAUTION |
+| `IntentNoMatch` | `intent_no_match` | 422 | Unprocessable Entity — request understood but semantically invalid | `none` | `correctable` | CAUTION |
+| `InsufficientInventory` | `insufficient_inventory` | 409 | Conflict — request conflicts with current resource state | `none` | `correctable` | CAUTION |
+| `InvalidLocation` | `invalid_location` | 422 | Unprocessable Entity — request understood but semantically invalid | `none` | `correctable` | CAUTION |
+| `SceneNotAvailable` | `scene_not_available` | 503 | Service Unavailable — server cannot handle the request right now | `none` | `retryable` | CAUTION |
+| Unexpected (engine) | `engine_failure` | 500 | Internal Server Error — unexpected server-side failure | `unknown` | `escalate` | DANGER |
+| Unexpected (persist) | `persistence_failure` | 503 | Service Unavailable — server cannot handle the request right now | `partial` | `retryable` | WARNING |
 
-The service layer separates engine execution from persistence so it can distinguish `engine_failure` (effect unknown) from `persistence_failure` (effect partial -- state computed but not saved):
+The service layer separates engine execution from persistence so it can distinguish `engine_failure` (effect unknown, DANGER) from `persistence_failure` (effect partial, WARNING):
 
 ```python
 try:
     result = engine.step(state, action, action_id, repo)
 except Exception as e:
-    raise GameError(kind="engine_failure", effect="unknown", ...)
+    raise GameError(kind="engine_failure", effect="unknown", ...)  # DANGER
 
 try:
     self._state_store.upsert_state(state)
     self._journal_store.append_page(result.journal_page)
 except Exception as e:
-    raise GameError(kind="persistence_failure", effect="partial", ...)
+    raise GameError(kind="persistence_failure", effect="partial", ...)  # WARNING
 ```
 
 ### Layer 3: Projections
 
-The API and CLI layers project `GameError` for different audiences. Projection is determined by interaction context, not identity.
+The API and CLI layers project `GameError` for different audiences. Projection is determined by interaction context, not identity (RFC 9457 Section 3.1 notes that `detail` should be specific to the occurrence; projections extend this principle to the entire response shape).
 
 **Projection selection (API):** `Accept-Projection` header. Default: `player`.
 
@@ -123,7 +182,7 @@ The API and CLI layers project `GameError` for different audiences. Projection i
 
 Template-based, tone-contract-compliant messages stored in `assets/error_templates.json` and validated by `schemas/error_templates.schema.json`.
 
-Templates use `{field}` placeholders filled from `GameError.context`. Every kind has a fallback for graceful degradation.
+Templates use `{field}` placeholders filled from `GameError.context`. Every kind has a fallback for graceful degradation. The player projection intentionally softens `escalate` recovery — players should never be told to "report this to a developer."
 
 ```json
 {
@@ -146,66 +205,80 @@ Templates use `{field}` placeholders filled from `GameError.context`. Every kind
 }
 ```
 
-**Response shape:**
+**RFC 9457 response shape (player):**
+
+The player projection returns a minimal RFC 9457 body. The `title` serves as the rendered template message. Extension members are omitted — players do not need state or recovery semantics.
+
 ```json
 {
-    "error": {
-        "kind": "action_not_eligible",
-        "message": "That doesn't seem possible right now. Maybe explore a bit more first."
-    }
+    "type": "urn:idle-chapters:error:action_not_eligible",
+    "title": "That doesn't seem possible right now. Maybe explore a bit more first.",
+    "status": 409
 }
 ```
 
 #### Developer Projection
 
-Z535-style detail following the hazard communication standard: WHAT happened, what it MEANS, what to DO.
+Full RFC 9457 body with all extension members and Z535 three-panel detail:
 
 ```json
 {
-    "error": {
-        "kind": "action_not_eligible",
-        "effect": "none",
-        "recovery": "correctable",
-        "detail": "WHAT: Action gather_herbs failed conditions for session abc-123.\nMEANS: State unchanged. Action requires unmet conditions.\nDO: Check eligible actions via GET /v1/sessions/abc-123.",
-        "context": {
-            "action_id": "gather_herbs",
-            "session_id": "abc-123",
-            "unmet": ["flags_set: visited_garden"]
-        }
+    "type": "urn:idle-chapters:error:action_not_eligible",
+    "title": "Action Not Eligible",
+    "status": 409,
+    "detail": "WHAT: Action gather_herbs failed conditions for session abc-123.\nMEANS: State unchanged. Action requires unmet conditions.\nDO: Check eligible actions via GET /v1/sessions/abc-123.",
+    "instance": "urn:idle-chapters:occurrence:2026-04-04T12:00:00Z:a1b2c3",
+    "effect": "none",
+    "recovery": "correctable",
+    "signal": "CAUTION",
+    "context": {
+        "action_id": "gather_herbs",
+        "session_id": "abc-123",
+        "unmet": ["flags_set: visited_garden"]
     }
 }
 ```
 
 #### Agent Projection (Future)
 
-Same as developer but without prose `detail` -- agents don't read prose:
+RFC 9457 body with extension members but without prose `detail` — agents don't read prose, they branch on `type`, `effect`, and `recovery`:
 
 ```json
 {
-    "error": {
-        "kind": "action_not_eligible",
-        "effect": "none",
-        "recovery": "correctable",
-        "context": {
-            "action_id": "gather_herbs",
-            "session_id": "abc-123",
-            "unmet": ["flags_set: visited_garden"]
-        }
+    "type": "urn:idle-chapters:error:action_not_eligible",
+    "title": "Action Not Eligible",
+    "status": 409,
+    "effect": "none",
+    "recovery": "correctable",
+    "signal": "CAUTION",
+    "context": {
+        "action_id": "gather_herbs",
+        "session_id": "abc-123",
+        "unmet": ["flags_set: visited_garden"]
     }
 }
 ```
 
 #### CLI Projection
 
-Reuses player templates, formatted for terminal output via `ui/text.py`. Developer detail available via `--verbose` flag to stderr.
+Reuses player templates, formatted for terminal output via `ui/text.py`. The Z535 signal word is prepended in verbose mode:
+
+```
+CAUTION: That doesn't seem possible right now. Maybe explore a bit more first.
+```
+
+Full Z535 three-panel detail available via `--verbose` flag to stderr. CLI colors for signal words are left to implementation.
 
 ## Acceptance Criteria
 
 - All player-facing templates pass tone contract review (`design-docs/game_design/tone_contract.md`)
 - No template uses language expressing: fear, pressure, urgency, scarcity, deficit, blame, or failure
 - Fallback messages also comply with tone contract
-- All error kinds map to a stable HTTP status code
-- Developer projection follows Z535 structure (WHAT / MEANS / DO)
+- API error responses conform to RFC 9457 (required members: `type`, `title`, `status`, `detail`)
+- Error `type` URIs follow the pattern `urn:idle-chapters:error:{kind}`
+- HTTP status codes align with RFC 9110 semantics
+- Developer projection includes Z535 three-panel structure (WHAT / MEANS / DO) and signal word
+- Signal word is derived from `effect` and `recovery` per the mapping table
 - `effect` field accurately reflects state mutation for every error path
 - `recovery` field provides actionable, correct guidance
 - Error templates are schema-validated JSON in `assets/`
@@ -220,10 +293,10 @@ apps/api/app/domain/errors.py              -- Typed domain exceptions
 apps/api/app/services/errors.py            -- GameError model + projection logic
 assets/error_templates.json                -- Player-facing templates
 schemas/error_templates.schema.json        -- Validates the templates
-schemas/error_response.schema.json         -- API error response contract
+schemas/error_response.schema.json         -- RFC 9457 API error response contract
 tests/test_domain_errors.py                -- Domain exceptions carry correct data
 tests/test_game_error_mapping.py           -- Service maps exceptions to GameError correctly
-tests/test_error_projections.py            -- Each projection renders as expected
+tests/test_error_projections.py            -- Each projection renders RFC 9457 responses
 tests/test_error_templates.py              -- Templates validate, placeholders resolve, tone compliance
 ```
 
@@ -232,15 +305,23 @@ tests/test_error_templates.py              -- Templates validate, placeholders r
 ```
 apps/api/app/domain/effects.py             -- ValueError -> InsufficientInventoryError
 apps/api/app/domain/engine.py              -- ValueError -> typed exceptions
-apps/api/app/domain/conditions.py          -- ValueError -> ActionNotEligible
+apps/api/app/domain/selector.py            -- ValueError -> SceneNotAvailable
+apps/api/app/domain/scene_generator.py     -- ValueError -> InvalidLocation
 apps/api/app/services/session_service.py   -- Catch typed exceptions, construct GameError
-apps/api/app/api/routers/sessions.py       -- Catch GameError, project for audience
-apps/api/app/api/models.py                 -- Pydantic response models for error projections
-apps/web/src/lib/api.ts                    -- Parse structured error response
+apps/api/app/api/app.py                    -- GameError exception handler
+apps/api/app/api/routers/sessions.py       -- Remove try/except, let GameError propagate
+apps/api/app/api/models.py                 -- Pydantic response models for RFC 9457
+apps/web/src/lib/api.ts                    -- Parse RFC 9457 error response
 ```
 
 ## Phased Rollout
 
-- **Phase A:** Session endpoints (`/sessions/{id}/action`, `/sessions/{id}/intent`) -- richest error cases, proves the model
+- **Phase A:** Session endpoints (`/sessions/{id}/action`, `/sessions/{id}/intent`) — richest error cases, proves the model
 - **Phase B:** All API endpoints (world, players, journal)
-- **Phase C:** CLI interface
+- **Phase C:** CLI interface with Z535 signal word display
+
+## References
+
+- [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457) — error response format
+- [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110) — status code definitions
+- [ANSI Z535.4: Product Safety Signs and Labels](https://www.nema.org/standards/z535) — signal word hierarchy and three-panel message structure
