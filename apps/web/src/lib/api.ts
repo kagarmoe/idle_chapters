@@ -58,17 +58,46 @@ export interface WorldManifest {
 	lexicons: Record<string, unknown>;
 }
 
+/** RFC 9457 Problem Details — player projection (minimal). */
+export interface ProblemDetailPlayer {
+	type: string;
+	title: string;
+	status: number;
+}
+
+/** RFC 9457 Problem Details — developer projection (full + Z535 extensions). */
+export interface ProblemDetailDeveloper {
+	type: string;
+	title: string;
+	status: number;
+	detail: string;
+	instance: string;
+	effect: 'none' | 'applied' | 'partial' | 'unknown';
+	recovery: 'retryable' | 'correctable' | 'terminal' | 'escalate';
+	signal: 'DANGER' | 'WARNING' | 'CAUTION' | 'NOTICE';
+	context: Record<string, unknown>;
+}
+
+export type ProblemDetail = ProblemDetailPlayer | ProblemDetailDeveloper;
+
 // ---------------------------------------------------------------------------
 // Client
 // ---------------------------------------------------------------------------
 
 class ApiError extends Error {
+	public problemDetail: ProblemDetailPlayer | null;
+
 	constructor(
 		public status: number,
 		public body: unknown
 	) {
-		super(`API error ${status}`);
+		const parsed = body as ProblemDetail | null;
+		const message = parsed?.title ?? `API error ${status}`;
+		super(message);
 		this.name = 'ApiError';
+		this.problemDetail = parsed && 'type' in parsed
+			? parsed as ProblemDetailPlayer
+			: null;
 	}
 }
 
