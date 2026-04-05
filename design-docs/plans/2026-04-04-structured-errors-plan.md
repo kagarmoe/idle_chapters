@@ -17,16 +17,16 @@
 ### Task 1: Domain Exception Classes
 
 **Files:**
-- Create: `apps/api/app/domain/errors.py`
-- Test: `apps/api/tests/test_domain_errors.py`
+- Create: `idle_chapters/domain/errors.py`
+- Test: `tests/test_domain_errors.py`
 
 **Step 1: Write the failing tests**
 
 ```python
-# apps/api/tests/test_domain_errors.py
+# tests/test_domain_errors.py
 import pytest
 
-from app.domain.errors import (
+from idle_chapters.domain.errors import (
     SessionNotFound,
     ActionNotEligible,
     IntentNoMatch,
@@ -104,7 +104,7 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'app.domain.errors'`
 **Step 3: Write minimal implementation**
 
 ```python
-# apps/api/app/domain/errors.py
+# idle_chapters/domain/errors.py
 """Typed domain exceptions for Idle Chapters.
 
 Each exception carries structured data relevant to the failure.
@@ -177,7 +177,7 @@ Expected: 7 passed
 **Step 5: Commit**
 
 ```bash
-git add apps/api/app/domain/errors.py apps/api/tests/test_domain_errors.py
+git add idle_chapters/domain/errors.py tests/test_domain_errors.py
 git commit -m "feat: add typed domain exception classes"
 ```
 
@@ -186,16 +186,16 @@ git commit -m "feat: add typed domain exception classes"
 ### Task 2: GameError Model and Projection Logic
 
 **Files:**
-- Create: `apps/api/app/services/errors.py`
-- Test: `apps/api/tests/test_game_error.py`
+- Create: `idle_chapters/services/errors.py`
+- Test: `tests/test_game_error.py`
 
 **Step 1: Write the failing tests**
 
 ```python
-# apps/api/tests/test_game_error.py
+# tests/test_game_error.py
 import pytest
 
-from app.services.errors import GameError, ErrorKind, Effect, Recovery, Signal
+from idle_chapters.services.errors import GameError, ErrorKind, Effect, Recovery, Signal
 
 
 class TestGameErrorConstruction:
@@ -339,7 +339,7 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'app.services.errors'`
 **Step 3: Write minimal implementation**
 
 ```python
-# apps/api/app/services/errors.py
+# idle_chapters/services/errors.py
 """Structured error model for Idle Chapters.
 
 Profiles RFC 9457 (Problem Details for HTTP APIs) with extension members
@@ -455,7 +455,7 @@ def _find_repo_root() -> Path:
     for parent in path.parents:
         if (parent / ".git").is_dir():
             return parent
-    return path.parents[3]  # fallback: assume apps/api/app/services/
+    return path.parents[3]  # fallback: assume idle_chapters/services/
 
 
 @lru_cache(maxsize=1)
@@ -537,7 +537,7 @@ Expected: 22 passed (3 construction + 16 signal derivation + 2 player + 1 develo
 **Step 5: Commit**
 
 ```bash
-git add apps/api/app/services/errors.py apps/api/tests/test_game_error.py
+git add idle_chapters/services/errors.py tests/test_game_error.py
 git commit -m "feat: add GameError model with projection logic"
 ```
 
@@ -548,19 +548,19 @@ git commit -m "feat: add GameError model with projection logic"
 **Files:**
 - Create: `assets/error_templates.json`
 - Create: `schemas/error_templates.schema.json`
-- Test: `apps/api/tests/test_error_templates.py`
+- Test: `tests/test_error_templates.py`
 
 **Step 1: Write the failing tests**
 
 ```python
-# apps/api/tests/test_error_templates.py
+# tests/test_error_templates.py
 import json
 from pathlib import Path
 
 import pytest
 from jsonschema import validate
 
-from app.services.errors import ErrorKind
+from idle_chapters.services.errors import ErrorKind
 
 
 @pytest.fixture(scope="module")
@@ -707,7 +707,7 @@ Expected: 4 passed
 **Step 6: Commit**
 
 ```bash
-git add assets/error_templates.json schemas/error_templates.schema.json apps/api/tests/test_error_templates.py
+git add assets/error_templates.json schemas/error_templates.schema.json tests/test_error_templates.py
 git commit -m "feat: add error templates and schema with tone contract tests"
 ```
 
@@ -716,15 +716,15 @@ git commit -m "feat: add error templates and schema with tone contract tests"
 ### Task 4: Wire Domain Exceptions into Engine, Effects, and Selector
 
 **Files:**
-- Modify: `apps/api/app/domain/effects.py` (line 22: `ValueError` -> `InsufficientInventory`)
-- Modify: `apps/api/app/domain/engine.py` (lines 33, 86, 95: `ValueError` -> typed exceptions)
-- Modify: `apps/api/app/domain/selector.py` (line 41: `ValueError` -> `SceneNotAvailable`)
-- Modify: `apps/api/app/domain/scene_generator.py` (line 65: `ValueError` -> `InvalidLocation`)
-- Modify: `apps/api/tests/test_effects.py` (line 40: update expected exception)
+- Modify: `idle_chapters/domain/effects.py` (line 22: `ValueError` -> `InsufficientInventory`)
+- Modify: `idle_chapters/domain/engine.py` (lines 33, 86, 95: `ValueError` -> typed exceptions)
+- Modify: `idle_chapters/domain/selector.py` (line 41: `ValueError` -> `SceneNotAvailable`)
+- Modify: `idle_chapters/domain/scene_generator.py` (line 65: `ValueError` -> `InvalidLocation`)
+- Modify: `tests/test_effects.py` (line 40: update expected exception)
 
 **Step 1: Update the effects test**
 
-Change `apps/api/tests/test_effects.py` line 40 from:
+Change `tests/test_effects.py` line 40 from:
 
 ```python
     with pytest.raises(ValueError):
@@ -734,7 +734,7 @@ Change `apps/api/tests/test_effects.py` line 40 from:
 to:
 
 ```python
-    from app.domain.errors import InsufficientInventory
+    from idle_chapters.domain.errors import InsufficientInventory
 
     with pytest.raises(InsufficientInventory) as exc_info:
         apply_effects(state, effects)
@@ -750,10 +750,10 @@ Expected: FAIL with `Failed: DID NOT RAISE <class 'app.domain.errors.Insufficien
 
 **Step 3: Update effects.py**
 
-In `apps/api/app/domain/effects.py`, add import at top:
+In `idle_chapters/domain/effects.py`, add import at top:
 
 ```python
-from app.domain.errors import InsufficientInventory
+from idle_chapters.domain.errors import InsufficientInventory
 ```
 
 Replace line 22-24:
@@ -781,10 +781,10 @@ Expected: 2 passed
 
 **Step 5: Update engine.py**
 
-In `apps/api/app/domain/engine.py`, add import at top:
+In `idle_chapters/domain/engine.py`, add import at top:
 
 ```python
-from app.domain.errors import ActionNotEligible, SessionNotFound
+from idle_chapters.domain.errors import ActionNotEligible, SessionNotFound
 ```
 
 Replace line 33:
@@ -837,10 +837,10 @@ with:
 
 **Step 6: Update selector.py**
 
-In `apps/api/app/domain/selector.py`, add import at top:
+In `idle_chapters/domain/selector.py`, add import at top:
 
 ```python
-from app.domain.errors import SceneNotAvailable
+from idle_chapters.domain.errors import SceneNotAvailable
 ```
 
 Replace line 41:
@@ -857,14 +857,14 @@ with:
 
 Note: The selector doesn't have access to session_id. The service layer's `except Exception` catch will wrap this into a proper GameError with the correct session_id via `_engine_error`. Alternatively, the service layer can catch `SceneNotAvailable` specifically — which it already does in `perform_action`. For the `enter` flow, add `SceneNotAvailable` to the exception handling:
 
-In `apps/api/app/domain/engine.py` `_handle_enter`, the `choose_scene` call can raise `SceneNotAvailable`. Since this happens inside `engine.step`, the service layer's `except Exception` in `enter()` will catch it and map it to `engine_failure`. To get the correct mapping, update the `enter` method in the service (Task 5) to also catch domain exceptions — see Task 5.
+In `idle_chapters/domain/engine.py` `_handle_enter`, the `choose_scene` call can raise `SceneNotAvailable`. Since this happens inside `engine.step`, the service layer's `except Exception` in `enter()` will catch it and map it to `engine_failure`. To get the correct mapping, update the `enter` method in the service (Task 5) to also catch domain exceptions — see Task 5.
 
 **Step 7: Update scene_generator.py**
 
-In `apps/api/app/domain/scene_generator.py`, add import at top:
+In `idle_chapters/domain/scene_generator.py`, add import at top:
 
 ```python
-from app.domain.errors import InvalidLocation
+from idle_chapters.domain.errors import InvalidLocation
 ```
 
 Replace line 65:
@@ -887,7 +887,7 @@ Expected: all pass
 **Step 9: Commit**
 
 ```bash
-git add apps/api/app/domain/effects.py apps/api/app/domain/engine.py apps/api/app/domain/selector.py apps/api/app/domain/scene_generator.py apps/api/tests/test_effects.py
+git add idle_chapters/domain/effects.py idle_chapters/domain/engine.py idle_chapters/domain/selector.py idle_chapters/domain/scene_generator.py tests/test_effects.py
 git commit -m "refactor: replace ValueError with typed domain exceptions in engine, effects, selector, and generator"
 ```
 
@@ -896,28 +896,28 @@ git commit -m "refactor: replace ValueError with typed domain exceptions in engi
 ### Task 5: Wire GameError into Session Service
 
 **Files:**
-- Modify: `apps/api/app/services/session_service.py`
-- Test: `apps/api/tests/test_game_error_mapping.py`
+- Modify: `idle_chapters/services/session_service.py`
+- Test: `tests/test_game_error_mapping.py`
 
 **Step 1: Write the failing tests**
 
 ```python
-# apps/api/tests/test_game_error_mapping.py
+# tests/test_game_error_mapping.py
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
 
-from app.domain.engine import Engine
-from app.domain.errors import (
+from idle_chapters.domain.engine import Engine
+from idle_chapters.domain.errors import (
     ActionNotEligible,
     InsufficientInventory,
     IntentNoMatch,
     SessionNotFound,
 )
-from app.domain.state import PlayerState
-from app.services.errors import Effect, ErrorKind, GameError, Recovery, Signal
-from app.services.session_service import SessionService
+from idle_chapters.domain.state import PlayerState
+from idle_chapters.services.errors import Effect, ErrorKind, GameError, Recovery, Signal
+from idle_chapters.services.session_service import SessionService
 
 
 def _make_service(state=None, engine=None):
@@ -1019,7 +1019,7 @@ Expected: FAIL (service still raises ValueError, not GameError)
 
 **Step 3: Rewrite session_service.py**
 
-Replace the full contents of `apps/api/app/services/session_service.py`:
+Replace the full contents of `idle_chapters/services/session_service.py`:
 
 ```python
 from __future__ import annotations
@@ -1027,8 +1027,8 @@ from __future__ import annotations
 import logging
 from uuid import uuid4
 
-from app.domain.engine import Engine
-from app.domain.errors import (
+from idle_chapters.domain.engine import Engine
+from idle_chapters.domain.errors import (
     ActionNotEligible,
     InsufficientInventory,
     IntentNoMatch,
@@ -1036,9 +1036,9 @@ from app.domain.errors import (
     SceneNotAvailable,
     SessionNotFound,
 )
-from app.domain.state import PlayerState
-from app.domain.step_result import StepResult
-from app.services.errors import Effect, ErrorKind, GameError, Recovery
+from idle_chapters.domain.state import PlayerState
+from idle_chapters.domain.step_result import StepResult
+from idle_chapters.services.errors import Effect, ErrorKind, GameError, Recovery
 
 logger = logging.getLogger(__name__)
 
@@ -1307,7 +1307,7 @@ Expected: all pass. Some tests that expect `ValueError` from the service layer m
 **Step 6: Commit**
 
 ```bash
-git add apps/api/app/services/session_service.py apps/api/tests/test_game_error_mapping.py
+git add idle_chapters/services/session_service.py tests/test_game_error_mapping.py
 git commit -m "feat: wire GameError into session service with Z535 detail"
 ```
 
@@ -1316,22 +1316,22 @@ git commit -m "feat: wire GameError into session service with Z535 detail"
 ### Task 6: API Router Error Handling and Projection
 
 **Files:**
-- Modify: `apps/api/app/api/routers/sessions.py`
-- Modify: `apps/api/app/api/models.py`
+- Modify: `idle_chapters/api/routers/sessions.py`
+- Modify: `idle_chapters/api/models.py`
 - Create: `schemas/error_response.schema.json`
-- Test: `apps/api/tests/test_error_projections.py`
+- Test: `tests/test_error_projections.py`
 
 **Step 1: Write the failing tests**
 
 ```python
-# apps/api/tests/test_error_projections.py
+# tests/test_error_projections.py
 import json
 from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
-from app.api.app import create_app
+from idle_chapters.api.app import create_app
 
 
 @pytest.fixture(scope="module")
@@ -1399,7 +1399,7 @@ Expected: FAIL (router still returns old `{"detail": "..."}` format)
 
 **Step 3: Add Pydantic error response models**
 
-Add to `apps/api/app/api/models.py` (RFC 9457 response models):
+Add to `idle_chapters/api/models.py` (RFC 9457 response models):
 
 ```python
 class ProblemDetailPlayer(BaseModel):
@@ -1424,18 +1424,18 @@ class ProblemDetailDeveloper(BaseModel):
 
 **Step 4: Update sessions router**
 
-Replace `apps/api/app/api/routers/sessions.py` with GameError handling. The key change: instead of `except ValueError as e: raise HTTPException(...)`, use a FastAPI exception handler.
+Replace `idle_chapters/api/routers/sessions.py` with GameError handling. The key change: instead of `except ValueError as e: raise HTTPException(...)`, use a FastAPI exception handler.
 
-Add a `game_error_handler` in `apps/api/app/api/app.py` (or wherever `create_app` lives):
+Add a `game_error_handler` in `idle_chapters/api/app.py` (or wherever `create_app` lives):
 
-First, read `apps/api/app/api/app.py` to see the app factory.
+First, read `idle_chapters/api/app.py` to see the app factory.
 
 Then add after app creation:
 
 ```python
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from app.services.errors import GameError
+from idle_chapters.services.errors import GameError
 
 
 @app.exception_handler(GameError)
@@ -1453,15 +1453,15 @@ Note: RFC 9457 responses are flat JSON objects — no `{"error": {...}}` wrapper
 Then simplify `sessions.py` — remove all `try/except ValueError` blocks. Let `GameError` propagate to the exception handler. Replace the full router file:
 
 ```python
-# apps/api/app/api/routers/sessions.py
+# idle_chapters/api/routers/sessions.py
 from __future__ import annotations
 
 from typing import NoReturn
 
 from fastapi import APIRouter, Depends
 
-from app.api.deps import get_session_service
-from app.api.models import (
+from idle_chapters.api.deps import get_session_service
+from idle_chapters.api.models import (
     ActionRequest,
     IntentRequest,
     SessionCreateRequest,
@@ -1471,9 +1471,9 @@ from app.api.models import (
     ViewAction,
     ViewModel,
 )
-from app.domain.step_result import StepResult
-from app.services.errors import Effect, ErrorKind, GameError, Recovery
-from app.services.session_service import SessionService
+from idle_chapters.domain.step_result import StepResult
+from idle_chapters.services.errors import Effect, ErrorKind, GameError, Recovery
+from idle_chapters.services.session_service import SessionService
 
 router = APIRouter(prefix="/v1/sessions", tags=["sessions"])
 
@@ -1639,7 +1639,7 @@ Expected: all pass
 **Step 8: Commit**
 
 ```bash
-git add apps/api/app/api/app.py apps/api/app/api/routers/sessions.py apps/api/app/api/models.py schemas/error_response.schema.json apps/api/tests/test_error_projections.py
+git add idle_chapters/api/app.py idle_chapters/api/routers/sessions.py idle_chapters/api/models.py schemas/error_response.schema.json tests/test_error_projections.py
 git commit -m "feat: add GameError exception handler with Accept-Projection support"
 ```
 
@@ -1718,7 +1718,7 @@ git commit -m "feat: update frontend ApiError to parse structured error response
 ### Task 8: Integration Test and Final Verification
 
 **Files:**
-- Test: `apps/api/tests/test_api.py` (update existing API tests if they assert on old error format)
+- Test: `tests/test_api.py` (update existing API tests if they assert on old error format)
 
 **Step 1: Run full test suite**
 
@@ -1729,12 +1729,12 @@ Expected: all pass
 
 Search for `except ValueError` in the session-related files to make sure none remain:
 
-Run: `grep -rn "except ValueError" apps/api/app/api/routers/sessions.py apps/api/app/services/session_service.py`
+Run: `grep -rn "except ValueError" idle_chapters/api/routers/sessions.py idle_chapters/services/session_service.py`
 Expected: no matches
 
 **Step 3: Check for any remaining `raise ValueError` in domain layer**
 
-Run: `grep -rn "raise ValueError" apps/api/app/domain/`
+Run: `grep -rn "raise ValueError" idle_chapters/domain/`
 Expected: only `engine.py` line 33 (`Unknown command` — intentionally kept as ValueError since it's a programming error, not a domain error)
 
 **Step 4: Run frontend check**
@@ -1746,7 +1746,7 @@ Expected: no errors
 
 ```bash
 # Add only the specific files that were updated
-git add apps/api/tests/test_api.py
+git add tests/test_api.py
 git commit -m "test: update existing tests for structured error model"
 git push
 ```

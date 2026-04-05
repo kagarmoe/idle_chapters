@@ -36,7 +36,7 @@ An error is not a message. It is a state transition with consequences and possib
 
 ### Layer 1: Typed Domain Exceptions
 
-Location: `apps/api/app/domain/errors.py`
+Location: `idle_chapters/domain/errors.py`
 
 The domain raises typed exceptions that carry only domain-relevant data. The domain has no knowledge of RFC 9457, Z535, or the structured error model.
 
@@ -62,7 +62,7 @@ class SceneNotAvailable(Exception):
 
 ### Layer 2: GameError (Service Layer)
 
-Location: `apps/api/app/services/errors.py`
+Location: `idle_chapters/services/errors.py`
 
 The service layer catches typed domain exceptions and constructs a `GameError` — the single structured model for all errors in the system. GameError is an internal representation that serializes to RFC 9457 at the API boundary.
 
@@ -310,8 +310,8 @@ Full Z535 three-panel detail available via `--verbose` flag to stderr. CLI color
 ### New Files
 
 ```
-apps/api/app/domain/errors.py              -- Typed domain exceptions
-apps/api/app/services/errors.py            -- GameError model + projection logic
+idle_chapters/domain/errors.py              -- Typed domain exceptions
+idle_chapters/services/errors.py            -- GameError model + projection logic
 assets/error_templates.json                -- Player-facing templates
 schemas/error_templates.schema.json        -- Validates the templates
 schemas/error_response.schema.json         -- RFC 9457 API error response contract
@@ -324,14 +324,14 @@ tests/test_error_templates.py              -- Templates validate, placeholders r
 ### Modified Files
 
 ```
-apps/api/app/domain/effects.py             -- ValueError -> InsufficientInventoryError
-apps/api/app/domain/engine.py              -- ValueError -> typed exceptions
-apps/api/app/domain/selector.py            -- ValueError -> SceneNotAvailable
-apps/api/app/domain/scene_generator.py     -- ValueError -> InvalidLocation
-apps/api/app/services/session_service.py   -- Catch typed exceptions, construct GameError
-apps/api/app/api/app.py                    -- GameError exception handler
-apps/api/app/api/routers/sessions.py       -- Remove try/except, let GameError propagate
-apps/api/app/api/models.py                 -- Pydantic response models for RFC 9457
+idle_chapters/domain/effects.py             -- ValueError -> InsufficientInventoryError
+idle_chapters/domain/engine.py              -- ValueError -> typed exceptions
+idle_chapters/domain/selector.py            -- ValueError -> SceneNotAvailable
+idle_chapters/domain/scene_generator.py     -- ValueError -> InvalidLocation
+idle_chapters/services/session_service.py   -- Catch typed exceptions, construct GameError
+idle_chapters/api/app.py                    -- GameError exception handler
+idle_chapters/api/routers/sessions.py       -- Remove try/except, let GameError propagate
+idle_chapters/api/models.py                 -- Pydantic response models for RFC 9457
 apps/web/src/lib/api.ts                    -- Parse RFC 9457 error response
 ```
 
