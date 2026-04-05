@@ -1,29 +1,17 @@
+<!-- Requires tone_system_prompt.md as system message -->
+
 # Melancholy-Safe Prompt Template
 
-Use this only when a place allows melancholy.
+Use this only when a place allows melancholy. The tone system prompt defines which forms of melancholy are allowed ("settled") and disallowed ("pulling"). This prompt enables the settled form.
 
 ```text
 This passage may include gentle melancholy.
-
-Rules for melancholy:
-- It must be settled, not pulling.
-- It must not imply regret, loss, or a need to act.
-- It should acknowledge time, not resist it.
-
 Use language that feels accepting and complete.
-Avoid longing, fixing, or unresolved absence.
 ```
 
-## Example meadow_shrine
+## Example: meadow_shrine
 
 ```text
 This passage may include gentle melancholy.
-
-Rules for melancholy:
-- It must be settled, not pulling.
-- It must not imply regret, loss, or a need to act.
-- It should acknowledge time, not resist it.
-
 Use language that feels accepting and complete.
-Avoid longing, fixing, or unresolved absence.
 ```

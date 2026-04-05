@@ -1,15 +1,21 @@
-Review the passage you just wrote.
+<!-- Requires tone_system_prompt.md as system message -->
 
-Check:
+# Tone Validation Prompt
 
-1. Is the player emotionally safe?
-2. Is nothing required of them?
-3. Does the moment feel complete as-is?
+Review the following passage against the tone contract provided in the system message.
 
-If any answer is no:
+Check each category and report violations:
 
-- Remove or soften the violating language.
-- Do not add contrast or drama.
-- Preserve calm and presence.
+1. **Safety:** Is the player emotionally safe?
+2. **Agency:** Is nothing required of them?
+3. **Completeness:** Does the moment feel complete as-is?
+4. **Hard constraints:** Any threat, urgency, scarcity, social tension, or harsh sensory language?
+5. **Emotional range:** Only calm, curiosity, nostalgia, quiet reflection, or settled melancholy?
+6. **Melancholy:** If present, is it settled (not pulling)?
 
-Return the revised passage.
+For each violation found:
+- Quote the offending text.
+- Name the contract section it violates.
+- Suggest a revision that preserves calm and presence.
+
+If no violations, return: "Tone contract upheld."

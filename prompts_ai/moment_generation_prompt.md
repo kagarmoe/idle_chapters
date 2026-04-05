@@ -1,6 +1,8 @@
+<!-- Requires tone_system_prompt.md as system message -->
+
 # Moment scenes
 
-Keeps moments from turning into micro-stories
+Keeps moments from turning into micro-stories.
 
 ```text
 Moment type: {{Moment_Description}}
@@ -25,10 +27,6 @@ End the passage without implying continuation.
 ```text
 Moment type: A quiet moment of arrival
 Location: Bakery
-
-Constraints:
-- No social obligation
-- No evaluation or choice pressure
 
 Focus on:
 - Warmth and familiarity

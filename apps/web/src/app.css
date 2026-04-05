@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+
+:root {
+	--color-parchment: #faf6f0;
+	--color-ink: #3d3529;
+	--color-ink-light: #6b5e4f;
+	--color-moss: #7a8b6f;
+	--color-moss-light: #a3b396;
+	--color-amber: #c4a46c;
+	--color-amber-light: #e0c98f;
+	--color-cloud: #e8e2d8;
+}
+
+body {
+	font-family: 'Georgia', 'Times New Roman', serif;
+	background-color: var(--color-parchment);
+	color: var(--color-ink);
+}

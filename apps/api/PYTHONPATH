@@ -1,0 +1,4 @@
+# For Linux/macOS (run from repo root)
+export PYTHONPATH=$PWD/apps/api
+# For Windows PowerShell
+$env:PYTHONPATH = "$PWD\apps\api"
