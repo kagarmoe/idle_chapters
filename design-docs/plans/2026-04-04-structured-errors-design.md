@@ -70,17 +70,19 @@ The service layer catches typed domain exceptions and constructs a `GameError` �
 
 GameError maps to RFC 9457 Problem Details as follows:
 
-| RFC 9457 Member | GameError Field | Description |
-|---|---|---|
-| `type` (required) | `kind` | URI: `urn:idle-chapters:error:{kind}`. Stable, machine-usable classification per RFC 9457 Section 3.1.1. |
-| `title` (required) | derived from `kind` | Human-readable summary, one per type, per RFC 9457 Section 3.1.2. |
-| `status` (required) | `http_status` | HTTP status code per RFC 9110. |
-| `detail` (required) | `detail` | Z535 three-panel message (see below). Per RFC 9457 Section 3.1.4. |
-| `instance` (optional) | generated | URI identifying this specific occurrence, per RFC 9457 Section 3.1.5. |
-| `effect` (extension) | `effect` | What happened to system state. Not in RFC 9457; added as extension member per Section 4. |
-| `recovery` (extension) | `recovery` | Whether and how the failure can be resolved. Extension member. |
-| `context` (extension) | `context` | Structured domain data (IDs, counts, timestamps). Extension member. |
-| `signal` (extension) | `signal` | Z535 signal word indicating severity. Extension member. |
+Note: RFC 9457 does not mandate any members as strictly required in the schema sense — `type` defaults to `"about:blank"` when absent, and all other members are advisory. The requirements below are **project-level constraints** that are stricter than the RFC. The player projection uses a reduced profile that omits `detail` and extension members.
+
+| RFC 9457 Member | GameError Field | Project Requirement | Description |
+|---|---|---|---|
+| `type` | `kind` | All projections | URI: `urn:idle-chapters:error:{kind}`. Stable, machine-usable classification per RFC 9457 Section 3.1.1. |
+| `title` | derived from `kind` | All projections | Human-readable summary, one per type, per RFC 9457 Section 3.1.2. For the player projection, `title` carries the rendered template message. |
+| `status` | `http_status` | All projections | HTTP status code per RFC 9110. |
+| `detail` | `detail` | Developer, agent | Z535 three-panel message (see below). Per RFC 9457 Section 3.1.4. Omitted from the player projection. |
+| `instance` | generated | Developer | UUID-based URI identifying this specific occurrence, per RFC 9457 Section 3.1.5. Format: `urn:idle-chapters:occurrence:{uuid4}`. |
+| `effect` | `effect` | Developer, agent | What happened to system state. Extension member per Section 4. |
+| `recovery` | `recovery` | Developer, agent | Whether and how the failure can be resolved. Extension member. |
+| `context` | `context` | Developer, agent | Structured domain data (IDs, counts, timestamps). Extension member. |
+| `signal` | `signal` | Developer, agent, CLI | Z535 signal word indicating severity. Extension member. |
 
 #### Extension Member: `effect`
 
@@ -108,22 +110,40 @@ Encodes whether and how a failure can be resolved — information that neither R
 
 Maps error severity to the Z535 signal word hierarchy. Signal words are ordered by severity and carry specific meaning per ANSI Z535.4:
 
-| Signal Word | Z535 Definition | GameError Mapping |
-|---|---|---|
-| **DANGER** | Will cause death or serious injury | `effect=unknown` — state is indeterminate, system may be inconsistent |
-| **WARNING** | Could cause death or serious injury | `effect=partial` — state has diverged, data integrity at risk |
-| **CAUTION** | Could cause minor injury | `effect=none` + `recovery=correctable` or `retryable` — no damage, user action needed |
-| **NOTICE** | Important information, no injury risk | `effect=none` + `recovery=terminal` — operation cannot proceed, but system is healthy |
+| Signal Word | Z535 Definition | Software Adaptation | GameError Mapping |
+|---|---|---|---|
+| **DANGER** | Will cause death or serious injury | State is indeterminate; system may be inconsistent | `effect=unknown` or `effect=partial` + `recovery=escalate` |
+| **WARNING** | Could cause death or serious injury | State has diverged; data integrity at risk but recoverable | `effect=partial` + `recovery=retryable` or `correctable` |
+| **CAUTION** | Could cause minor injury | No state damage; user action needed | `effect=none` + `recovery=correctable` or `retryable` |
+| **NOTICE** | Important information, no injury risk | Operation cannot proceed, but system is healthy | `effect=none` + `recovery=terminal` |
 
-The mapping is determined by `effect` and `recovery`:
+The signal is derived from the `effect` and `recovery` combination. The table below is exhaustive — every valid combination maps to exactly one signal word. The `applied` effect describes a successful mutation that produced an error in a subsequent step (e.g., state persisted but journal write failed); it is included for completeness and future use.
 
-| Effect | Recovery | Signal |
-|---|---|---|
-| `unknown` | `escalate` | DANGER |
-| `partial` | `retryable` | WARNING |
-| `none` | `retryable` | CAUTION |
-| `none` | `correctable` | CAUTION |
-| `none` | `terminal` | NOTICE |
+| Effect | Recovery | Signal | Rationale |
+|---|---|---|---|
+| `unknown` | `escalate` | DANGER | State indeterminate, requires investigation |
+| `unknown` | `retryable` | DANGER | State indeterminate even if retry might help |
+| `unknown` | `correctable` | DANGER | State indeterminate regardless of input correction |
+| `unknown` | `terminal` | DANGER | State indeterminate, path closed |
+| `partial` | `escalate` | DANGER | State diverged, manual intervention required |
+| `partial` | `retryable` | WARNING | State diverged but retry may resolve |
+| `partial` | `correctable` | WARNING | State diverged, different input may resolve |
+| `partial` | `terminal` | WARNING | State diverged, path closed — needs attention |
+| `applied` | `escalate` | WARNING | Mutation succeeded but downstream step failed |
+| `applied` | `retryable` | CAUTION | Mutation succeeded, downstream retry may help |
+| `applied` | `correctable` | CAUTION | Mutation succeeded, downstream input correction needed |
+| `applied` | `terminal` | NOTICE | Mutation succeeded, no further action possible |
+| `none` | `escalate` | CAUTION | No state damage but developer intervention needed |
+| `none` | `retryable` | CAUTION | No state damage, retry may succeed |
+| `none` | `correctable` | CAUTION | No state damage, user can fix input |
+| `none` | `terminal` | NOTICE | No state damage, path closed, system healthy |
+
+**Derivation rule:** `effect` determines the floor, `recovery` can raise it.
+- `unknown` → always DANGER (state is indeterminate)
+- `partial` + `escalate` → DANGER (diverged state requiring manual intervention)
+- `partial` + other → WARNING (diverged but recoverable)
+- `applied` + `escalate` or `retryable` → WARNING/CAUTION (mutation succeeded, downstream issue)
+- `none` → CAUTION or NOTICE depending on whether action is possible
 
 #### Z535 Three-Panel Detail
 
@@ -227,7 +247,7 @@ Full RFC 9457 body with all extension members and Z535 three-panel detail:
     "title": "Action Not Eligible",
     "status": 409,
     "detail": "WHAT: Action gather_herbs failed conditions for session abc-123.\nMEANS: State unchanged. Action requires unmet conditions.\nDO: Check eligible actions via GET /v1/sessions/abc-123.",
-    "instance": "urn:idle-chapters:occurrence:2026-04-04T12:00:00Z:a1b2c3",
+    "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "effect": "none",
     "recovery": "correctable",
     "signal": "CAUTION",
@@ -274,7 +294,7 @@ Full Z535 three-panel detail available via `--verbose` flag to stderr. CLI color
 - All player-facing templates pass tone contract review (`design-docs/game_design/tone_contract.md`)
 - No template uses language expressing: fear, pressure, urgency, scarcity, deficit, blame, or failure
 - Fallback messages also comply with tone contract
-- API error responses conform to RFC 9457 (required members: `type`, `title`, `status`, `detail`)
+- API error responses conform to RFC 9457 (`type`, `title`, `status` in all projections; `detail` in developer and agent projections)
 - Error `type` URIs follow the pattern `urn:idle-chapters:error:{kind}`
 - HTTP status codes align with RFC 9110 semantics
 - Developer projection includes Z535 three-panel structure (WHAT / MEANS / DO) and signal word
@@ -312,6 +332,55 @@ apps/api/app/api/app.py                    -- GameError exception handler
 apps/api/app/api/routers/sessions.py       -- Remove try/except, let GameError propagate
 apps/api/app/api/models.py                 -- Pydantic response models for RFC 9457
 apps/web/src/lib/api.ts                    -- Parse RFC 9457 error response
+```
+
+### Error Response Schema (`schemas/error_response.schema.json`)
+
+RFC 9457 response contract. Uses `oneOf` to distinguish player and developer projection shapes:
+
+```json
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Error Response (RFC 9457 Profile)",
+    "description": "Problem Details response per RFC 9457 with Z535 and state-semantics extensions.",
+    "type": "object",
+    "required": ["type", "title", "status"],
+    "properties": {
+        "type": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^urn:idle-chapters:error:.+$"
+        },
+        "title": { "type": "string" },
+        "status": { "type": "integer", "minimum": 400, "maximum": 599 },
+        "detail": { "type": "string" },
+        "instance": { "type": "string", "format": "uri" },
+        "effect": {
+            "type": "string",
+            "enum": ["none", "applied", "partial", "unknown"]
+        },
+        "recovery": {
+            "type": "string",
+            "enum": ["retryable", "correctable", "terminal", "escalate"]
+        },
+        "signal": {
+            "type": "string",
+            "enum": ["DANGER", "WARNING", "CAUTION", "NOTICE"]
+        },
+        "context": { "type": "object" }
+    },
+    "oneOf": [
+        {
+            "description": "Player projection — minimal RFC 9457",
+            "required": ["type", "title", "status"],
+            "not": { "required": ["effect"] }
+        },
+        {
+            "description": "Developer/agent projection — full RFC 9457 with extensions",
+            "required": ["type", "title", "status", "effect", "recovery", "signal"]
+        }
+    ]
+}
 ```
 
 ## Phased Rollout
