@@ -1314,17 +1314,10 @@
             "pronouns": "they/them"
           },
           "state": {
-            "current_location": "cottage_home",
-            "flags": [
-              "visited_forest"
-            ],
-            "inventory_counts": {
-              "chamomile": 2
-            },
+            "flags": [],
+            "inventory_counts": {},
             "seen_interactions": {},
-            "visit_counts": {
-              "cottage_home": 3
-            }
+            "visit_counts": {}
           }
         }
       },

@@ -157,11 +157,10 @@ class PlayerResponse(BaseModel):
             "pronouns": "they/them",
         },
         "state": {
-            "current_location": "cottage_home",
-            "inventory_counts": {"chamomile": 2},
-            "visit_counts": {"cottage_home": 3},
+            "inventory_counts": {},
+            "visit_counts": {},
             "seen_interactions": {},
-            "flags": ["visited_forest"],
+            "flags": [],
         },
     }})
 
