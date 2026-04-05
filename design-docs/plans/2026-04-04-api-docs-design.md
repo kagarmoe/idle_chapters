@@ -85,6 +85,7 @@ Developer example shape:
 - `idle_chapters/api/routers/players.py` — add `responses` to error endpoints
 - `idle_chapters/api/routers/journal.py` — add `responses` to error endpoints
 - `idle_chapters/api/routers/world.py` — add success examples (response descriptions)
+- `idle_chapters/api/routers/error_helpers.py` — add shared error response example dicts
 - `docs/openapi.json` — regenerated
 
 ### Data Sources

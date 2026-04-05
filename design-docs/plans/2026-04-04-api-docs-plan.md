@@ -147,6 +147,34 @@ class ViewModel(BaseModel):
     }})
 ```
 
+Also add `model_config` examples to the error response models:
+
+```python
+# Also add to error response models:
+
+class ProblemDetailPlayer(BaseModel):
+    ...
+    model_config = ConfigDict(json_schema_extra={"example": {
+        "type": "urn:idle-chapters:error:session_not_found",
+        "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+        "status": 404,
+    }})
+
+class ProblemDetailDeveloper(BaseModel):
+    ...
+    model_config = ConfigDict(json_schema_extra={"example": {
+        "type": "urn:idle-chapters:error:session_not_found",
+        "title": "Session Not Found",
+        "status": 404,
+        "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
+        "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "effect": "none",
+        "recovery": "terminal",
+        "signal": "NOTICE",
+        "context": {"session_id": "abc123"},
+    }})
+```
+
 **Step 2: Verify examples render**
 
 ```bash
@@ -167,11 +195,12 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
 ### Task 2: Add error examples to session routes
 
 **Files:**
+- Modify: `idle_chapters/api/routers/error_helpers.py`
 - Modify: `idle_chapters/api/routers/sessions.py`
 
 **Step 1: Define reusable error response dicts**
 
-At the top of the file (after imports), define error response examples that will be used in route decorators. This avoids duplicating the same 404 example on every endpoint.
+Define error response examples in `idle_chapters/api/routers/error_helpers.py` (after imports). This centralizes all response dicts so every router imports from the same place.
 
 ```python
 _SESSION_NOT_FOUND_RESPONSES = {
@@ -242,6 +271,62 @@ _ACTION_NOT_ELIGIBLE_RESPONSE = {
     },
 }
 
+_JOURNAL_PAGE_404_RESPONSES = {
+    404: {
+        "description": "Session or journal page not found",
+        "content": {
+            "application/json": {
+                "examples": {
+                    "session_not_found_player": {
+                        "summary": "Session not found — player projection",
+                        "value": {
+                            "type": "urn:idle-chapters:error:session_not_found",
+                            "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+                            "status": 404,
+                        },
+                    },
+                    "session_not_found_developer": {
+                        "summary": "Session not found — developer projection",
+                        "value": {
+                            "type": "urn:idle-chapters:error:session_not_found",
+                            "title": "Session Not Found",
+                            "status": 404,
+                            "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
+                            "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                            "effect": "none",
+                            "recovery": "terminal",
+                            "signal": "NOTICE",
+                            "context": {"session_id": "abc123"},
+                        },
+                    },
+                    "journal_page_not_found_player": {
+                        "summary": "Journal page not found — player projection",
+                        "value": {
+                            "type": "urn:idle-chapters:error:journal_page_not_found",
+                            "title": "That page doesn't seem to be in your journal. Perhaps it's from a different chapter.",
+                            "status": 404,
+                        },
+                    },
+                    "journal_page_not_found_developer": {
+                        "summary": "Journal page not found — developer projection",
+                        "value": {
+                            "type": "urn:idle-chapters:error:journal_page_not_found",
+                            "title": "Journal Page Not Found",
+                            "status": 404,
+                            "detail": "WHAT: Journal page jp-xyz not found for session abc123.\nMEANS: Nothing was modified.\nDO: List pages via GET /v1/sessions/abc123/journal.",
+                            "instance": "urn:idle-chapters:occurrence:e5f6a7b8-c9d0-1234-efab-567890123456",
+                            "effect": "none",
+                            "recovery": "correctable",
+                            "signal": "CAUTION",
+                            "context": {"session_id": "abc123", "page_id": "jp-xyz"},
+                        },
+                    },
+                },
+            },
+        },
+    },
+}
+
 _INTENT_NO_MATCH_RESPONSE = {
     422: {
         "description": "No action matched the free-text intent",
@@ -252,7 +337,7 @@ _INTENT_NO_MATCH_RESPONSE = {
                         "summary": "Player projection (default)",
                         "value": {
                             "type": "urn:idle-chapters:error:intent_no_match",
-                            "title": "I didn't quite catch that. What would you like to do?",
+                            "title": "Hmm, I'm not sure what you mean by \"fly away\". These are the things you could do here: Rest a bit longer, Wake in the cottage.",
                             "status": 422,
                         },
                     },
@@ -286,7 +371,7 @@ Add `responses={...}` to each endpoint that can fail. Merge dicts for endpoints 
 - `POST /{session_id}/action` — `responses={**_SESSION_NOT_FOUND_RESPONSES, **_ACTION_NOT_ELIGIBLE_RESPONSE}`
 - `POST /{session_id}/intent` — `responses={**_SESSION_NOT_FOUND_RESPONSES, **_INTENT_NO_MATCH_RESPONSE}`
 - `GET /{session_id}/journal` — `responses=_SESSION_NOT_FOUND_RESPONSES`
-- `GET /{session_id}/journal/{page_id}` — `responses=_SESSION_NOT_FOUND_RESPONSES`
+- `GET /{session_id}/journal/{page_id}` — `responses=_JOURNAL_PAGE_404_RESPONSES`
 
 **Step 3: Add usage descriptions to key endpoints**
 
@@ -337,7 +422,7 @@ Add similar descriptions to `POST /{session_id}/intent` and `GET /{session_id}`.
 **Step 4: Commit**
 
 ```bash
-git add idle_chapters/api/routers/sessions.py
+git add idle_chapters/api/routers/error_helpers.py idle_chapters/api/routers/sessions.py
 git commit -m "docs: add error examples and usage snippets to session routes
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
@@ -351,9 +436,9 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
 - Modify: `idle_chapters/api/routers/players.py`
 - Modify: `idle_chapters/api/routers/journal.py`
 
-**Step 1: Add error response dict to players.py**
+**Step 1: Add error response dict to error_helpers.py**
 
-At the top of `players.py` (after imports):
+Add `PLAYER_NOT_FOUND_RESPONSES` to `idle_chapters/api/routers/error_helpers.py` alongside the session response dicts (already defined there from Task 2):
 
 ```python
 _PLAYER_NOT_FOUND_RESPONSES = {
@@ -412,13 +497,11 @@ curl -X POST http://localhost:8000/v1/players \\
 
 **Step 3: Update journal.py**
 
-Import the response dict from players (or define locally if import is awkward):
+Import the response dict from `error_helpers.py` (already defined there from Step 1):
 
 ```python
-from idle_chapters.api.routers.players import _PLAYER_NOT_FOUND_RESPONSES
+from idle_chapters.api.routers.error_helpers import PLAYER_NOT_FOUND_RESPONSES
 ```
-
-Wait — this would be another cross-module private import. Better: move `_PLAYER_NOT_FOUND_RESPONSES` to `error_helpers.py` alongside `raise_player_not_found`, and rename it to `PLAYER_NOT_FOUND_RESPONSES` (drop underscore). Then both routers import from there.
 
 Add `responses=PLAYER_NOT_FOUND_RESPONSES` to both journal endpoints.
 
