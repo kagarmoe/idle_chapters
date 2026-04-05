@@ -6,7 +6,7 @@
 
 **Architecture:** Domain raises typed exceptions carrying domain data. Service layer catches them and constructs a GameError (kind/effect/recovery/detail/context). API router catches GameError, selects projection (player/developer) via Accept-Projection header, and returns the appropriate response shape.
 
-**Tech Stack:** Python 3.10+, FastAPI, Pydantic 2.12, jsonschema, pytest
+**Tech Stack:** Python 3.12+, FastAPI, Pydantic 2.12, jsonschema, pytest
 
 **Design doc:** `design-docs/plans/2026-04-04-structured-errors-design.md`
 
@@ -598,11 +598,13 @@ git commit -m "feat: add error templates and schema with tone contract tests"
 
 ---
 
-### Task 4: Wire Domain Exceptions into Engine and Effects
+### Task 4: Wire Domain Exceptions into Engine, Effects, and Selector
 
 **Files:**
 - Modify: `apps/api/app/domain/effects.py` (line 22: `ValueError` -> `InsufficientInventory`)
 - Modify: `apps/api/app/domain/engine.py` (lines 33, 86, 95: `ValueError` -> typed exceptions)
+- Modify: `apps/api/app/domain/selector.py` (line 41: `ValueError` -> `SceneNotAvailable`)
+- Modify: `apps/api/app/domain/scene_generator.py` (line 65: `ValueError` -> `InvalidLocation`)
 - Modify: `apps/api/tests/test_effects.py` (line 40: update expected exception)
 
 **Step 1: Update the effects test**
@@ -718,16 +720,60 @@ with:
             )
 ```
 
-**Step 6: Run full engine and effects tests**
+**Step 6: Update selector.py**
 
-Run: `cd apps/api && python -m pytest tests/test_engine.py tests/test_effects.py -v`
+In `apps/api/app/domain/selector.py`, add import at top:
+
+```python
+from app.domain.errors import SceneNotAvailable
+```
+
+Replace line 41:
+
+```python
+        raise ValueError("No eligible scenes")
+```
+
+with:
+
+```python
+        raise SceneNotAvailable(session_id="")  # session_id unavailable at selector level
+```
+
+Note: The selector doesn't have access to session_id. The service layer's `except Exception` catch will wrap this into a proper GameError with the correct session_id via `_engine_error`. Alternatively, the service layer can catch `SceneNotAvailable` specifically — which it already does in `perform_action`. For the `enter` flow, add `SceneNotAvailable` to the exception handling:
+
+In `apps/api/app/domain/engine.py` `_handle_enter`, the `choose_scene` call can raise `SceneNotAvailable`. Since this happens inside `engine.step`, the service layer's `except Exception` in `enter()` will catch it and map it to `engine_failure`. To get the correct mapping, update the `enter` method in the service (Task 5) to also catch domain exceptions — see Task 5.
+
+**Step 7: Update scene_generator.py**
+
+In `apps/api/app/domain/scene_generator.py`, add import at top:
+
+```python
+from app.domain.errors import InvalidLocation
+```
+
+Replace line 65:
+
+```python
+        raise ValueError(f"Unknown place_id: {state.current_place_id}")
+```
+
+with:
+
+```python
+        raise InvalidLocation(location_id=state.current_place_id)
+```
+
+**Step 8: Run full engine, effects, and scene generation tests**
+
+Run: `cd apps/api && python -m pytest tests/test_engine.py tests/test_effects.py tests/test_scene_generation.py -v`
 Expected: all pass
 
-**Step 7: Commit**
+**Step 9: Commit**
 
 ```bash
-git add apps/api/app/domain/effects.py apps/api/app/domain/engine.py apps/api/tests/test_effects.py
-git commit -m "refactor: replace ValueError with typed domain exceptions in engine and effects"
+git add apps/api/app/domain/effects.py apps/api/app/domain/engine.py apps/api/app/domain/selector.py apps/api/app/domain/scene_generator.py apps/api/tests/test_effects.py
+git commit -m "refactor: replace ValueError with typed domain exceptions in engine, effects, selector, and generator"
 ```
 
 ---
@@ -909,10 +955,12 @@ class SessionService:
 
         try:
             result = self._engine.step(state, "enter", None, self._repo)
+        except (SceneNotAvailable, InvalidLocation) as e:
+            raise self._domain_error(e) from e
         except Exception as e:
             raise self._engine_error(session_id, e) from e
 
-        self._persist(session_id, result)
+        self._persist(session_id, result, is_new_session=True)
         return session_id, result
 
     def enter(self, session_id: str) -> StepResult:
@@ -921,6 +969,8 @@ class SessionService:
 
         try:
             result = self._engine.step(state, "enter", None, self._repo)
+        except (SceneNotAvailable, InvalidLocation) as e:
+            raise self._domain_error(e) from e
         except Exception as e:
             raise self._engine_error(session_id, e) from e
 
@@ -1004,7 +1054,9 @@ class SessionService:
             )
         return state
 
-    def _persist(self, session_id: str, result: StepResult) -> None:
+    def _persist(
+        self, session_id: str, result: StepResult, *, is_new_session: bool = False,
+    ) -> None:
         try:
             self._state_store.upsert_state(session_id, result.new_state)
 
@@ -1019,14 +1071,22 @@ class SessionService:
                 },
             })
         except Exception as e:
+            # For new sessions, no prior state exists to diverge from.
+            # For existing sessions, state was computed but not saved.
+            effect = Effect.NONE if is_new_session else Effect.PARTIAL
+            means = (
+                "Session was never persisted. No prior state was corrupted."
+                if is_new_session
+                else "Player state was computed but not persisted. In-memory and database have diverged."
+            )
             logger.exception("Persistence failure for session %s", session_id)
             raise GameError(
                 kind=ErrorKind.PERSISTENCE_FAILURE,
-                effect=Effect.PARTIAL,
+                effect=effect,
                 recovery=Recovery.RETRYABLE,
                 detail=(
                     f"WHAT: Write failed after engine applied effects to session {session_id}.\n"
-                    f"MEANS: Player state was computed but not persisted. In-memory and database have diverged.\n"
+                    f"MEANS: {means}\n"
                     f"DO: Retry the request. If it persists, check database connectivity."
                 ),
                 context={"session_id": session_id},
@@ -1062,7 +1122,7 @@ class SessionService:
                 ),
                 context={
                     "item_id": exc.item_id,
-                    "item_name": exc.item_id,
+                    "item_name": exc.item_id,  # derived from item_id; template uses {item_name} for player-friendly display
                     "required": exc.required,
                     "available": exc.available,
                 },
@@ -1264,9 +1324,115 @@ async def handle_game_error(request: Request, exc: GameError) -> JSONResponse:
     return JSONResponse(status_code=exc.http_status, content=body)
 ```
 
-Then simplify `sessions.py` — remove all `try/except ValueError` blocks. Let `GameError` propagate to the exception handler:
+Then simplify `sessions.py` — remove all `try/except ValueError` blocks. Let `GameError` propagate to the exception handler. Replace the full router file:
 
 ```python
+# apps/api/app/api/routers/sessions.py
+from __future__ import annotations
+
+from fastapi import APIRouter, Depends
+
+from app.api.deps import get_session_service
+from app.api.models import (
+    ActionRequest,
+    IntentRequest,
+    SessionCreateRequest,
+    SessionCreateResponse,
+    SessionGetResponse,
+    StepResponse,
+    ViewAction,
+    ViewModel,
+)
+from app.domain.step_result import StepResult
+from app.services.errors import Effect, ErrorKind, GameError, Recovery
+from app.services.session_service import SessionService
+
+router = APIRouter(prefix="/v1/sessions", tags=["sessions"])
+
+
+def _view_from_result(result: StepResult) -> ViewModel:
+    """Build a ViewModel from a StepResult."""
+    prompt = None
+    if result.journal_page:
+        prompt = result.journal_page.get("body") or result.journal_page.get("prompt")
+
+    return ViewModel(
+        prompt=prompt,
+        scene_id=result.debug.get("selected_scene_id") if result.debug else None,
+        eligible_actions=[
+            ViewAction(
+                action_id=c.get("action_id") or c.get("choice_id", ""),
+                label=c.get("label", c.get("action_id") or c.get("choice_id", "")),
+            )
+            for c in result.choices
+        ],
+    )
+
+
+def _step_response(result: StepResult) -> StepResponse:
+    """Build a StepResponse from a StepResult."""
+    view = _view_from_result(result)
+    return StepResponse(
+        view=view,
+        journal_page=result.journal_page,
+        choices=view.eligible_actions,
+    )
+
+
+@router.post("", response_model=SessionCreateResponse)
+def create_session(
+    request: SessionCreateRequest = None,
+    service: SessionService = Depends(get_session_service),
+) -> SessionCreateResponse:
+    place_id = request.place_id if request else "cottage_home"
+    session_id, result = service.create_session(place_id=place_id)
+    view = _view_from_result(result)
+    return SessionCreateResponse(
+        session_id=session_id,
+        view=view,
+        journal_page=result.journal_page,
+    )
+
+
+@router.get("/{session_id}", response_model=SessionGetResponse)
+def get_session(
+    session_id: str,
+    service: SessionService = Depends(get_session_service),
+) -> SessionGetResponse:
+    state = service.get_session(session_id)
+    if state is None:
+        raise GameError(
+            kind=ErrorKind.SESSION_NOT_FOUND,
+            effect=Effect.NONE,
+            recovery=Recovery.TERMINAL,
+            detail=(
+                f"WHAT: No session exists for {session_id}.\n"
+                f"MEANS: Nothing was modified.\n"
+                f"DO: Create a new session via POST /v1/sessions."
+            ),
+            context={"session_id": session_id},
+        )
+    return SessionGetResponse(
+        session_id=session_id,
+        view=ViewModel(),
+        state={
+            "current_place_id": state.current_place_id,
+            "inventory": state.inventory,
+            "flags": sorted(state.flags),
+            "time_tick": state.time_tick,
+        },
+    )
+
+
+@router.post("/{session_id}/enter", response_model=StepResponse)
+def enter_place(
+    session_id: str,
+    service: SessionService = Depends(get_session_service),
+) -> StepResponse:
+    result = service.enter(session_id)
+    return _step_response(result)
+
+
 @router.post("/{session_id}/action", response_model=StepResponse)
 def submit_action(
     session_id: str,
@@ -1275,9 +1441,73 @@ def submit_action(
 ) -> StepResponse:
     result = service.perform_action(session_id, request.action_id)
     return _step_response(result)
-```
 
-The `get_session` endpoint still needs a direct check since it returns `None` instead of raising. Convert it to raise `GameError` or call a service method that raises.
+
+@router.post("/{session_id}/intent", response_model=StepResponse)
+def submit_intent(
+    session_id: str,
+    request: IntentRequest,
+    service: SessionService = Depends(get_session_service),
+) -> StepResponse:
+    result = service.submit_intent(session_id, request.input)
+    return _step_response(result)
+
+
+@router.get("/{session_id}/journal")
+def list_journal_pages(
+    session_id: str,
+    service: SessionService = Depends(get_session_service),
+) -> list[dict]:
+    state = service.get_session(session_id)
+    if state is None:
+        raise GameError(
+            kind=ErrorKind.SESSION_NOT_FOUND,
+            effect=Effect.NONE,
+            recovery=Recovery.TERMINAL,
+            detail=(
+                f"WHAT: No session exists for {session_id}.\n"
+                f"MEANS: Nothing was modified.\n"
+                f"DO: Create a new session via POST /v1/sessions."
+            ),
+            context={"session_id": session_id},
+        )
+    return service._journal_store.list_pages(session_id)
+
+
+@router.get("/{session_id}/journal/{page_id}")
+def get_journal_page(
+    session_id: str,
+    page_id: str,
+    service: SessionService = Depends(get_session_service),
+) -> dict:
+    state = service.get_session(session_id)
+    if state is None:
+        raise GameError(
+            kind=ErrorKind.SESSION_NOT_FOUND,
+            effect=Effect.NONE,
+            recovery=Recovery.TERMINAL,
+            detail=(
+                f"WHAT: No session exists for {session_id}.\n"
+                f"MEANS: Nothing was modified.\n"
+                f"DO: Create a new session via POST /v1/sessions."
+            ),
+            context={"session_id": session_id},
+        )
+    page = service._journal_store.get_page(session_id, page_id)
+    if page is None:
+        raise GameError(
+            kind=ErrorKind.SESSION_NOT_FOUND,
+            effect=Effect.NONE,
+            recovery=Recovery.TERMINAL,
+            detail=(
+                f"WHAT: Journal page {page_id} not found for session {session_id}.\n"
+                f"MEANS: Nothing was modified.\n"
+                f"DO: List pages via GET /v1/sessions/{session_id}/journal."
+            ),
+            context={"session_id": session_id, "page_id": page_id},
+        )
+    return page
+```
 
 **Step 5: Create error response schema**
 
@@ -1423,7 +1653,8 @@ Expected: no errors
 **Step 5: Final commit and push**
 
 ```bash
-git add -A
+# Add only the specific files that were updated
+git add apps/api/tests/test_api.py
 git commit -m "test: update existing tests for structured error model"
 git push
 ```
