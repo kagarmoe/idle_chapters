@@ -7,7 +7,7 @@ from pymongo.database import Database
 
 from idle_chapters.api.deps import get_db
 from idle_chapters.api.models import PlayerCreateRequest, PlayerResponse, PlayerState, PlayerUpdateRequest
-from idle_chapters.api.routers.error_helpers import raise_player_not_found
+from idle_chapters.api.routers.error_helpers import PLAYER_NOT_FOUND_RESPONSES, raise_player_not_found
 
 
 router = APIRouter(prefix="/v1/players", tags=["players"])
@@ -21,7 +21,19 @@ def _build_player_response(player_id: str, record: dict) -> PlayerResponse:
     )
 
 
-@router.post("", response_model=PlayerResponse)
+@router.post(
+    "",
+    response_model=PlayerResponse,
+    description="""Create a new player profile.
+
+**curl:**
+```bash
+curl -X POST http://localhost:8000/v1/players \\
+  -H "Content-Type: application/json" \\
+  -d '{"display_name": "Wanderer", "pronouns_key": "they/them"}'
+```
+""",
+)
 def create_player(
     request: PlayerCreateRequest, db: Database = Depends(get_db)
 ) -> PlayerResponse:
@@ -35,7 +47,7 @@ def create_player(
     return _build_player_response(player_id, {"player_info": player_info, "state": state})
 
 
-@router.get("/{player_id}", response_model=PlayerResponse)
+@router.get("/{player_id}", response_model=PlayerResponse, responses=PLAYER_NOT_FOUND_RESPONSES)
 def get_player(player_id: str, db: Database = Depends(get_db)) -> PlayerResponse:
     record = db["players"].find_one({"_id": player_id})
     if record is None:
@@ -43,7 +55,7 @@ def get_player(player_id: str, db: Database = Depends(get_db)) -> PlayerResponse
     return _build_player_response(player_id, record)
 
 
-@router.patch("/{player_id}", response_model=PlayerResponse)
+@router.patch("/{player_id}", response_model=PlayerResponse, responses=PLAYER_NOT_FOUND_RESPONSES)
 def update_player(
     player_id: str, request: PlayerUpdateRequest, db: Database = Depends(get_db)
 ) -> PlayerResponse:

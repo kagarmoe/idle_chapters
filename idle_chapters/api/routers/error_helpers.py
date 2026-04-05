@@ -125,6 +125,40 @@ INTENT_NO_MATCH_RESPONSES = {
     },
 }
 
+PLAYER_NOT_FOUND_RESPONSES = {
+    404: {
+        "description": "Player not found",
+        "content": {
+            "application/json": {
+                "examples": {
+                    "player": {
+                        "summary": "Player projection (default)",
+                        "value": {
+                            "type": "urn:idle-chapters:error:player_not_found",
+                            "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
+                            "status": 404,
+                        },
+                    },
+                    "developer": {
+                        "summary": "Developer projection (Accept-Projection: developer)",
+                        "value": {
+                            "type": "urn:idle-chapters:error:player_not_found",
+                            "title": "Player Not Found",
+                            "status": 404,
+                            "detail": "WHAT: No player exists for f1e2d3c4.\nMEANS: Nothing was modified.\nDO: Create a new player via POST /v1/players.",
+                            "instance": "urn:idle-chapters:occurrence:d4e5f6a7-b8c9-0123-defa-234567890123",
+                            "effect": "none",
+                            "recovery": "terminal",
+                            "signal": "NOTICE",
+                            "context": {"player_id": "f1e2d3c4"},
+                        },
+                    },
+                },
+            },
+        },
+    },
+}
+
 JOURNAL_PAGE_404_RESPONSES = {
     404: {
         "description": "Session or journal page not found",
