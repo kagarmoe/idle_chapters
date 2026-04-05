@@ -176,6 +176,7 @@ This structure ensures that every developer-facing error message answers three q
 | `SceneNotAvailable` | `scene_not_available` | 503 | Service Unavailable — server cannot handle the request right now | `none` | `retryable` | CAUTION |
 | Unexpected (engine) | `engine_failure` | 500 | Internal Server Error — unexpected server-side failure | `unknown` | `escalate` | DANGER |
 | Unexpected (persist) | `persistence_failure` | 503 | Service Unavailable — server cannot handle the request right now | `partial` | `retryable` | WARNING |
+| Journal page missing | `journal_page_not_found` | 404 | Not Found — resource does not exist | `none` | `correctable` | CAUTION |
 
 The service layer separates engine execution from persistence so it can distinguish `engine_failure` (effect unknown, DANGER) from `persistence_failure` (effect partial, WARNING):
 

@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12+, FastAPI, Pydantic 2.12, jsonschema, pytest
 
-**Design doc:** `design-docs/plans/2026-04-04-structured-errors-design.md`
+**Design doc:** `design-docs/plans/2026-04-04-structured-errors-design.md` (must be merged before implementation — Task 6 copies the error response schema from it)
 
 **Tone contract:** `design-docs/game_design/tone_contract.md` (all player-facing templates MUST comply)
 
@@ -267,6 +267,7 @@ class TestSignalDerivation:
         (Effect.NONE, Recovery.TERMINAL, Signal.NOTICE),
     ])
     def test_signal_derivation(self, effect, recovery, expected):
+        # kind is irrelevant to signal derivation; ENGINE_FAILURE is an arbitrary placeholder
         err = GameError(kind=ErrorKind.ENGINE_FAILURE, effect=effect, recovery=recovery)
         assert err.signal == expected, (
             f"({effect}, {recovery}) -> {err.signal}, expected {expected}"
@@ -370,6 +371,7 @@ class ErrorKind(StrEnum):
     SCENE_NOT_AVAILABLE = "scene_not_available"
     ENGINE_FAILURE = "engine_failure"
     PERSISTENCE_FAILURE = "persistence_failure"
+    JOURNAL_PAGE_NOT_FOUND = "journal_page_not_found"
 
 
 class Effect(StrEnum):
@@ -403,6 +405,7 @@ _HTTP_STATUS: dict[ErrorKind, int] = {
     ErrorKind.SCENE_NOT_AVAILABLE: 503,
     ErrorKind.ENGINE_FAILURE: 500,
     ErrorKind.PERSISTENCE_FAILURE: 503,
+    ErrorKind.JOURNAL_PAGE_NOT_FOUND: 404,
 }
 
 # Human-readable titles per kind, used in RFC 9457 `title` member.
@@ -415,6 +418,7 @@ _TITLES: dict[ErrorKind, str] = {
     ErrorKind.SCENE_NOT_AVAILABLE: "Scene Not Available",
     ErrorKind.ENGINE_FAILURE: "Engine Failure",
     ErrorKind.PERSISTENCE_FAILURE: "Persistence Failure",
+    ErrorKind.JOURNAL_PAGE_NOT_FOUND: "Journal Page Not Found",
 }
 
 _URN_PREFIX = "urn:idle-chapters:error:"
@@ -451,6 +455,11 @@ def _find_repo_root() -> Path:
     for parent in path.parents:
         if (parent / "CLAUDE.md").exists():
             return parent
+    import warnings
+    warnings.warn(
+        "Could not find repo root via CLAUDE.md marker; using fallback path",
+        stacklevel=2,
+    )
     return path.parents[3]  # fallback: assume apps/api/app/services/
 
 
@@ -687,6 +696,10 @@ Expected: FAIL (files don't exist yet)
     "persistence_failure": {
         "template": "Your story was briefly interrupted. Try that again and it should settle.",
         "fallback": "Something got a little tangled. Perhaps try again in a moment."
+    },
+    "journal_page_not_found": {
+        "template": "That page doesn't seem to be in your journal. Perhaps it's from a different chapter.",
+        "fallback": "That page doesn't seem to be here."
     }
 }
 ```
@@ -1448,6 +1461,8 @@ Then simplify `sessions.py` — remove all `try/except ValueError` blocks. Let `
 # apps/api/app/api/routers/sessions.py
 from __future__ import annotations
 
+from typing import NoReturn
+
 from fastapi import APIRouter, Depends
 
 from app.api.deps import get_session_service
@@ -1497,7 +1512,7 @@ def _step_response(result: StepResult) -> StepResponse:
     )
 
 
-def _raise_session_not_found(session_id: str) -> None:
+def _raise_session_not_found(session_id: str) -> NoReturn:
     """Raise a GameError for a missing session. Used by read-only endpoints."""
     raise GameError(
         kind=ErrorKind.SESSION_NOT_FOUND,
@@ -1599,9 +1614,9 @@ def get_journal_page(
     page = service._journal_store.get_page(session_id, page_id)
     if page is None:
         raise GameError(
-            kind=ErrorKind.SESSION_NOT_FOUND,
+            kind=ErrorKind.JOURNAL_PAGE_NOT_FOUND,
             effect=Effect.NONE,
-            recovery=Recovery.TERMINAL,
+            recovery=Recovery.CORRECTABLE,
             detail=(
                 f"WHAT: Journal page {page_id} not found for session {session_id}.\n"
                 f"MEANS: Nothing was modified.\n"
