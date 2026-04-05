@@ -75,3 +75,23 @@ class PlayerResponse(BaseModel):
     player_id: str
     player_info: PlayerInfo | None = None
     state: PlayerState | None = None
+
+
+class ProblemDetailPlayer(BaseModel):
+    """Minimal RFC 9457 response for player projection."""
+    type: str
+    title: str
+    status: int
+
+
+class ProblemDetailDeveloper(BaseModel):
+    """Full RFC 9457 response with Z535 extensions for developer projection."""
+    type: str
+    title: str
+    status: int
+    detail: str
+    instance: str
+    effect: str
+    recovery: str
+    signal: str
+    context: dict[str, Any] = Field(default_factory=dict)

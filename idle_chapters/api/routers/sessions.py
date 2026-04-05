@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+from typing import NoReturn
+
+from fastapi import APIRouter, Depends
 
 from idle_chapters.api.deps import get_session_service
 from idle_chapters.api.models import (
@@ -14,6 +16,7 @@ from idle_chapters.api.models import (
     ViewModel,
 )
 from idle_chapters.domain.step_result import StepResult
+from idle_chapters.services.errors import Effect, ErrorKind, GameError, Recovery
 from idle_chapters.services.session_service import SessionService
 
 router = APIRouter(prefix="/v1/sessions", tags=["sessions"])
@@ -48,6 +51,21 @@ def _step_response(result: StepResult) -> StepResponse:
     )
 
 
+def _raise_session_not_found(session_id: str) -> NoReturn:
+    """Raise a GameError for a missing session. Used by read-only endpoints."""
+    raise GameError(
+        kind=ErrorKind.SESSION_NOT_FOUND,
+        effect=Effect.NONE,
+        recovery=Recovery.TERMINAL,
+        detail=(
+            f"WHAT: No session exists for {session_id}.\n"
+            f"MEANS: Nothing was modified.\n"
+            f"DO: Create a new session via POST /v1/sessions."
+        ),
+        context={"session_id": session_id},
+    )
+
+
 @router.post("", response_model=SessionCreateResponse)
 def create_session(
     request: SessionCreateRequest = None,
@@ -70,7 +88,7 @@ def get_session(
 ) -> SessionGetResponse:
     state = service.get_session(session_id)
     if state is None:
-        raise HTTPException(status_code=404, detail="Session not found")
+        _raise_session_not_found(session_id)
     return SessionGetResponse(
         session_id=session_id,
         view=ViewModel(),
@@ -88,10 +106,7 @@ def enter_place(
     session_id: str,
     service: SessionService = Depends(get_session_service),
 ) -> StepResponse:
-    try:
-        result = service.enter(session_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    result = service.enter(session_id)
     return _step_response(result)
 
 
@@ -101,10 +116,7 @@ def submit_action(
     request: ActionRequest,
     service: SessionService = Depends(get_session_service),
 ) -> StepResponse:
-    try:
-        result = service.perform_action(session_id, request.action_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    result = service.perform_action(session_id, request.action_id)
     return _step_response(result)
 
 
@@ -114,10 +126,7 @@ def submit_intent(
     request: IntentRequest,
     service: SessionService = Depends(get_session_service),
 ) -> StepResponse:
-    try:
-        result = service.submit_intent(session_id, request.input)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    result = service.submit_intent(session_id, request.input)
     return _step_response(result)
 
 
@@ -128,7 +137,7 @@ def list_journal_pages(
 ) -> list[dict]:
     state = service.get_session(session_id)
     if state is None:
-        raise HTTPException(status_code=404, detail="Session not found")
+        _raise_session_not_found(session_id)
     return service._journal_store.list_pages(session_id)
 
 
@@ -140,8 +149,18 @@ def get_journal_page(
 ) -> dict:
     state = service.get_session(session_id)
     if state is None:
-        raise HTTPException(status_code=404, detail="Session not found")
+        _raise_session_not_found(session_id)
     page = service._journal_store.get_page(session_id, page_id)
     if page is None:
-        raise HTTPException(status_code=404, detail="Journal page not found")
+        raise GameError(
+            kind=ErrorKind.JOURNAL_PAGE_NOT_FOUND,
+            effect=Effect.NONE,
+            recovery=Recovery.CORRECTABLE,
+            detail=(
+                f"WHAT: Journal page {page_id} not found for session {session_id}.\n"
+                f"MEANS: Nothing was modified.\n"
+                f"DO: List pages via GET /v1/sessions/{session_id}/journal."
+            ),
+            context={"session_id": session_id, "page_id": page_id},
+        )
     return page

@@ -1,0 +1,42 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Error Response (RFC 9457 Profile)",
+    "description": "Problem Details response per RFC 9457 with Z535 and state-semantics extensions.",
+    "type": "object",
+    "required": ["type", "title", "status"],
+    "properties": {
+        "type": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^urn:idle-chapters:error:.+$"
+        },
+        "title": { "type": "string" },
+        "status": { "type": "integer", "minimum": 400, "maximum": 599 },
+        "detail": { "type": "string" },
+        "instance": { "type": "string", "format": "uri" },
+        "effect": {
+            "type": "string",
+            "enum": ["none", "applied", "partial", "unknown"]
+        },
+        "recovery": {
+            "type": "string",
+            "enum": ["retryable", "correctable", "terminal", "escalate"]
+        },
+        "signal": {
+            "type": "string",
+            "enum": ["DANGER", "WARNING", "CAUTION", "NOTICE"]
+        },
+        "context": { "type": "object" }
+    },
+    "oneOf": [
+        {
+            "description": "Player projection — minimal RFC 9457",
+            "required": ["type", "title", "status"],
+            "not": { "required": ["effect"] }
+        },
+        {
+            "description": "Developer/agent projection — full RFC 9457 with extensions",
+            "required": ["type", "title", "status", "effect", "recovery", "signal"]
+        }
+    ]
+}
