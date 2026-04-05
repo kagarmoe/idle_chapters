@@ -1,0 +1,38 @@
+{
+    "session_not_found": {
+        "template": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+        "fallback": "It looks like it's time for a fresh start. A new story is waiting."
+    },
+    "action_not_eligible": {
+        "template": "That doesn't seem possible right now. Maybe explore a bit more first.",
+        "fallback": "That doesn't seem to be an option at the moment."
+    },
+    "intent_no_match": {
+        "template": "Hmm, I'm not sure what you mean by \"{input}\". These are the things you could do here: {available_actions}.",
+        "fallback": "I didn't quite catch that. What would you like to do?"
+    },
+    "insufficient_inventory": {
+        "template": "You have {available} {item_name} with you. This would take {required}. Maybe you'll find more while exploring.",
+        "fallback": "You don't quite have what you'd need for that yet."
+    },
+    "invalid_location": {
+        "template": "That place doesn't seem to be nearby. Perhaps somewhere else calls to you.",
+        "fallback": "That doesn't seem to be a place you can visit right now."
+    },
+    "scene_not_available": {
+        "template": "This place is quietly resting for the moment. Perhaps come back a little later.",
+        "fallback": "Nothing seems to be happening here right now. That's alright."
+    },
+    "engine_failure": {
+        "template": "Something got a little tangled. Perhaps try again in a moment.",
+        "fallback": "Something got a little tangled. Perhaps try again in a moment."
+    },
+    "persistence_failure": {
+        "template": "Your story was briefly interrupted. Try that again and it should settle.",
+        "fallback": "Something got a little tangled. Perhaps try again in a moment."
+    },
+    "journal_page_not_found": {
+        "template": "That page doesn't seem to be in your journal. Perhaps it's from a different chapter.",
+        "fallback": "That page doesn't seem to be here."
+    }
+}

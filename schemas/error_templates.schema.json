@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Error Templates",
+    "description": "Player-facing error message templates. All text must comply with the tone contract.",
+    "type": "object",
+    "additionalProperties": {
+        "type": "object",
+        "required": ["template", "fallback"],
+        "properties": {
+            "template": {
+                "type": "string",
+                "description": "Message template with {placeholder} substitution from GameError.context"
+            },
+            "fallback": {
+                "type": "string",
+                "description": "Used when template placeholders cannot be filled"
+            }
+        },
+        "additionalProperties": false
+    }
+}
