@@ -1,15 +1,31 @@
 from __future__ import annotations
 
+from typing import NoReturn
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pymongo.database import Database
 
 from idle_chapters.api.deps import get_db
 from idle_chapters.api.models import PlayerCreateRequest, PlayerResponse, PlayerState, PlayerUpdateRequest
+from idle_chapters.services.errors import Effect, ErrorKind, GameError, Recovery
 
 
 router = APIRouter(prefix="/v1/players", tags=["players"])
+
+
+def _raise_player_not_found(player_id: str) -> NoReturn:
+    raise GameError(
+        kind=ErrorKind.PLAYER_NOT_FOUND,
+        effect=Effect.NONE,
+        recovery=Recovery.TERMINAL,
+        detail=(
+            f"WHAT: No player exists for {player_id}.\n"
+            f"MEANS: Nothing was modified.\n"
+            f"DO: Create a new player via POST /v1/players."
+        ),
+        context={"player_id": player_id},
+    )
 
 
 def _build_player_response(player_id: str, record: dict) -> PlayerResponse:
@@ -38,7 +54,7 @@ def create_player(
 def get_player(player_id: str, db: Database = Depends(get_db)) -> PlayerResponse:
     record = db["players"].find_one({"_id": player_id})
     if record is None:
-        raise HTTPException(status_code=404, detail="Player not found")
+        _raise_player_not_found(player_id)
     return _build_player_response(player_id, record)
 
 
@@ -48,7 +64,7 @@ def update_player(
 ) -> PlayerResponse:
     record = db["players"].find_one({"_id": player_id})
     if record is None:
-        raise HTTPException(status_code=404, detail="Player not found")
+        _raise_player_not_found(player_id)
     player_info = dict(record.get("player_info") or {})
     if request.display_name is not None:
         player_info["display_name"] = request.display_name

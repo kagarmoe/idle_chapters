@@ -34,5 +34,9 @@
     "journal_page_not_found": {
         "template": "That page doesn't seem to be in your journal. Perhaps it's from a different chapter.",
         "fallback": "That page doesn't seem to be here."
+    },
+    "player_not_found": {
+        "template": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
+        "fallback": "That traveler doesn't seem to be here."
     }
 }
