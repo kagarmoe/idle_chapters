@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pymongo.database import Database
 
 from idle_chapters.api.deps import get_db
 from idle_chapters.api.models import PlayerCreateRequest, PlayerResponse, PlayerState, PlayerUpdateRequest
+from idle_chapters.api.routers.error_helpers import raise_player_not_found
 
 
 router = APIRouter(prefix="/v1/players", tags=["players"])
@@ -38,7 +39,7 @@ def create_player(
 def get_player(player_id: str, db: Database = Depends(get_db)) -> PlayerResponse:
     record = db["players"].find_one({"_id": player_id})
     if record is None:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise_player_not_found(player_id)
     return _build_player_response(player_id, record)
 
 
@@ -48,7 +49,7 @@ def update_player(
 ) -> PlayerResponse:
     record = db["players"].find_one({"_id": player_id})
     if record is None:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise_player_not_found(player_id)
     player_info = dict(record.get("player_info") or {})
     if request.display_name is not None:
         player_info["display_name"] = request.display_name

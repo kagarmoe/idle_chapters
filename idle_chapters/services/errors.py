@@ -30,6 +30,7 @@ class ErrorKind(StrEnum):
     ENGINE_FAILURE = "engine_failure"
     PERSISTENCE_FAILURE = "persistence_failure"
     JOURNAL_PAGE_NOT_FOUND = "journal_page_not_found"
+    PLAYER_NOT_FOUND = "player_not_found"
 
 
 class Effect(StrEnum):
@@ -64,6 +65,7 @@ _HTTP_STATUS: dict[ErrorKind, int] = {
     ErrorKind.ENGINE_FAILURE: 500,
     ErrorKind.PERSISTENCE_FAILURE: 503,
     ErrorKind.JOURNAL_PAGE_NOT_FOUND: 404,
+    ErrorKind.PLAYER_NOT_FOUND: 404,
 }
 
 _TITLES: dict[ErrorKind, str] = {
@@ -76,6 +78,7 @@ _TITLES: dict[ErrorKind, str] = {
     ErrorKind.ENGINE_FAILURE: "Engine Failure",
     ErrorKind.PERSISTENCE_FAILURE: "Persistence Failure",
     ErrorKind.JOURNAL_PAGE_NOT_FOUND: "Journal Page Not Found",
+    ErrorKind.PLAYER_NOT_FOUND: "Player Not Found",
 }
 
 _URN_PREFIX = "urn:idle-chapters:error:"
