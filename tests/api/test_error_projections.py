@@ -20,11 +20,11 @@ def _make_test_app():
 
     @app.exception_handler(GameError)
     async def handle_game_error(request: Request, exc: GameError) -> JSONResponse:
-        projection = request.headers.get("Accept-Projection", "player")
-        if projection == "developer":
-            body = exc.project_developer()
-        else:
+        projection = request.headers.get("Accept-Projection", "developer")
+        if projection == "player":
             body = exc.project_player()
+        else:
+            body = exc.project_developer()
         return JSONResponse(status_code=exc.http_status, content=body)
 
     # Minimal stub repo / stores
@@ -79,9 +79,26 @@ def client() -> TestClient:
     return TestClient(app)
 
 
+class TestDefaultProjection:
+    def test_default_projection_is_developer(self, client):
+        """Without Accept-Projection header, the API returns developer projection."""
+        resp = client.get("/v1/sessions/nonexistent")
+        assert resp.status_code == 404
+        body = resp.json()
+        assert body["type"] == "urn:idle-chapters:error:session_not_found"
+        assert "effect" in body
+        assert "recovery" in body
+        assert "signal" in body
+        assert "detail" in body
+        assert "context" in body
+
+
 class TestPlayerProjection:
     def test_session_not_found_returns_rfc9457_player(self, client):
-        resp = client.get("/v1/sessions/nonexistent")
+        resp = client.get(
+            "/v1/sessions/nonexistent",
+            headers={"Accept-Projection": "player"},
+        )
         assert resp.status_code == 404
         body = resp.json()
         assert body["type"] == "urn:idle-chapters:error:session_not_found"
@@ -92,8 +109,11 @@ class TestPlayerProjection:
         assert "recovery" not in body
         assert "signal" not in body
 
-    def test_default_projection_is_player(self, client):
-        resp = client.get("/v1/sessions/nonexistent")
+    def test_player_projection_shape(self, client):
+        resp = client.get(
+            "/v1/sessions/nonexistent",
+            headers={"Accept-Projection": "player"},
+        )
         body = resp.json()
         assert set(body.keys()) == {"type", "title", "status"}
 

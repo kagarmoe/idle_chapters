@@ -176,15 +176,17 @@ class TestSuccessExamples:
 class TestErrorExamplesPlayerProjection:
     """Verify error response fields match hand-written examples (player projection)."""
 
+    _PLAYER_HEADERS = {"Accept-Projection": "player"}
+
     def test_session_not_found(self, client):
-        resp = client.get("/v1/sessions/nonexistent")
+        resp = client.get("/v1/sessions/nonexistent", headers=self._PLAYER_HEADERS)
         assert resp.status_code == 404
         actual = set(resp.json().keys())
         expected = _example_keys(SESSION_NOT_FOUND_RESPONSES, 404, "player")
         assert actual == expected, f"actual {actual} != example {expected}"
 
     def test_player_not_found(self, client):
-        resp = client.get("/v1/players/nonexistent")
+        resp = client.get("/v1/players/nonexistent", headers=self._PLAYER_HEADERS)
         assert resp.status_code == 404
         actual = set(resp.json().keys())
         expected = _example_keys(PLAYER_NOT_FOUND_RESPONSES, 404, "player")
@@ -194,6 +196,7 @@ class TestErrorExamplesPlayerProjection:
         resp = client.post(
             f"/v1/sessions/{session_id}/intent",
             json={"input": "fly to the moon"},
+            headers=self._PLAYER_HEADERS,
         )
         assert resp.status_code == 422
         actual = set(resp.json().keys())
@@ -204,6 +207,7 @@ class TestErrorExamplesPlayerProjection:
         resp = client.post(
             f"/v1/sessions/{session_id}/action",
             json={"action_id": "nonexistent_action"},
+            headers=self._PLAYER_HEADERS,
         )
         assert resp.status_code == 409
         actual = set(resp.json().keys())
