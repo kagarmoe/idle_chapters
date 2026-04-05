@@ -1,28 +1,26 @@
 import os
 from pathlib import Path
-import sys
 
 import pytest
+
+
+@pytest.fixture(scope="session")
+def fixtures_dir() -> Path:
+    return Path(__file__).parent / "fixtures"
 
 
 @pytest.fixture(scope="session")
 def repo_root() -> Path:
     path = Path(__file__).resolve()
     for parent in path.parents:
-        if (parent / "CLAUDE.md").exists():
-            root = parent
-            break
-    else:
-        root = path.parents[3]
-    api_dir = root / "apps" / "api"
-    if str(api_dir) not in sys.path:
-        sys.path.insert(0, str(api_dir))
-    return root
+        if (parent / ".git").is_dir():
+            return parent
+    return path.parents[1]
 
 
 @pytest.fixture(scope="session")
 def api_root(repo_root: Path) -> Path:
-    return repo_root / "apps" / "api"
+    return repo_root
 
 
 @pytest.fixture(autouse=True, scope="session")

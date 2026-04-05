@@ -4,14 +4,14 @@ import pytest
 
 
 def test_load_json_parses(repo_root: Path) -> None:
-    from app.content.loader import load_json
+    from idle_chapters.content.loader import load_json
 
     data = load_json(repo_root / "assets" / "places.json")
     assert isinstance(data, (dict, list))
 
 
 def test_load_json_validates_schema(repo_root: Path, api_root: Path) -> None:
-    from app.content.loader import load_json
+    from idle_chapters.content.loader import load_json
 
     invalid_path = api_root / "tests" / "fixtures" / "invalid_places.json"
     schema_path = repo_root / "schemas" / "places.schema.json"

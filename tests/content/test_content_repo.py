@@ -2,7 +2,7 @@ from typing import Dict
 
 
 def test_content_repo_builds_indices() -> None:
-    from app.content.repo import ContentRepo
+    from idle_chapters.content.repo import ContentRepo
 
     repo = ContentRepo()
     expected_indices = [
@@ -28,7 +28,7 @@ def test_content_repo_builds_indices() -> None:
 
 
 def test_content_repo_ids_are_strings() -> None:
-    from app.content.repo import ContentRepo
+    from idle_chapters.content.repo import ContentRepo
 
     repo = ContentRepo()
     index_map: Dict[str, dict] = {

@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
-from app.content.schema_utils import load_validator
+from idle_chapters.content.schema_utils import load_validator
 
 
 def _scene_to_dict(scene):
@@ -38,9 +38,9 @@ def _scene_text(scene_dict: dict) -> str:
 
 
 def test_generator_returns_three_choices() -> None:
-    from app.content.repo import ContentRepo
-    from app.domain.state import PlayerState
-    from app.domain.scene_generator import generate_scene
+    from idle_chapters.content.repo import ContentRepo
+    from idle_chapters.domain.state import PlayerState
+    from idle_chapters.domain.scene_generator import generate_scene
 
     repo = ContentRepo()
     state = PlayerState(
@@ -57,9 +57,9 @@ def test_generator_returns_three_choices() -> None:
 
 
 def test_generator_determinism() -> None:
-    from app.content.repo import ContentRepo
-    from app.domain.state import PlayerState
-    from app.domain.scene_generator import generate_scene
+    from idle_chapters.content.repo import ContentRepo
+    from idle_chapters.domain.state import PlayerState
+    from idle_chapters.domain.scene_generator import generate_scene
 
     repo = ContentRepo()
     state = PlayerState(
@@ -81,9 +81,9 @@ def test_generator_determinism() -> None:
 
 @pytest.mark.skip(reason="scene.schema.json removed; scenes replaced by scenes")
 def test_generator_validates_against_schema(repo_root: Path) -> None:
-    from app.content.repo import ContentRepo
-    from app.domain.state import PlayerState
-    from app.domain.scene_generator import generate_scene
+    from idle_chapters.content.repo import ContentRepo
+    from idle_chapters.domain.state import PlayerState
+    from idle_chapters.domain.scene_generator import generate_scene
 
     schema_path = repo_root / "schemas" / "scene.schema.json"
 
@@ -102,9 +102,9 @@ def test_generator_validates_against_schema(repo_root: Path) -> None:
 
 
 def test_generator_avoids_not_allowed_lexicon(repo_root: Path) -> None:
-    from app.content.repo import ContentRepo
-    from app.domain.state import PlayerState
-    from app.domain.scene_generator import generate_scene
+    from idle_chapters.content.repo import ContentRepo
+    from idle_chapters.domain.state import PlayerState
+    from idle_chapters.domain.scene_generator import generate_scene
 
     repo = ContentRepo()
     state = PlayerState(
@@ -124,7 +124,7 @@ def test_generator_avoids_not_allowed_lexicon(repo_root: Path) -> None:
 
 
 def test_selector_merges_authored_anchors() -> None:
-    from app.domain.selector import merge_with_authored
+    from idle_chapters.domain.selector import merge_with_authored
 
     generated = [
         {"scene_id": "generated_1", "place_id": "cottage_home", "choices": []},
@@ -140,9 +140,9 @@ def test_selector_merges_authored_anchors() -> None:
 
 
 def test_generated_scene_exists_for_all_places() -> None:
-    from app.content.repo import ContentRepo
-    from app.domain.state import PlayerState
-    from app.domain.scene_generator import generate_scene
+    from idle_chapters.content.repo import ContentRepo
+    from idle_chapters.domain.state import PlayerState
+    from idle_chapters.domain.scene_generator import generate_scene
 
     repo = ContentRepo()
 

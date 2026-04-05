@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
-from app.domain.engine import Engine
-from app.domain.state import PlayerState
+from idle_chapters.domain.engine import Engine
+from idle_chapters.domain.state import PlayerState
 
 
 def test_engine_step_returns_journal_page() -> None:

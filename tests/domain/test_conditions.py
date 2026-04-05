@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
-from app.domain.conditions import evaluate_conditions
-from app.domain.state import PlayerState
+from idle_chapters.domain.conditions import evaluate_conditions
+from idle_chapters.domain.state import PlayerState
 
 
 def _make_state(**overrides) -> PlayerState:

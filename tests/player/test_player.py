@@ -1,5 +1,5 @@
-from app.content.schema_utils import load_validator
-from app.scenes.welcome import _create_player
+from idle_chapters.content.schema_utils import load_validator
+from idle_chapters.scenes.welcome import _create_player
 
 
 def test_create_player_sets_player_id(monkeypatch, repo_root) -> None:

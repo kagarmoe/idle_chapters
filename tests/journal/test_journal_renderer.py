@@ -9,11 +9,11 @@ from types import SimpleNamespace
 import jsonschema
 import pytest
 
-from app.domain.ingredient_picker import (
+from idle_chapters.domain.ingredient_picker import (
     pick_ingredients,
     resolve_substitution_token,
 )
-from app.domain.journal_renderer import render_journal_page
+from idle_chapters.domain.journal_renderer import render_journal_page
 
 
 _here = Path(__file__).resolve()

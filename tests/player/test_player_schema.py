@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from app.content.schema_utils import load_validator
+from idle_chapters.content.schema_utils import load_validator
 
 
 def test_player_schema_accepts_counts(repo_root: Path) -> None:

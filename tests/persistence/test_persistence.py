@@ -15,7 +15,7 @@ def unique_session_id():
 @mongo
 def test_mongo_connectivity() -> None:
     """Smoke test: can we reach MongoDB and run a command?"""
-    from app.persistence.mongo import get_db
+    from idle_chapters.persistence.mongo import get_db
 
     db = get_db()
     result = db.command("ping")
@@ -24,8 +24,8 @@ def test_mongo_connectivity() -> None:
 
 @mongo
 def test_state_store_round_trip(unique_session_id) -> None:
-    from app.domain.state import PlayerState
-    from app.persistence.state_store import StateStore
+    from idle_chapters.domain.state import PlayerState
+    from idle_chapters.persistence.state_store import StateStore
 
     store = StateStore()
     state = PlayerState(
@@ -53,7 +53,7 @@ def test_state_store_round_trip(unique_session_id) -> None:
 
 @mongo
 def test_state_store_returns_none_for_missing(unique_session_id) -> None:
-    from app.persistence.state_store import StateStore
+    from idle_chapters.persistence.state_store import StateStore
 
     store = StateStore()
     assert store.get_state(unique_session_id) is None
@@ -61,8 +61,8 @@ def test_state_store_returns_none_for_missing(unique_session_id) -> None:
 
 @mongo
 def test_state_store_upsert_overwrites(unique_session_id) -> None:
-    from app.domain.state import PlayerState
-    from app.persistence.state_store import StateStore
+    from idle_chapters.domain.state import PlayerState
+    from idle_chapters.persistence.state_store import StateStore
 
     store = StateStore()
     state1 = PlayerState(
@@ -92,7 +92,7 @@ def test_state_store_upsert_overwrites(unique_session_id) -> None:
 
 @mongo
 def test_journal_store_round_trip(unique_session_id) -> None:
-    from app.persistence.journal_store import JournalStore
+    from idle_chapters.persistence.journal_store import JournalStore
 
     store = JournalStore()
     page = {
@@ -123,7 +123,7 @@ def test_journal_store_round_trip(unique_session_id) -> None:
 
 @mongo
 def test_journal_store_list_ordering(unique_session_id) -> None:
-    from app.persistence.journal_store import JournalStore
+    from idle_chapters.persistence.journal_store import JournalStore
 
     store = JournalStore()
     store.append_page(unique_session_id, {"page_id": "p1", "body": "first"})
@@ -136,7 +136,7 @@ def test_journal_store_list_ordering(unique_session_id) -> None:
 
 @mongo
 def test_journal_store_get_missing_returns_none(unique_session_id) -> None:
-    from app.persistence.journal_store import JournalStore
+    from idle_chapters.persistence.journal_store import JournalStore
 
     store = JournalStore()
     assert store.get_page(unique_session_id, "nonexistent") is None
@@ -144,7 +144,7 @@ def test_journal_store_get_missing_returns_none(unique_session_id) -> None:
 
 @mongo
 def test_event_store_round_trip(unique_session_id) -> None:
-    from app.persistence.event_store import EventStore
+    from idle_chapters.persistence.event_store import EventStore
 
     store = EventStore()
     event = {
@@ -163,7 +163,7 @@ def test_event_store_round_trip(unique_session_id) -> None:
 
 @mongo
 def test_event_store_ordering(unique_session_id) -> None:
-    from app.persistence.event_store import EventStore
+    from idle_chapters.persistence.event_store import EventStore
 
     store = EventStore()
     store.append_event(unique_session_id, {"event_type": "enter", "data": {}})

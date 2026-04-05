@@ -2,7 +2,7 @@ from pathlib import Path
 
 
 def test_content_manifest_paths(repo_root: Path) -> None:
-    from app.content.manifest import ContentManifest
+    from idle_chapters.content.manifest import ContentManifest
 
     manifest = ContentManifest()
 
@@ -17,7 +17,7 @@ def test_content_manifest_paths(repo_root: Path) -> None:
 
 
 def test_manifest_lists_core_assets() -> None:
-    from app.content.manifest import ContentManifest
+    from idle_chapters.content.manifest import ContentManifest
 
     manifest = ContentManifest()
     expected_assets = {

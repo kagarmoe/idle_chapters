@@ -4,8 +4,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from app.domain.engine import Engine
-from app.domain.state import PlayerState
+from idle_chapters.domain.engine import Engine
+from idle_chapters.domain.state import PlayerState
 
 
 # -- Stub stores (in-memory, no MongoDB) --
@@ -166,7 +166,7 @@ def stores():
 
 @pytest.fixture
 def service(repo, stores):
-    from app.services.session_service import SessionService
+    from idle_chapters.services.session_service import SessionService
 
     state_store, journal_store, event_store = stores
     return SessionService(
@@ -268,8 +268,8 @@ def _make_test_app(repo, stores):
     """Build a FastAPI app with dependency overrides for testing."""
     from fastapi import FastAPI
 
-    from app.api.deps import get_session_service
-    from app.api.routers import sessions
+    from idle_chapters.api.deps import get_session_service
+    from idle_chapters.api.routers import sessions
 
     app = FastAPI()
     app.include_router(sessions.router)
@@ -277,7 +277,7 @@ def _make_test_app(repo, stores):
     state_store, journal_store, event_store = stores
 
     def _override_service():
-        from app.services.session_service import SessionService as _SS
+        from idle_chapters.services.session_service import SessionService as _SS
 
         return _SS(
             repo=repo,

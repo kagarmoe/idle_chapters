@@ -16,14 +16,14 @@ def _minimal_repo() -> SimpleNamespace:
 
 
 def test_validate_cross_file_integrity_passes() -> None:
-    from app.content.validators import validate_cross_file_integrity
+    from idle_chapters.content.validators import validate_cross_file_integrity
 
     repo = _minimal_repo()
     validate_cross_file_integrity(repo)
 
 
 def test_validate_cross_file_integrity_missing_place() -> None:
-    from app.content.validators import validate_cross_file_integrity
+    from idle_chapters.content.validators import validate_cross_file_integrity
 
     repo = _minimal_repo()
     repo.npcs_by_id["npc_1"]["home_location_id"] = "missing_place"

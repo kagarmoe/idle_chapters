@@ -1,7 +1,7 @@
 import pytest
 
-from app.domain.effects import apply_effects
-from app.domain.state import PlayerState
+from idle_chapters.domain.effects import apply_effects
+from idle_chapters.domain.state import PlayerState
 
 
 def test_apply_effects_updates_state() -> None:
