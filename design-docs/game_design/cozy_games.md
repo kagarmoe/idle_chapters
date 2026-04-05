@@ -1,5 +1,7 @@
 # Cozy games
 
+Research about what constitutes a cozy game.
+
 ## Mechanics
 
 - player-paced
