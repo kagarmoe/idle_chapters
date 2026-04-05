@@ -203,7 +203,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
 Define error response examples in `idle_chapters/api/routers/error_helpers.py` (after imports). This centralizes all response dicts so every router imports from the same place.
 
 ```python
-_SESSION_NOT_FOUND_RESPONSES = {
+SESSION_NOT_FOUND_RESPONSES = {
     404: {
         "description": "Session not found",
         "content": {
@@ -237,7 +237,7 @@ _SESSION_NOT_FOUND_RESPONSES = {
     },
 }
 
-_ACTION_NOT_ELIGIBLE_RESPONSE = {
+ACTION_NOT_ELIGIBLE_RESPONSES = {
     409: {
         "description": "Action not eligible for current state",
         "content": {
@@ -271,7 +271,7 @@ _ACTION_NOT_ELIGIBLE_RESPONSE = {
     },
 }
 
-_JOURNAL_PAGE_404_RESPONSES = {
+JOURNAL_PAGE_404_RESPONSES = {
     404: {
         "description": "Session or journal page not found",
         "content": {
@@ -327,7 +327,7 @@ _JOURNAL_PAGE_404_RESPONSES = {
     },
 }
 
-_INTENT_NO_MATCH_RESPONSE = {
+INTENT_NO_MATCH_RESPONSES = {
     422: {
         "description": "No action matched the free-text intent",
         "content": {
@@ -366,12 +366,12 @@ _INTENT_NO_MATCH_RESPONSE = {
 
 Add `responses={...}` to each endpoint that can fail. Merge dicts for endpoints with multiple error types:
 
-- `GET /{session_id}` — `responses=_SESSION_NOT_FOUND_RESPONSES`
-- `POST /{session_id}/enter` — `responses=_SESSION_NOT_FOUND_RESPONSES`
-- `POST /{session_id}/action` — `responses={**_SESSION_NOT_FOUND_RESPONSES, **_ACTION_NOT_ELIGIBLE_RESPONSE}`
-- `POST /{session_id}/intent` — `responses={**_SESSION_NOT_FOUND_RESPONSES, **_INTENT_NO_MATCH_RESPONSE}`
-- `GET /{session_id}/journal` — `responses=_SESSION_NOT_FOUND_RESPONSES`
-- `GET /{session_id}/journal/{page_id}` — `responses=_JOURNAL_PAGE_404_RESPONSES`
+- `GET /{session_id}` — `responses=SESSION_NOT_FOUND_RESPONSES`
+- `POST /{session_id}/enter` — `responses=SESSION_NOT_FOUND_RESPONSES`
+- `POST /{session_id}/action` — `responses={**SESSION_NOT_FOUND_RESPONSES, **ACTION_NOT_ELIGIBLE_RESPONSES}`
+- `POST /{session_id}/intent` — `responses={**SESSION_NOT_FOUND_RESPONSES, **INTENT_NO_MATCH_RESPONSES}`
+- `GET /{session_id}/journal` — `responses=SESSION_NOT_FOUND_RESPONSES`
+- `GET /{session_id}/journal/{page_id}` — `responses=JOURNAL_PAGE_404_RESPONSES`
 
 **Step 3: Add usage descriptions to key endpoints**
 
@@ -433,6 +433,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
 ### Task 3: Add error examples to player and journal routes
 
 **Files:**
+- Modify: `idle_chapters/api/routers/error_helpers.py`
 - Modify: `idle_chapters/api/routers/players.py`
 - Modify: `idle_chapters/api/routers/journal.py`
 
@@ -441,7 +442,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
 Add `PLAYER_NOT_FOUND_RESPONSES` to `idle_chapters/api/routers/error_helpers.py` alongside the session response dicts (already defined there from Task 2):
 
 ```python
-_PLAYER_NOT_FOUND_RESPONSES = {
+PLAYER_NOT_FOUND_RESPONSES = {
     404: {
         "description": "Player not found",
         "content": {
@@ -478,8 +479,8 @@ _PLAYER_NOT_FOUND_RESPONSES = {
 
 **Step 2: Add responses to player route decorators**
 
-- `GET /{player_id}` — `responses=_PLAYER_NOT_FOUND_RESPONSES`
-- `PATCH /{player_id}` — `responses=_PLAYER_NOT_FOUND_RESPONSES`
+- `GET /{player_id}` — `responses=PLAYER_NOT_FOUND_RESPONSES`
+- `PATCH /{player_id}` — `responses=PLAYER_NOT_FOUND_RESPONSES`
 
 Add a usage description to `POST /v1/players`:
 ```python
