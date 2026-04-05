@@ -1685,9 +1685,7 @@
           "prompt": "The cottage rests in a quiet countryside, with a thatched roof and smoke curling from the chimney.",
           "scene_id": "cottage_home_tea_arrival_42",
           "visible_items": [],
-          "visible_npcs": [
-            "npc_baker_elin"
-          ]
+          "visible_npcs": []
         }
       }
     }

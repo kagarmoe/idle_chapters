@@ -24,7 +24,7 @@ class ViewModel(BaseModel):
             {"action_id": "cottage_wake", "label": "Wake in the cottage"},
         ],
         "visible_items": [],
-        "visible_npcs": ["npc_baker_elin"],
+        "visible_npcs": [],
     }})
 
     prompt: str | None = None
