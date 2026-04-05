@@ -20,6 +20,12 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+
     steps:
       - uses: actions/checkout@v4
 
@@ -34,3 +40,22 @@ jobs:
 
       - name: Run tests
         run: pytest
+        env:
+          MONGO_URL: mongodb://localhost:27017
+
+      - name: Verify OpenAPI spec is up to date
+        run: |
+          python << 'PYEOF'
+          from idle_chapters.api.server import create_app
+          import json
+          from pathlib import Path
+          app = create_app()
+          expected = json.dumps(app.openapi(), indent=2)
+          actual = Path("docs/openapi.json").read_text()
+          if expected != actual:
+              print("docs/openapi.json is out of date. Regenerate it locally and commit.")
+              raise SystemExit(1)
+          print("OpenAPI spec is in sync")
+          PYEOF
+        env:
+          MONGO_URL: mongodb://localhost:27017

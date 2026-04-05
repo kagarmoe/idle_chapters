@@ -11,6 +11,7 @@
           "world"
         ],
         "summary": "Get Manifest",
+        "description": "Return metadata about all game content: schemas, assets, and lexicons.\n\n**curl:**\n```bash\ncurl http://localhost:8000/v1/world/manifest\n```",
         "operationId": "get_manifest_v1_world_manifest_get",
         "responses": {
           "200": {
@@ -34,6 +35,7 @@
           "world"
         ],
         "summary": "Get Places",
+        "description": "List all places in the game world with their zone, mood, and player need.",
         "operationId": "get_places_v1_world_places_get",
         "responses": {
           "200": {
@@ -60,6 +62,7 @@
           "world"
         ],
         "summary": "Get Scenes",
+        "description": "List all authored scenes with their entry nodes and choice graphs.",
         "operationId": "get_scenes_v1_world_scenes_get",
         "responses": {
           "200": {
@@ -86,6 +89,7 @@
           "world"
         ],
         "summary": "Get Actions",
+        "description": "List all actions with their labels, conditions, effects, and results.",
         "operationId": "get_actions_v1_world_actions_get",
         "responses": {
           "200": {
@@ -112,6 +116,7 @@
           "world"
         ],
         "summary": "Get Collectibles",
+        "description": "List all collectible items with their types, origins, and symbolic meanings.",
         "operationId": "get_collectibles_v1_world_collectibles_get",
         "responses": {
           "200": {
@@ -138,6 +143,7 @@
           "world"
         ],
         "summary": "Get Npcs",
+        "description": "List all NPCs with their display names, kinds, and home locations.",
         "operationId": "get_npcs_v1_world_npcs_get",
         "responses": {
           "200": {
@@ -164,6 +170,7 @@
           "players"
         ],
         "summary": "Create Player",
+        "description": "Create a new player profile.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/players \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"display_name\": \"Wanderer\", \"pronouns_key\": \"they/them\"}'\n```",
         "operationId": "create_player_v1_players_post",
         "requestBody": {
           "content": {
@@ -228,6 +235,39 @@
               }
             }
           },
+          "404": {
+            "description": "Player not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:player_not_found",
+                      "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
+                      "status": 404
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:player_not_found",
+                      "title": "Player Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No player exists for f1e2d3c4.\nMEANS: Nothing was modified.\nDO: Create a new player via POST /v1/players.",
+                      "instance": "urn:idle-chapters:occurrence:d4e5f6a7-b8c9-0123-defa-234567890123",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "player_id": "f1e2d3c4"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -278,6 +318,39 @@
               }
             }
           },
+          "404": {
+            "description": "Player not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:player_not_found",
+                      "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
+                      "status": 404
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:player_not_found",
+                      "title": "Player Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No player exists for f1e2d3c4.\nMEANS: Nothing was modified.\nDO: Create a new player via POST /v1/players.",
+                      "instance": "urn:idle-chapters:occurrence:d4e5f6a7-b8c9-0123-defa-234567890123",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "player_id": "f1e2d3c4"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -297,6 +370,7 @@
           "sessions"
         ],
         "summary": "Create Session",
+        "description": "Create a new game session and enter the starting location.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"place_id\": \"cottage_home\"}'\n```\n\n**Python (httpx):**\n```python\nimport httpx\nresp = httpx.post(\"http://localhost:8000/v1/sessions\", json={\"place_id\": \"cottage_home\"})\nsession = resp.json()\n```",
         "operationId": "create_session_v1_sessions_post",
         "requestBody": {
           "content": {
@@ -337,6 +411,7 @@
           "sessions"
         ],
         "summary": "Get Session",
+        "description": "Get the current state of a game session.\n\n**curl:**\n```bash\ncurl http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890\n```",
         "operationId": "get_session_v1_sessions__session_id__get",
         "parameters": [
           {
@@ -360,6 +435,39 @@
               }
             }
           },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+                      "status": 404
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "Session Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
+                      "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "session_id": "abc123"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -379,6 +487,7 @@
           "sessions"
         ],
         "summary": "Enter Place",
+        "description": "Re-enter the current place to refresh the scene and get new choices.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/enter\n```",
         "operationId": "enter_place_v1_sessions__session_id__enter_post",
         "parameters": [
           {
@@ -402,6 +511,39 @@
               }
             }
           },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+                      "status": 404
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "Session Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
+                      "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "session_id": "abc123"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -421,6 +563,7 @@
           "sessions"
         ],
         "summary": "Submit Action",
+        "description": "Execute a chosen action in the current scene.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"action_id\": \"rest_longer\"}'\n```\n\nTo see developer error details, add the projection header:\n```bash\ncurl -H \"Accept-Projection: developer\" http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action ...\n```",
         "operationId": "submit_action_v1_sessions__session_id__action_post",
         "parameters": [
           {
@@ -454,6 +597,76 @@
               }
             }
           },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+                      "status": 404
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "Session Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
+                      "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "session_id": "abc123"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Action not eligible for current state",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:action_not_eligible",
+                      "title": "That doesn't seem possible right now. Maybe explore a bit more first.",
+                      "status": 409
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:action_not_eligible",
+                      "title": "Action Not Eligible",
+                      "status": 409,
+                      "detail": "WHAT: Action gather_herbs failed conditions for session abc123.\nMEANS: State unchanged. Action requires unmet conditions.\nDO: Check eligible actions via GET /v1/sessions/abc123.",
+                      "instance": "urn:idle-chapters:occurrence:b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                      "effect": "none",
+                      "recovery": "correctable",
+                      "signal": "CAUTION",
+                      "context": {
+                        "action_id": "gather_herbs",
+                        "session_id": "abc123",
+                        "unmet": [
+                          "flags_set: visited_garden"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -473,6 +686,7 @@
           "sessions"
         ],
         "summary": "Submit Intent",
+        "description": "Match free-text input to an eligible action and execute it.\n\nThe input is matched against the labels of currently eligible actions.\nIf no match is found, a 422 error is returned with the available actions.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/intent \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"input\": \"rest a bit longer\"}'\n```\n\n**Python (httpx):**\n```python\nimport httpx\nresp = httpx.post(\n    \"http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/intent\",\n    json={\"input\": \"brew some tea\"},\n)\n```",
         "operationId": "submit_intent_v1_sessions__session_id__intent_post",
         "parameters": [
           {
@@ -506,12 +720,70 @@
               }
             }
           },
-          "422": {
-            "description": "Validation Error",
+          "404": {
+            "description": "Session not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+                      "status": 404
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "Session Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
+                      "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "session_id": "abc123"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "No action matched the free-text intent",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:intent_no_match",
+                      "title": "Hmm, I'm not sure what you mean by \"fly away\". These are the things you could do here: Rest a bit longer, Wake in the cottage.",
+                      "status": 422
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:intent_no_match",
+                      "title": "Intent No Match",
+                      "status": 422,
+                      "detail": "WHAT: No action matched intent 'fly away' for session abc123.\nMEANS: State unchanged. Available actions: ['Rest a bit longer', 'Wake in the cottage'].\nDO: Rephrase or choose from eligible actions.",
+                      "instance": "urn:idle-chapters:occurrence:c3d4e5f6-a7b8-9012-cdef-123456789012",
+                      "effect": "none",
+                      "recovery": "correctable",
+                      "signal": "CAUTION",
+                      "context": {
+                        "input": "fly away",
+                        "available_actions": "Rest a bit longer, Wake in the cottage",
+                        "session_id": "abc123"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -549,6 +821,39 @@
                     "additionalProperties": true
                   },
                   "title": "Response List Journal Pages V1 Sessions  Session Id  Journal Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+                      "status": 404
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "Session Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
+                      "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "session_id": "abc123"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -606,6 +911,64 @@
               }
             }
           },
+          "404": {
+            "description": "Session or journal page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "session_not_found_player": {
+                    "summary": "Session not found \u2014 player projection",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
+                      "status": 404
+                    }
+                  },
+                  "session_not_found_developer": {
+                    "summary": "Session not found \u2014 developer projection",
+                    "value": {
+                      "type": "urn:idle-chapters:error:session_not_found",
+                      "title": "Session Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No session exists for abc123.\nMEANS: Nothing was modified.\nDO: Create a new session via POST /v1/sessions.",
+                      "instance": "urn:idle-chapters:occurrence:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "session_id": "abc123"
+                      }
+                    }
+                  },
+                  "journal_page_not_found_player": {
+                    "summary": "Journal page not found \u2014 player projection",
+                    "value": {
+                      "type": "urn:idle-chapters:error:journal_page_not_found",
+                      "title": "That page doesn't seem to be in your journal. Perhaps it's from a different chapter.",
+                      "status": 404
+                    }
+                  },
+                  "journal_page_not_found_developer": {
+                    "summary": "Journal page not found \u2014 developer projection",
+                    "value": {
+                      "type": "urn:idle-chapters:error:journal_page_not_found",
+                      "title": "Journal Page Not Found",
+                      "status": 404,
+                      "detail": "WHAT: Journal page jp-xyz not found for session abc123.\nMEANS: Nothing was modified.\nDO: List pages via GET /v1/sessions/abc123/journal.",
+                      "instance": "urn:idle-chapters:occurrence:e5f6a7b8-c9d0-1234-efab-567890123456",
+                      "effect": "none",
+                      "recovery": "correctable",
+                      "signal": "CAUTION",
+                      "context": {
+                        "session_id": "abc123",
+                        "page_id": "jp-xyz"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -622,7 +985,7 @@
     "/v1/players/{player_id}/inventory": {
       "get": {
         "tags": [
-          "journal"
+          "players"
         ],
         "summary": "Get Player Inventory",
         "operationId": "get_player_inventory_v1_players__player_id__inventory_get",
@@ -652,6 +1015,39 @@
               }
             }
           },
+          "404": {
+            "description": "Player not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:player_not_found",
+                      "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
+                      "status": 404
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:player_not_found",
+                      "title": "Player Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No player exists for f1e2d3c4.\nMEANS: Nothing was modified.\nDO: Create a new player via POST /v1/players.",
+                      "instance": "urn:idle-chapters:occurrence:d4e5f6a7-b8c9-0123-defa-234567890123",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "player_id": "f1e2d3c4"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -668,7 +1064,7 @@
     "/v1/players/{player_id}/journal": {
       "get": {
         "tags": [
-          "journal"
+          "players"
         ],
         "summary": "Get Player Journal",
         "operationId": "get_player_journal_v1_players__player_id__journal_get",
@@ -695,6 +1091,39 @@
                     "additionalProperties": true
                   },
                   "title": "Response Get Player Journal V1 Players  Player Id  Journal Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Player not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "player": {
+                    "summary": "Player projection (default)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:player_not_found",
+                      "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
+                      "status": 404
+                    }
+                  },
+                  "developer": {
+                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "value": {
+                      "type": "urn:idle-chapters:error:player_not_found",
+                      "title": "Player Not Found",
+                      "status": 404,
+                      "detail": "WHAT: No player exists for f1e2d3c4.\nMEANS: Nothing was modified.\nDO: Create a new player via POST /v1/players.",
+                      "instance": "urn:idle-chapters:occurrence:d4e5f6a7-b8c9-0123-defa-234567890123",
+                      "effect": "none",
+                      "recovery": "terminal",
+                      "signal": "NOTICE",
+                      "context": {
+                        "player_id": "f1e2d3c4"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -877,7 +1306,20 @@
         "required": [
           "player_id"
         ],
-        "title": "PlayerResponse"
+        "title": "PlayerResponse",
+        "example": {
+          "player_id": "f1e2d3c4b5a67890abcdef1234567890",
+          "player_info": {
+            "display_name": "Wanderer",
+            "pronouns": "they/them"
+          },
+          "state": {
+            "flags": [],
+            "inventory_counts": {},
+            "seen_interactions": {},
+            "visit_counts": {}
+          }
+        }
       },
       "PlayerState": {
         "properties": {
@@ -988,7 +1430,41 @@
           "session_id",
           "view"
         ],
-        "title": "SessionCreateResponse"
+        "title": "SessionCreateResponse",
+        "example": {
+          "journal_page": {
+            "body": "The kettle sang softly. You watched the steam curl and disappear.",
+            "date": "2026-04-04",
+            "entry_type": "tea",
+            "ingredients": [
+              "chamomile",
+              "lavender"
+            ],
+            "mood": "Home",
+            "need": "Permission to rest and recover",
+            "page_id": "jp-a1b2c3",
+            "place_id": "cottage_home",
+            "prompt": "What softened today? What can wait until tomorrow?",
+            "tags": []
+          },
+          "session_id": "a1b2c3d4e5f67890abcdef1234567890",
+          "view": {
+            "eligible_actions": [
+              {
+                "action_id": "rest_longer",
+                "label": "Rest a bit longer"
+              },
+              {
+                "action_id": "cottage_wake",
+                "label": "Wake in the cottage"
+              }
+            ],
+            "prompt": "The cottage rests in a quiet countryside, with a thatched roof and smoke curling from the chimney.",
+            "scene_id": "cottage_home_tea_arrival_42",
+            "visible_items": [],
+            "visible_npcs": []
+          }
+        }
       },
       "SessionGetResponse": {
         "properties": {
@@ -1017,7 +1493,21 @@
           "session_id",
           "view"
         ],
-        "title": "SessionGetResponse"
+        "title": "SessionGetResponse",
+        "example": {
+          "session_id": "a1b2c3d4e5f67890abcdef1234567890",
+          "state": {
+            "current_place_id": "cottage_home",
+            "flags": [],
+            "inventory": {},
+            "time_tick": 0
+          },
+          "view": {
+            "eligible_actions": [],
+            "visible_items": [],
+            "visible_npcs": []
+          }
+        }
       },
       "StepResponse": {
         "properties": {
@@ -1048,7 +1538,42 @@
         "required": [
           "view"
         ],
-        "title": "StepResponse"
+        "title": "StepResponse",
+        "example": {
+          "choices": [
+            {
+              "action_id": "cottage_wake",
+              "label": "Wake in the cottage"
+            }
+          ],
+          "journal_page": {
+            "body": "A thin curl of steam rises. Nothing needs to happen yet.",
+            "date": "2026-04-04",
+            "entry_type": "tea",
+            "ingredients": [
+              "chamomile",
+              "lavender"
+            ],
+            "mood": "Home",
+            "need": "Permission to rest and recover",
+            "page_id": "jp-d4e5f6",
+            "place_id": "cottage_home",
+            "prompt": "What softened today? What can wait until tomorrow?",
+            "tags": []
+          },
+          "view": {
+            "eligible_actions": [
+              {
+                "action_id": "cottage_wake",
+                "label": "Wake in the cottage"
+              }
+            ],
+            "prompt": "You stay tucked into the comfort of your cottage. Light drifts through the window.",
+            "scene_id": "cottage_home_tea_arrival_42",
+            "visible_items": [],
+            "visible_npcs": []
+          }
+        }
       },
       "ValidationError": {
         "properties": {
@@ -1099,7 +1624,11 @@
           "action_id",
           "label"
         ],
-        "title": "ViewAction"
+        "title": "ViewAction",
+        "example": {
+          "action_id": "rest_longer",
+          "label": "Rest a bit longer"
+        }
       },
       "ViewModel": {
         "properties": {
@@ -1148,7 +1677,23 @@
           }
         },
         "type": "object",
-        "title": "ViewModel"
+        "title": "ViewModel",
+        "example": {
+          "eligible_actions": [
+            {
+              "action_id": "rest_longer",
+              "label": "Rest a bit longer"
+            },
+            {
+              "action_id": "cottage_wake",
+              "label": "Wake in the cottage"
+            }
+          ],
+          "prompt": "The cottage rests in a quiet countryside, with a thatched roof and smoke curling from the chimney.",
+          "scene_id": "cottage_home_tea_arrival_42",
+          "visible_items": [],
+          "visible_npcs": []
+        }
       }
     }
   }
