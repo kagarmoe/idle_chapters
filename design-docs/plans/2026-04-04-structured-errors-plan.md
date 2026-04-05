@@ -450,16 +450,11 @@ def _derive_signal(effect: Effect, recovery: Recovery) -> Signal:
 
 
 def _find_repo_root() -> Path:
-    """Walk up from this file to find the repo root (contains CLAUDE.md)."""
+    """Walk up from this file to find the repository root (.git directory)."""
     path = Path(__file__).resolve()
     for parent in path.parents:
-        if (parent / "CLAUDE.md").exists():
+        if (parent / ".git").is_dir():
             return parent
-    import warnings
-    warnings.warn(
-        "Could not find repo root via CLAUDE.md marker; using fallback path",
-        stacklevel=2,
-    )
     return path.parents[3]  # fallback: assume apps/api/app/services/
 
 
