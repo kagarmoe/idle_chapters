@@ -241,28 +241,36 @@ class TestGameErrorConstruction:
 
 
 class TestSignalDerivation:
-    """Signal word derived from effect + recovery per Z535 mapping."""
+    """Exhaustive signal derivation per design doc Z535 mapping table."""
 
-    def test_unknown_effect_is_always_danger(self):
-        for recovery in Recovery:
-            err = GameError(kind=ErrorKind.ENGINE_FAILURE, effect=Effect.UNKNOWN, recovery=recovery)
-            assert err.signal == Signal.DANGER
-
-    def test_partial_escalate_is_danger(self):
-        err = GameError(kind=ErrorKind.PERSISTENCE_FAILURE, effect=Effect.PARTIAL, recovery=Recovery.ESCALATE)
-        assert err.signal == Signal.DANGER
-
-    def test_partial_retryable_is_warning(self):
-        err = GameError(kind=ErrorKind.PERSISTENCE_FAILURE, effect=Effect.PARTIAL, recovery=Recovery.RETRYABLE)
-        assert err.signal == Signal.WARNING
-
-    def test_none_correctable_is_caution(self):
-        err = GameError(kind=ErrorKind.ACTION_NOT_ELIGIBLE, effect=Effect.NONE, recovery=Recovery.CORRECTABLE)
-        assert err.signal == Signal.CAUTION
-
-    def test_none_terminal_is_notice(self):
-        err = GameError(kind=ErrorKind.SESSION_NOT_FOUND, effect=Effect.NONE, recovery=Recovery.TERMINAL)
-        assert err.signal == Signal.NOTICE
+    @pytest.mark.parametrize("effect,recovery,expected", [
+        # unknown -> always DANGER (state indeterminate)
+        (Effect.UNKNOWN, Recovery.ESCALATE, Signal.DANGER),
+        (Effect.UNKNOWN, Recovery.RETRYABLE, Signal.DANGER),
+        (Effect.UNKNOWN, Recovery.CORRECTABLE, Signal.DANGER),
+        (Effect.UNKNOWN, Recovery.TERMINAL, Signal.DANGER),
+        # partial + escalate -> DANGER (diverged, manual intervention)
+        (Effect.PARTIAL, Recovery.ESCALATE, Signal.DANGER),
+        # partial + other -> WARNING (diverged but recoverable)
+        (Effect.PARTIAL, Recovery.RETRYABLE, Signal.WARNING),
+        (Effect.PARTIAL, Recovery.CORRECTABLE, Signal.WARNING),
+        (Effect.PARTIAL, Recovery.TERMINAL, Signal.WARNING),
+        # applied (future use: mutation succeeded, downstream issue)
+        (Effect.APPLIED, Recovery.ESCALATE, Signal.WARNING),
+        (Effect.APPLIED, Recovery.RETRYABLE, Signal.CAUTION),
+        (Effect.APPLIED, Recovery.CORRECTABLE, Signal.CAUTION),
+        (Effect.APPLIED, Recovery.TERMINAL, Signal.NOTICE),
+        # none -> CAUTION or NOTICE
+        (Effect.NONE, Recovery.ESCALATE, Signal.CAUTION),
+        (Effect.NONE, Recovery.RETRYABLE, Signal.CAUTION),
+        (Effect.NONE, Recovery.CORRECTABLE, Signal.CAUTION),
+        (Effect.NONE, Recovery.TERMINAL, Signal.NOTICE),
+    ])
+    def test_signal_derivation(self, effect, recovery, expected):
+        err = GameError(kind=ErrorKind.ENGINE_FAILURE, effect=effect, recovery=recovery)
+        assert err.signal == expected, (
+            f"({effect}, {recovery}) -> {err.signal}, expected {expected}"
+        )
 
 
 class TestPlayerProjection:
@@ -426,7 +434,7 @@ def _derive_signal(effect: Effect, recovery: Recovery) -> Signal:
             return Signal.DANGER
         return Signal.WARNING
     if effect == Effect.APPLIED:
-        if recovery in (Recovery.ESCALATE, Recovery.RETRYABLE):
+        if recovery == Recovery.ESCALATE:
             return Signal.WARNING
         if recovery == Recovery.TERMINAL:
             return Signal.NOTICE
@@ -437,9 +445,18 @@ def _derive_signal(effect: Effect, recovery: Recovery) -> Signal:
     return Signal.CAUTION
 
 
+def _find_repo_root() -> Path:
+    """Walk up from this file to find the repo root (contains CLAUDE.md)."""
+    path = Path(__file__).resolve()
+    for parent in path.parents:
+        if (parent / "CLAUDE.md").exists():
+            return parent
+    return path.parents[3]  # fallback: assume apps/api/app/services/
+
+
 @lru_cache(maxsize=1)
 def _load_templates() -> dict[str, dict[str, str]]:
-    path = Path(__file__).resolve().parents[3] / "assets" / "error_templates.json"
+    path = _find_repo_root() / "assets" / "error_templates.json"
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
     return {}
@@ -511,7 +528,7 @@ class GameError(Exception):
 **Step 4: Run tests to verify they pass**
 
 Run: `cd apps/api && python -m pytest tests/test_game_error.py -v`
-Expected: 10 passed
+Expected: 22 passed (3 construction + 16 signal derivation + 2 player + 1 developer)
 
 **Step 5: Commit**
 
@@ -1013,7 +1030,7 @@ from app.domain.errors import (
 )
 from app.domain.state import PlayerState
 from app.domain.step_result import StepResult
-from app.services.errors import Effect, ErrorKind, GameError, Recovery, Signal
+from app.services.errors import Effect, ErrorKind, GameError, Recovery
 
 logger = logging.getLogger(__name__)
 
@@ -1445,7 +1462,7 @@ from app.api.models import (
     ViewModel,
 )
 from app.domain.step_result import StepResult
-from app.services.errors import Effect, ErrorKind, GameError, Recovery, Signal
+from app.services.errors import Effect, ErrorKind, GameError, Recovery
 from app.services.session_service import SessionService
 
 router = APIRouter(prefix="/v1/sessions", tags=["sessions"])
@@ -1480,6 +1497,21 @@ def _step_response(result: StepResult) -> StepResponse:
     )
 
 
+def _raise_session_not_found(session_id: str) -> None:
+    """Raise a GameError for a missing session. Used by read-only endpoints."""
+    raise GameError(
+        kind=ErrorKind.SESSION_NOT_FOUND,
+        effect=Effect.NONE,
+        recovery=Recovery.TERMINAL,
+        detail=(
+            f"WHAT: No session exists for {session_id}.\n"
+            f"MEANS: Nothing was modified.\n"
+            f"DO: Create a new session via POST /v1/sessions."
+        ),
+        context={"session_id": session_id},
+    )
+
+
 @router.post("", response_model=SessionCreateResponse)
 def create_session(
     request: SessionCreateRequest = None,
@@ -1502,17 +1534,7 @@ def get_session(
 ) -> SessionGetResponse:
     state = service.get_session(session_id)
     if state is None:
-        raise GameError(
-            kind=ErrorKind.SESSION_NOT_FOUND,
-            effect=Effect.NONE,
-            recovery=Recovery.TERMINAL,
-            detail=(
-                f"WHAT: No session exists for {session_id}.\n"
-                f"MEANS: Nothing was modified.\n"
-                f"DO: Create a new session via POST /v1/sessions."
-            ),
-            context={"session_id": session_id},
-        )
+        _raise_session_not_found(session_id)
     return SessionGetResponse(
         session_id=session_id,
         view=ViewModel(),
@@ -1561,17 +1583,7 @@ def list_journal_pages(
 ) -> list[dict]:
     state = service.get_session(session_id)
     if state is None:
-        raise GameError(
-            kind=ErrorKind.SESSION_NOT_FOUND,
-            effect=Effect.NONE,
-            recovery=Recovery.TERMINAL,
-            detail=(
-                f"WHAT: No session exists for {session_id}.\n"
-                f"MEANS: Nothing was modified.\n"
-                f"DO: Create a new session via POST /v1/sessions."
-            ),
-            context={"session_id": session_id},
-        )
+        _raise_session_not_found(session_id)
     return service._journal_store.list_pages(session_id)
 
 
@@ -1583,17 +1595,7 @@ def get_journal_page(
 ) -> dict:
     state = service.get_session(session_id)
     if state is None:
-        raise GameError(
-            kind=ErrorKind.SESSION_NOT_FOUND,
-            effect=Effect.NONE,
-            recovery=Recovery.TERMINAL,
-            detail=(
-                f"WHAT: No session exists for {session_id}.\n"
-                f"MEANS: Nothing was modified.\n"
-                f"DO: Create a new session via POST /v1/sessions."
-            ),
-            context={"session_id": session_id},
-        )
+        _raise_session_not_found(session_id)
     page = service._journal_store.get_page(session_id, page_id)
     if page is None:
         raise GameError(
@@ -1612,14 +1614,7 @@ def get_journal_page(
 
 **Step 5: Create error response schema**
 
-```json
-// schemas/error_response.schema.json
-// See design doc for full schema with oneOf for player vs developer shapes.
-// The schema is defined in design-docs/plans/2026-04-04-structured-errors-design.md
-// under "Error Response Schema" and should be copied from there.
-```
-
-The full schema is maintained in the design doc to avoid duplication. Copy it from the "Error Response Schema" section during implementation.
+Copy the full JSON schema from the design doc's "Error Response Schema" section (`design-docs/plans/2026-04-04-structured-errors-design.md`). The schema uses `oneOf` to distinguish player (minimal) and developer (full + extensions) projection shapes. Do not create a placeholder — copy the complete schema verbatim.
 
 **Step 6: Run tests to verify they pass**
 
