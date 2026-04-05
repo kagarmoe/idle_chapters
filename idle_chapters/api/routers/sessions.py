@@ -5,6 +5,12 @@ from typing import NoReturn
 from fastapi import APIRouter, Depends
 
 from idle_chapters.api.deps import get_session_service
+from idle_chapters.api.routers.error_helpers import (
+    SESSION_NOT_FOUND_RESPONSES,
+    ACTION_NOT_ELIGIBLE_RESPONSES,
+    INTENT_NO_MATCH_RESPONSES,
+    JOURNAL_PAGE_404_RESPONSES,
+)
 from idle_chapters.api.models import (
     ActionRequest,
     IntentRequest,
@@ -66,7 +72,26 @@ def _raise_session_not_found(session_id: str) -> NoReturn:
     )
 
 
-@router.post("", response_model=SessionCreateResponse)
+@router.post(
+    "",
+    response_model=SessionCreateResponse,
+    description="""Create a new game session and enter the starting location.
+
+**curl:**
+```bash
+curl -X POST http://localhost:8000/v1/sessions \\
+  -H "Content-Type: application/json" \\
+  -d '{"place_id": "cottage_home"}'
+```
+
+**Python (httpx):**
+```python
+import httpx
+resp = httpx.post("http://localhost:8000/v1/sessions", json={"place_id": "cottage_home"})
+session = resp.json()
+```
+""",
+)
 def create_session(
     request: SessionCreateRequest = None,
     service: SessionService = Depends(get_session_service),
@@ -81,7 +106,18 @@ def create_session(
     )
 
 
-@router.get("/{session_id}", response_model=SessionGetResponse)
+@router.get(
+    "/{session_id}",
+    response_model=SessionGetResponse,
+    responses=SESSION_NOT_FOUND_RESPONSES,
+    description="""Get the current state of a game session.
+
+**curl:**
+```bash
+curl http://localhost:8000/v1/sessions/{session_id}
+```
+""",
+)
 def get_session(
     session_id: str,
     service: SessionService = Depends(get_session_service),
@@ -101,7 +137,11 @@ def get_session(
     )
 
 
-@router.post("/{session_id}/enter", response_model=StepResponse)
+@router.post(
+    "/{session_id}/enter",
+    response_model=StepResponse,
+    responses=SESSION_NOT_FOUND_RESPONSES,
+)
 def enter_place(
     session_id: str,
     service: SessionService = Depends(get_session_service),
@@ -110,7 +150,25 @@ def enter_place(
     return _step_response(result)
 
 
-@router.post("/{session_id}/action", response_model=StepResponse)
+@router.post(
+    "/{session_id}/action",
+    response_model=StepResponse,
+    responses={**SESSION_NOT_FOUND_RESPONSES, **ACTION_NOT_ELIGIBLE_RESPONSES},
+    description="""Execute a chosen action in the current scene.
+
+**curl:**
+```bash
+curl -X POST http://localhost:8000/v1/sessions/{session_id}/action \\
+  -H "Content-Type: application/json" \\
+  -d '{"action_id": "rest_longer"}'
+```
+
+To see developer error details, add the projection header:
+```bash
+curl -H "Accept-Projection: developer" http://localhost:8000/v1/sessions/{session_id}/action ...
+```
+""",
+)
 def submit_action(
     session_id: str,
     request: ActionRequest,
@@ -120,7 +178,11 @@ def submit_action(
     return _step_response(result)
 
 
-@router.post("/{session_id}/intent", response_model=StepResponse)
+@router.post(
+    "/{session_id}/intent",
+    response_model=StepResponse,
+    responses={**SESSION_NOT_FOUND_RESPONSES, **INTENT_NO_MATCH_RESPONSES},
+)
 def submit_intent(
     session_id: str,
     request: IntentRequest,
@@ -130,7 +192,10 @@ def submit_intent(
     return _step_response(result)
 
 
-@router.get("/{session_id}/journal")
+@router.get(
+    "/{session_id}/journal",
+    responses=SESSION_NOT_FOUND_RESPONSES,
+)
 def list_journal_pages(
     session_id: str,
     service: SessionService = Depends(get_session_service),
@@ -141,7 +206,10 @@ def list_journal_pages(
     return service._journal_store.list_pages(session_id)
 
 
-@router.get("/{session_id}/journal/{page_id}")
+@router.get(
+    "/{session_id}/journal/{page_id}",
+    responses=JOURNAL_PAGE_404_RESPONSES,
+)
 def get_journal_page(
     session_id: str,
     page_id: str,
