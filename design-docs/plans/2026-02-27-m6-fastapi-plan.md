@@ -131,9 +131,9 @@ from __future__ import annotations
 
 import pytest
 
-from app.content.repo import ContentRepo
-from app.domain.engine import Engine
-from app.domain.state import PlayerState
+from idle_chapters.content.repo import ContentRepo
+from idle_chapters.domain.engine import Engine
+from idle_chapters.domain.state import PlayerState
 
 
 class StubStateStore:
@@ -193,7 +193,7 @@ def stores():
 
 @pytest.fixture
 def service(repo, stores):
-    from app.services.session_service import SessionService
+    from idle_chapters.services.session_service import SessionService
 
     state_store, journal_store, event_store = stores
     return SessionService(
@@ -300,9 +300,9 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-from app.domain.engine import Engine
-from app.domain.state import PlayerState
-from app.domain.step_result import StepResult
+from idle_chapters.domain.engine import Engine
+from idle_chapters.domain.state import PlayerState
+from idle_chapters.domain.step_result import StepResult
 
 
 class SessionService:
@@ -427,10 +427,10 @@ from __future__ import annotations
 
 from pymongo.database import Database
 
-from app.api.db import get_db as _get_db
-from app.content.repo import ContentRepo
-from app.domain.engine import Engine
-from app.services.session_service import SessionService
+from idle_chapters.api.db import get_db as _get_db
+from idle_chapters.content.repo import ContentRepo
+from idle_chapters.domain.engine import Engine
+from idle_chapters.services.session_service import SessionService
 
 
 CONTENT_REPO = ContentRepo()
@@ -447,9 +447,9 @@ def get_db() -> Database:
 
 
 def get_session_service() -> SessionService:
-    from app.persistence.event_store import EventStore
-    from app.persistence.journal_store import JournalStore
-    from app.persistence.state_store import StateStore
+    from idle_chapters.persistence.event_store import EventStore
+    from idle_chapters.persistence.journal_store import JournalStore
+    from idle_chapters.persistence.state_store import StateStore
 
     return SessionService(
         repo=CONTENT_REPO,
@@ -483,8 +483,8 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.deps import get_session_service
-from app.api.models import (
+from idle_chapters.api.deps import get_session_service
+from idle_chapters.api.models import (
     ActionRequest,
     IntentRequest,
     SessionCreateRequest,
@@ -494,8 +494,8 @@ from app.api.models import (
     ViewAction,
     ViewModel,
 )
-from app.domain.step_result import StepResult
-from app.services.session_service import SessionService
+from idle_chapters.domain.step_result import StepResult
+from idle_chapters.services.session_service import SessionService
 
 router = APIRouter(prefix="/v1/sessions", tags=["sessions"])
 
@@ -691,8 +691,8 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture
 def client(repo, stores):
-    from app.api.app import create_app
-    from app.api.deps import get_session_service
+    from idle_chapters.api.app import create_app
+    from idle_chapters.api.deps import get_session_service
 
     state_store, journal_store, event_store = stores
 
@@ -828,7 +828,7 @@ Expected: No regressions. Persistence tests ignored (require MONGO_URL).
 
 **Step 3: Verify Swagger docs load**
 
-Run: `python -c "from app.api.app import create_app; app = create_app(); print([r.path for r in app.routes])"`
+Run: `python -c "from idle_chapters.api.app import create_app; app = create_app(); print([r.path for r in app.routes])"`
 Expected: Shows `/v1/sessions`, `/v1/sessions/{session_id}`, `/v1/sessions/{session_id}/enter`, `/v1/sessions/{session_id}/action`, `/v1/sessions/{session_id}/intent`, `/v1/sessions/{session_id}/journal`, `/v1/sessions/{session_id}/journal/{page_id}`
 
 **Step 4: Final commit with all files**

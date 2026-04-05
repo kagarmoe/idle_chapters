@@ -20,16 +20,16 @@ A FastAPI shell already exists (`app/api/`) with routers, models, and Mongo acce
 M6 imports these from `app/persistence/`:
 
 ```python
-from app.persistence.state_store import StateStore
+from idle_chapters.persistence.state_store import StateStore
 # StateStore().upsert_state(session_id, state: PlayerState) -> None
 # StateStore().get_state(session_id) -> PlayerState | None
 
-from app.persistence.journal_store import JournalStore
+from idle_chapters.persistence.journal_store import JournalStore
 # JournalStore().append_page(session_id, page: dict) -> None
 # JournalStore().list_pages(session_id) -> list[dict]
 # JournalStore().get_page(session_id, page_id) -> dict | None
 
-from app.persistence.event_store import EventStore
+from idle_chapters.persistence.event_store import EventStore
 # EventStore().append_event(session_id, event: dict) -> None
 # EventStore().list_events(session_id) -> list[dict]
 ```
@@ -42,7 +42,7 @@ M7 (CLI) can use either path:
 
 **Direct import** (no HTTP):
 ```python
-from app.services.session_service import SessionService
+from idle_chapters.services.session_service import SessionService
 service = SessionService(repo, state_store, journal_store, event_store)
 session_id, result = service.create_session()
 result = service.perform_action(session_id, "look_around")

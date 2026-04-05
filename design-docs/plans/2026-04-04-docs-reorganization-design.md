@@ -28,5 +28,5 @@ Dedicate `docs/` to GitHub Pages. Consolidate all internal documentation under `
 ## Constraints
 
 - GitHub Pages is configured to serve from `main:/docs`
-- `apps/api/app/api/app.py` writes `openapi.json` to `docs/` on startup
+- `idle_chapters/api/server.py` writes `openapi.json` to `docs/` on startup
 - `apps/web/src/lib/api.ts` references `docs/openapi.json` for types

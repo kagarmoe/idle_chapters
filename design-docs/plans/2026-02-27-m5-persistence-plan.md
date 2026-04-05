@@ -76,8 +76,8 @@ def unique_session_id():
 
 @pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
 def test_state_store_round_trip(unique_session_id) -> None:
-    from app.domain.state import PlayerState
-    from app.persistence.state_store import StateStore
+    from idle_chapters.domain.state import PlayerState
+    from idle_chapters.persistence.state_store import StateStore
 
     store = StateStore()
     state = PlayerState(
@@ -105,7 +105,7 @@ def test_state_store_round_trip(unique_session_id) -> None:
 
 @pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
 def test_state_store_returns_none_for_missing(unique_session_id) -> None:
-    from app.persistence.state_store import StateStore
+    from idle_chapters.persistence.state_store import StateStore
 
     store = StateStore()
     assert store.get_state(unique_session_id) is None
@@ -113,8 +113,8 @@ def test_state_store_returns_none_for_missing(unique_session_id) -> None:
 
 @pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
 def test_state_store_upsert_overwrites(unique_session_id) -> None:
-    from app.domain.state import PlayerState
-    from app.persistence.state_store import StateStore
+    from idle_chapters.domain.state import PlayerState
+    from idle_chapters.persistence.state_store import StateStore
 
     store = StateStore()
     state1 = PlayerState(
@@ -169,12 +169,12 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from app.persistence.mongo import get_db
+from idle_chapters.persistence.mongo import get_db
 
 if TYPE_CHECKING:
     from pymongo.database import Database
 
-    from app.domain.state import PlayerState
+    from idle_chapters.domain.state import PlayerState
 
 
 class StateStore:
@@ -216,7 +216,7 @@ class StateStore:
         Maps schema field names back to domain field names.
         Returns None if session not found.
         """
-        from app.domain.state import PlayerState
+        from idle_chapters.domain.state import PlayerState
 
         doc = self._collection.find_one({"session_id": session_id})
         if doc is None:
@@ -264,7 +264,7 @@ Add these tests after the state store tests in `tests/test_persistence.py`:
 ```python
 @pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
 def test_journal_store_round_trip(unique_session_id) -> None:
-    from app.persistence.journal_store import JournalStore
+    from idle_chapters.persistence.journal_store import JournalStore
 
     store = JournalStore()
     page = {
@@ -295,7 +295,7 @@ def test_journal_store_round_trip(unique_session_id) -> None:
 
 @pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
 def test_journal_store_list_ordering(unique_session_id) -> None:
-    from app.persistence.journal_store import JournalStore
+    from idle_chapters.persistence.journal_store import JournalStore
 
     store = JournalStore()
     store.append_page(unique_session_id, {"page_id": "p1", "body": "first"})
@@ -308,7 +308,7 @@ def test_journal_store_list_ordering(unique_session_id) -> None:
 
 @pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
 def test_journal_store_get_missing_returns_none(unique_session_id) -> None:
-    from app.persistence.journal_store import JournalStore
+    from idle_chapters.persistence.journal_store import JournalStore
 
     store = JournalStore()
     assert store.get_page(unique_session_id, "nonexistent") is None
@@ -341,7 +341,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from app.persistence.mongo import get_db
+from idle_chapters.persistence.mongo import get_db
 
 if TYPE_CHECKING:
     from pymongo.database import Database
@@ -406,7 +406,7 @@ Add these tests to `tests/test_persistence.py`:
 ```python
 @pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
 def test_event_store_round_trip(unique_session_id) -> None:
-    from app.persistence.event_store import EventStore
+    from idle_chapters.persistence.event_store import EventStore
 
     store = EventStore()
     event = {
@@ -425,7 +425,7 @@ def test_event_store_round_trip(unique_session_id) -> None:
 
 @pytest.mark.skipif(os.getenv("MONGO_URL") is None, reason="MONGO_URL not set")
 def test_event_store_ordering(unique_session_id) -> None:
-    from app.persistence.event_store import EventStore
+    from idle_chapters.persistence.event_store import EventStore
 
     store = EventStore()
     store.append_event(unique_session_id, {"event_type": "enter", "data": {}})
@@ -463,7 +463,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from app.persistence.mongo import get_db
+from idle_chapters.persistence.mongo import get_db
 
 if TYPE_CHECKING:
     from pymongo.database import Database
