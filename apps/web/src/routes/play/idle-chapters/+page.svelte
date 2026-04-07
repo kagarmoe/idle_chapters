@@ -88,7 +88,7 @@
 	// ── Error handling ─────────────────────────────────────────
 	function handleError(err: unknown) {
 		if (err instanceof ApiError) {
-			errorMsg = `Something went quiet (${err.status}). The world rests.`;
+			errorMsg = err.problemDetail?.title ?? `Something went quiet (${err.status}). The world rests.`;
 		} else {
 			errorMsg = 'The path fades for a moment. Try again.';
 		}

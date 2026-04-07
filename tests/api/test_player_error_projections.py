@@ -16,11 +16,11 @@ def _make_test_app():
 
     @app.exception_handler(GameError)
     async def handle_game_error(request: Request, exc: GameError) -> JSONResponse:
-        projection = request.headers.get("Accept-Projection", "player")
-        if projection == "developer":
-            body = exc.project_developer()
-        else:
+        projection = request.headers.get("Accept-Projection", "developer")
+        if projection == "player":
             body = exc.project_player()
+        else:
+            body = exc.project_developer()
         return JSONResponse(status_code=exc.http_status, content=body)
 
     # Stub DB that returns None for all finds
@@ -37,8 +37,10 @@ def client() -> TestClient:
 
 
 class TestPlayerProjection:
+    _PLAYER_HEADERS = {"Accept-Projection": "player"}
+
     def test_get_player_not_found_returns_rfc9457(self, client):
-        resp = client.get("/v1/players/nonexistent")
+        resp = client.get("/v1/players/nonexistent", headers=self._PLAYER_HEADERS)
         assert resp.status_code == 404
         body = resp.json()
         assert body["type"] == "urn:idle-chapters:error:player_not_found"
@@ -46,7 +48,7 @@ class TestPlayerProjection:
         assert set(body.keys()) == {"type", "title", "status"}
 
     def test_patch_player_not_found_returns_rfc9457(self, client):
-        resp = client.patch("/v1/players/nonexistent", json={"display_name": "New Name"})
+        resp = client.patch("/v1/players/nonexistent", json={"display_name": "New Name"}, headers=self._PLAYER_HEADERS)
         assert resp.status_code == 404
         body = resp.json()
         assert body["type"] == "urn:idle-chapters:error:player_not_found"
@@ -54,12 +56,12 @@ class TestPlayerProjection:
         assert set(body.keys()) == {"type", "title", "status"}
 
     def test_get_inventory_player_not_found(self, client):
-        resp = client.get("/v1/players/nonexistent/inventory")
+        resp = client.get("/v1/players/nonexistent/inventory", headers=self._PLAYER_HEADERS)
         assert resp.status_code == 404
         assert resp.json()["type"] == "urn:idle-chapters:error:player_not_found"
 
     def test_get_journal_player_not_found(self, client):
-        resp = client.get("/v1/players/nonexistent/journal")
+        resp = client.get("/v1/players/nonexistent/journal", headers=self._PLAYER_HEADERS)
         assert resp.status_code == 404
         assert resp.json()["type"] == "urn:idle-chapters:error:player_not_found"
 

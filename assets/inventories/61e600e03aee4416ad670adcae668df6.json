@@ -1,0 +1,56 @@
+{
+    "collectibles": [
+        {
+            "item_id": "black_tea",
+            "display_name": "Black Tea",
+            "item_type": "Botanical",
+            "symbolic_meaning": "Energy",
+            "cozy_association": "Strength for the day",
+            "tags": [
+                "element_fire",
+                "energizing"
+            ],
+            "origin_scope": "global",
+            "origin_ref": null,
+            "lore_place_hint": null,
+            "player_need_satisfied": "Confidence in navigating daily needs",
+            "notes": null,
+            "safety_category": "generally_safe",
+            "usable_in": [
+                "tea",
+                "spell",
+                "gift"
+            ],
+            "stock_behavior": "infinite",
+            "starting_quantity": 1,
+            "max_stack": null,
+            "botanical_kind": null
+        },
+        {
+            "item_id": "tea",
+            "display_name": "Cup of Tea",
+            "item_type": "Food",
+            "botanical_kind": null,
+            "symbolic_meaning": "Comfort",
+            "cozy_association": "Warm hands, steady breath",
+            "tags": [
+                "comfort",
+                "warm",
+                "element_water"
+            ],
+            "origin_scope": "starting",
+            "origin_ref": null,
+            "lore_place_hint": null,
+            "player_need_satisfied": "Permission to pause and settle",
+            "notes": "A simple cup of tea, brewed to taste.",
+            "safety_category": "generally_safe",
+            "usable_in": [
+                "quest",
+                "gift"
+            ],
+            "stock_behavior": "finite",
+            "starting_quantity": 0,
+            "max_stack": null
+        }
+    ]
+}

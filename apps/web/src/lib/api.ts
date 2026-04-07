@@ -109,7 +109,10 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 	const url = `${BASE_URL}${path}`;
 	const init: RequestInit = {
 		method,
-		headers: { 'Content-Type': 'application/json' }
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept-Projection': 'player'
+		}
 	};
 	if (body !== undefined) {
 		init.body = JSON.stringify(body);

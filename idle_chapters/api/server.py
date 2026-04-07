@@ -34,11 +34,11 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(GameError)
     async def handle_game_error(request: Request, exc: GameError) -> JSONResponse:
-        projection = request.headers.get("Accept-Projection", "player")
-        if projection == "developer":
-            body = exc.project_developer()
-        else:
+        projection = request.headers.get("Accept-Projection", "developer")
+        if projection == "player":
             body = exc.project_player()
+        else:
+            body = exc.project_developer()
         return JSONResponse(status_code=exc.http_status, content=body)
 
     @app.on_event("startup")

@@ -151,14 +151,14 @@ def select_player():
         return player
 
     while True:
-        print("Select a player:")
+        print("\nSelect a player:\n")
         for idx, player in enumerate(players, start=1):
             display_name = player.get("player_info", {}).get("display_name") or "friend"
             print(f"{idx}. {display_name}")
         print(f"{len(players) + 1}. Create a new player")
         print(f"{len(players) + 2}. Exit game")
 
-        choice = input(f"Choose a player (1-{len(players) + 2}): ").strip()
+        choice = input(f"\nChoose a player (1-{len(players) + 2}): \n").strip()
         if choice == str(len(players) + 2):
             return None
         if choice == str(len(players) + 1):
@@ -175,11 +175,11 @@ def select_player():
                 player = players[index]
                 save_player(player)
                 return player
-        print("Please choose a valid option.")
+        print("\nHmm, that doesn't seem like one of the choices. Try again?\n")
 
 
 def _create_player():
-    name = input("What name would you like to go by, friend? ").strip()
+    name = input("\nWhat name would you like to go by, friend? ").strip()
     pronouns = _select_pronouns()
     if pronouns is None:
         return None

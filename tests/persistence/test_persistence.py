@@ -102,7 +102,7 @@ def test_journal_store_round_trip(unique_session_id) -> None:
         "entry_type": "tea",
         "mood": "calm",
         "need": "rest",
-        "ingredients": ["chamomile_flower"],
+        "ingredients": ["chamomile_flowers"],
         "prompt": "What softened today?",
         "body": "A small pause.",
         "tags": ["tea"],
