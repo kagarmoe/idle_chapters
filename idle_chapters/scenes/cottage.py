@@ -126,7 +126,7 @@ def _ensure_journal_available(state):
     state["player"].setdefault("state", {}).setdefault("inventory", [])
     if "journal" not in state["player"]["state"]["inventory"]:
         state["player"]["state"]["inventory"].append("journal")
-        save_player(state["player"])
+        # save_player(state["player"])
     player_id = state["player"].get("player_id")
     if player_id:
         save_inventory(player_id, state["inventory"])
@@ -135,7 +135,7 @@ def _ensure_journal_available(state):
 
 def _prepare_for_town(state, add_collectible):
     _ensure_journal_available(state)
-    extra_items = {"bag", "water_bottle", "water", "mirror"}
+    extra_items = {"bag", "water_bottle", "water", "mirror",}
     new_items = extra_items.difference(state["inventory"])
     for item_id in new_items:
         if add_collectible(state["player"], item_id):
@@ -143,13 +143,20 @@ def _prepare_for_town(state, add_collectible):
             state.setdefault("added_items", set()).add(item_id)
     print()
     print_block(
-        "With the journal tucked safely away, you notice a gentle peckishness settling in. "
-        "You gather your things: a bag, a water bottle, a small flask of water, and the "
+        "You notice a gentle peckishness settling in. "
+        "You gather your things: a bag, a water bottle, a small flask of water, some tea,and the "
         "journal. The cottage offers you a small mirror tucked into a quiet corner; you "
         "pick it up and slip it into your bag, pleased by its simple weight. With everything "
         "in place, you step toward town."
     )
+    save_player(state["player"])
 
+def _load_tea():
+    for item_id in ("black_tea", "chamomile_flowers"):
+        if item_id not in state["inventory"]:
+            if add_collectible(player, item_id):
+                state["inventory"].add(item_id)
+    return state["inventory"]
 
 def _load_tea_recipes():
     data = json.loads(TEA_FILE.read_text(encoding="utf-8"))
@@ -226,7 +233,7 @@ def _run_interaction(interaction, state, add_collectible):
             )
             print(wrapped)
         while True:
-            selection = input(f"Choose an option (1-{len(choices)}): ").strip()
+            selection = input(f"\nChoose an option (1-{len(choices)}): \n").strip()
             if selection.isdigit():
                 index = int(selection) - 1
                 if 0 <= index < len(choices):
@@ -255,6 +262,14 @@ def _run_interaction(interaction, state, add_collectible):
             return None
 
 
+def _load_tea(state, add_collectible):
+    """Ensure basic tea ingredients are in the player's inventory."""
+    for item_id in ("black_tea", "chamomile_flowers"):
+        if item_id not in state["inventory"]:
+            if add_collectible(state["player"], item_id):
+                state["inventory"].add(item_id)
+
+
 def run_cottage(player, add_collectible):
     player_id = player.get("player_id")
     inventory = load_inventory(player_id) if player_id else set()
@@ -269,10 +284,7 @@ def run_cottage(player, add_collectible):
         "added_items": set(),
         "journal_available": journal_available,
     }
-    for item_id in ("black_tea", "chamomile_flower"):
-        if item_id not in state["inventory"]:
-            if add_collectible(player, item_id):
-                state["inventory"].add(item_id)
+    _load_tea(state, add_collectible)
     for interaction in INTERACTIONS:
         result = _run_interaction(interaction, state, add_collectible)
         if result == "leave":

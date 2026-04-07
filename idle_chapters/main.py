@@ -16,7 +16,6 @@ def add_collectible(player, item_id) -> bool:
     player.setdefault("state", {}).setdefault("inventory", [])
     if item_id not in player["state"]["inventory"]:
         player["state"]["inventory"].append(item_id)
-        save_player(player)
     return True
 
 

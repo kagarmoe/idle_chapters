@@ -1,0 +1,155 @@
+{
+    "collectibles": [
+        {
+            "item_id": "bag",
+            "display_name": "Bag",
+            "item_type": "Tool",
+            "botanical_kind": null,
+            "symbolic_meaning": "Carrying",
+            "cozy_association": "A familiar strap on your shoulder",
+            "tags": [
+                "storage",
+                "travel",
+                "element_earth"
+            ],
+            "origin_scope": "starting",
+            "origin_ref": null,
+            "lore_place_hint": null,
+            "player_need_satisfied": "Ease in keeping essentials close",
+            "notes": "A simple bag that keeps your small belongings together.",
+            "safety_category": "non_ingestible",
+            "usable_in": [
+                "quest"
+            ],
+            "stock_behavior": "key_item",
+            "starting_quantity": 1,
+            "max_stack": 1
+        },
+        {
+            "item_id": "black_tea",
+            "display_name": "Black Tea",
+            "item_type": "Botanical",
+            "symbolic_meaning": "Energy",
+            "cozy_association": "Strength for the day",
+            "tags": [
+                "element_fire",
+                "energizing"
+            ],
+            "origin_scope": "global",
+            "origin_ref": null,
+            "lore_place_hint": null,
+            "player_need_satisfied": "Confidence in navigating daily needs",
+            "notes": null,
+            "safety_category": "generally_safe",
+            "usable_in": [
+                "tea",
+                "spell",
+                "gift"
+            ],
+            "stock_behavior": "infinite",
+            "starting_quantity": 1,
+            "max_stack": null,
+            "botanical_kind": null
+        },
+        {
+            "item_id": "journal",
+            "display_name": "Journal",
+            "item_type": "Tool",
+            "botanical_kind": null,
+            "symbolic_meaning": "Reflection",
+            "cozy_association": "Ink and quiet honesty",
+            "tags": [
+                "reflective",
+                "memory",
+                "element_air"
+            ],
+            "origin_scope": "starting",
+            "origin_ref": null,
+            "lore_place_hint": null,
+            "player_need_satisfied": "Permission to explore inner thoughts safely",
+            "notes": "Used to record recipes, omens, and small discoveries.",
+            "safety_category": "non_ingestible",
+            "usable_in": [
+                "quest",
+                "spell"
+            ],
+            "stock_behavior": "infinite",
+            "starting_quantity": 1,
+            "max_stack": null
+        },
+        {
+            "item_id": "mirror",
+            "display_name": "Small Mirror",
+            "item_type": "Tool",
+            "botanical_kind": null,
+            "symbolic_meaning": "Self-reflection",
+            "cozy_association": "Quiet clarity",
+            "tags": [
+                "self_care",
+                "reflective",
+                "element_water"
+            ],
+            "origin_scope": "starting",
+            "origin_ref": null,
+            "lore_place_hint": null,
+            "player_need_satisfied": "Support in making choices calmly",
+            "notes": "Used in various rituals and spells for self-awareness.",
+            "safety_category": "generally_safe",
+            "usable_in": [
+                "spell"
+            ],
+            "stock_behavior": "infinite",
+            "starting_quantity": 1,
+            "max_stack": null
+        },
+        {
+            "item_id": "water",
+            "display_name": "Water",
+            "item_type": "TeaBase",
+            "botanical_kind": null,
+            "symbolic_meaning": "Life",
+            "cozy_association": "Refreshing clarity",
+            "tags": [
+                "self_care",
+                "hydration"
+            ],
+            "origin_scope": "starting",
+            "origin_ref": null,
+            "lore_place_hint": null,
+            "player_need_satisfied": "Confidence in navigating daily needs",
+            "notes": "Essential for maintaining physical well-being during adventures. Used in making tea or rituals requiring water.",
+            "safety_category": "generally_safe",
+            "usable_in": [
+                "tea",
+                "spell"
+            ],
+            "stock_behavior": "infinite",
+            "starting_quantity": 1,
+            "max_stack": null
+        },
+        {
+            "item_id": "water_bottle",
+            "display_name": "Water Bottle",
+            "item_type": "Tool",
+            "botanical_kind": null,
+            "symbolic_meaning": "Life",
+            "cozy_association": "Refreshing clarity",
+            "tags": [
+                "self_care",
+                "hydration"
+            ],
+            "origin_scope": "starting",
+            "origin_ref": null,
+            "lore_place_hint": null,
+            "player_need_satisfied": "Confidence in navigating daily needs",
+            "notes": "Essential for maintaining physical well-being during adventures. Used in making tea or rituals requiring water.",
+            "safety_category": "generally_safe",
+            "usable_in": [
+                "tea"
+            ],
+            "stock_behavior": "infinite",
+            "starting_quantity": 1,
+            "max_stack": null
+        }
+    ]
+}
