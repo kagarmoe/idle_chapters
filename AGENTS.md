@@ -1,5 +1,21 @@
 # Agent Instructions
 
+## Project Knowledge Map
+
+`design-docs/` and `schemas/` are the project's source of truth. Consult them
+directly — do NOT copy their contents into bd memory or other notes (pointers only).
+
+- `design-docs/`
+  - `game_design/` — tone, storylets, player & interaction design. Start here for
+    "what the game is." (`tone_contract.md` is auto-loaded on session start.)
+  - `implementation/` — ARCHITECTURE, API_DESIGN, SCENE_AND_ENGINE, etc. Read the
+    relevant doc BEFORE architectural or API work.
+  - `plans/` — dated `YYYY-MM-DD-<topic>-design.md` + `-plan.md` pairs. Write new
+    design/plan docs HERE in this format (this is where plan artifacts live).
+- `schemas/` — JSON schemas; the source of truth for all data in `assets/`.
+  Schema-first: fix data to match the schema, never the reverse. To change a
+  schema, file a bd issue first.
+
 This project uses **bd** (beads) for issue tracking. Run `bd prime` for full workflow context.
 
 ## Quick Reference

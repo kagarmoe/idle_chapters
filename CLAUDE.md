@@ -4,6 +4,22 @@
 - Load `design-docs/game_design/tone_contract.md` into context after compacting context.
 - If the user mentions new items that are not present in `assets/collectibles.json`, add them there (following `schemas/collectibles.schema.json`) before continuing.
 
+## Project Knowledge Map
+
+`design-docs/` and `schemas/` are the project's source of truth. Consult them
+directly — do NOT copy their contents into bd memory or other notes (pointers only).
+
+- `design-docs/`
+  - `game_design/` — tone, storylets, player & interaction design. Start here for
+    "what the game is." (`tone_contract.md` is auto-loaded on session start.)
+  - `implementation/` — ARCHITECTURE, API_DESIGN, SCENE_AND_ENGINE, etc. Read the
+    relevant doc BEFORE architectural or API work.
+  - `plans/` — dated `YYYY-MM-DD-<topic>-design.md` + `-plan.md` pairs. Write new
+    design/plan docs HERE in this format (this is where plan artifacts live).
+- `schemas/` — JSON schemas; the source of truth for all data in `assets/`.
+  Schema-first: fix data to match the schema, never the reverse. To change a
+  schema, file a bd issue first.
+
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
 ## Beads Issue Tracker
 
@@ -50,6 +66,3 @@ bd close <id>         # Complete work
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
 <!-- END BEADS INTEGRATION -->
-
-- Schema-first design: JSON schemas in `schemas/` are the source of truth. If data in `assets/` fails validation, fix the data to conform to the schema. Do not modify schemas to accommodate invalid data. If a schema genuinely needs updating, create an issue to discuss the change.
-
