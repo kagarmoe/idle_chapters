@@ -41,10 +41,14 @@ def test_verbose_prepends_signal_word(capsys):
 def test_verbose_writes_three_panel_detail_to_stderr(capsys):
     ui_errors.set_verbose(True)
     ui_errors.print_error(_caution_error())
-    _, err = capsys.readouterr()
-    assert "WHAT:" in err
-    assert "MEANS:" in err
-    assert "DO:" in err
+    out, err = capsys.readouterr()
+    # Each panel must begin its own line (scannable), not collapse into a run-on.
+    lines = err.splitlines()
+    assert any(line.lstrip().startswith("WHAT:") for line in lines)
+    assert any(line.lstrip().startswith("MEANS:") for line in lines)
+    assert any(line.lstrip().startswith("DO:") for line in lines)
+    # Developer detail must never leak onto stdout (player-facing stream).
+    assert "WHAT:" not in out
 
 
 def test_verbose_without_detail_writes_nothing_to_stderr(capsys):

@@ -43,4 +43,5 @@ def print_error(err: GameError) -> None:
         return
     print_block(f"{err.signal.value}: {err.player_message}")
     if err.detail:
-        print(wrap_text(err.detail), file=sys.stderr)
+        for panel in err.detail.splitlines():
+            print(wrap_text(panel), file=sys.stderr)
