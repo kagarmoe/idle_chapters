@@ -158,19 +158,23 @@ class GameError(Exception):
     def title(self) -> str:
         return _TITLES.get(self.kind, str(self.kind))
 
-    def project_player(self) -> dict[str, Any]:
-        """Minimal RFC 9457: type, title (rendered template), status."""
+    @property
+    def player_message(self) -> str:
+        """Tone-contract message rendered from assets/error_templates.json."""
         templates = _load_templates()
         entry = templates.get(self.kind.value, {})
         template = entry.get("template", "")
         fallback = entry.get("fallback", "Something unexpected happened.")
         try:
-            message = template.format(**self.context) if template else fallback
+            return template.format(**self.context) if template else fallback
         except (KeyError, IndexError):
-            message = fallback
+            return fallback
+
+    def project_player(self) -> dict[str, Any]:
+        """Minimal RFC 9457: type, title (rendered template), status."""
         return {
             "type": self.type_uri,
-            "title": message,
+            "title": self.player_message,
             "status": self.http_status,
         }
 
