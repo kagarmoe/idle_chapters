@@ -108,16 +108,19 @@ Templates never use language expressing fear, pressure, urgency, scarcity, defic
 | Player templates | Done | `assets/error_templates.json` |
 | API exception handler | Done | `idle_chapters/api/server.py` |
 | API projections (player + developer) | Done | `GameError.project_player()`, `GameError.project_developer()` |
-| CLI projection (Phase C) | Not started | Tracked as `kimberlygarmoe-vxv` |
+| CLI projection (Phase C) | Done | `idle_chapters/ui/errors.py` (`print_error`), `--verbose` flag in `main.py` |
 | Agent projection | Future | Design only |
 
-### What Phase C will change
+### What Phase C changed
 
-The CLI game (`scenes/welcome.py`, `scenes/cottage.py`) currently uses raw `print()` for error messages — hardcoded strings like "Please choose a valid option." that predate the structured error model. Phase C will:
+The CLI game now routes its error paths through the structured error model. `idle_chapters/ui/errors.py` renders player-facing copy (`print_error`, `invalid_choice`), with `main.py` exposing a `--verbose` flag (`set_verbose`) that prepends the Z535 signal word and sends the three-panel WHAT/MEANS/DO detail to stderr. Concretely:
 
-1. Route CLI error paths through `GameError` → `project_player()` so the terminal uses the same tone-contract-compliant templates as the API
-2. Add Z535 signal word display and optional three-panel detail via a `--verbose` flag
-3. Decide which CLI situations warrant the full `GameError` machinery vs. simpler inline messages (not every `print()` is an error)
+- Menu misses render `intent_no_match`; cottage choices use `print_error(invalid_choice(...))`.
+- Save failures (`IOError`) render `persistence_failure`.
+- Auto-recovering load notices stayed inline, reworded to be tone-contract-compliant (a corrupt/missing save is not an error the player must act on).
+- Schema-validation detail is verbose-only stderr, so the normal player never sees it.
+
+ANSI colors for signal words were deliberately skipped; add if terminal output grows richer.
 
 ## Standards
 
