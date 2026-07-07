@@ -1,5 +1,6 @@
 import pytest
 
+from idle_chapters.services import errors as errors_mod
 from idle_chapters.services.errors import GameError, ErrorKind, Effect, Recovery, Signal
 
 
@@ -135,3 +136,45 @@ class TestDeveloperProjection:
         assert projection["recovery"] == "retryable"
         assert projection["signal"] == "WARNING"
         assert projection["context"]["session_id"] == "abc-123"
+
+
+class TestPlayerMessage:
+    def test_renders_template_with_context(self):
+        err = GameError(
+            kind=ErrorKind.INTENT_NO_MATCH,
+            effect=Effect.NONE,
+            recovery=Recovery.CORRECTABLE,
+            context={"input": "dance", "available_actions": "make tea, sit by the fire"},
+        )
+        assert err.player_message == (
+            'Hmm, I\'m not sure what you mean by "dance". '
+            "These are the things you could do here: make tea, sit by the fire."
+        )
+
+    def test_missing_context_key_uses_fallback(self):
+        err = GameError(
+            kind=ErrorKind.INTENT_NO_MATCH,
+            effect=Effect.NONE,
+            recovery=Recovery.CORRECTABLE,
+            context={},
+        )
+        assert err.player_message == "I didn't quite catch that. What would you like to do?"
+
+    def test_project_player_title_equals_player_message(self):
+        err = GameError(
+            kind=ErrorKind.SESSION_NOT_FOUND,
+            effect=Effect.NONE,
+            recovery=Recovery.TERMINAL,
+        )
+        assert err.project_player()["title"] == err.player_message
+
+    def test_no_template_entry_uses_default_fallback(self, monkeypatch):
+        # _load_templates is lru_cache'd, so patch the function itself.
+        monkeypatch.setattr(errors_mod, "_load_templates", lambda: {})
+        err = GameError(
+            kind=ErrorKind.INTENT_NO_MATCH,
+            effect=Effect.NONE,
+            recovery=Recovery.CORRECTABLE,
+            context={"input": "dance"},
+        )
+        assert err.player_message == "Something unexpected happened."

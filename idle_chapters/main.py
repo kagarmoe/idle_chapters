@@ -1,3 +1,6 @@
+import argparse
+
+from idle_chapters.ui.errors import set_verbose
 from idle_chapters.ui.text import print_block
 from idle_chapters.scenes.cottage import run_cottage
 from idle_chapters.scenes.inventory import load_inventory, save_inventory
@@ -19,7 +22,22 @@ def add_collectible(player, item_id) -> bool:
     return True
 
 
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog="idle_chapters", description="A cozy text-based adventure."
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="show Z535 signal words and WHAT/MEANS/DO error detail",
+    )
+    return parser.parse_args(argv)
+
+
 def main() -> None:
+    args = parse_args()
+    set_verbose(args.verbose)
     try:
         print_block(welcome)
         player = player_menu()
