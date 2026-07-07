@@ -2,6 +2,7 @@ import json
 import textwrap
 from pathlib import Path
 
+from idle_chapters.ui.errors import invalid_choice, print_error
 from idle_chapters.ui.text import PADDING, fill_width, print_block
 from idle_chapters.scenes.inventory import load_inventory, save_inventory
 from idle_chapters.scenes.welcome import save_player
@@ -257,7 +258,7 @@ def _run_interaction(interaction, state, add_collectible):
                     if chosen.get("end_scene"):
                         return "leave"
                     break
-            print("Please choose a valid option.")
+            print_error(invalid_choice(selection, [c["label"] for c in choices]))
         if not interaction.get("repeat"):
             return None
 
