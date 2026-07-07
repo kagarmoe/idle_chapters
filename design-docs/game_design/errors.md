@@ -69,7 +69,7 @@ Plus a signal word (DANGER, WARNING, CAUTION, NOTICE) derived from effect and re
 
 **CLI projection** — "What does the player see in the terminal?"
 
-Reuses the player templates, formatted for terminal output. In verbose mode, prepends the Z535 signal word and renders the three-panel detail to stderr. This is the projection that Phase C (beads issue `kimberlygarmoe-vxv`) will implement.
+Reuses the player templates, formatted for terminal output. In verbose mode (`-v` / `--verbose`), prepends the Z535 signal word and renders the three-panel detail to stderr. This is the projection Phase C (beads issue `chapters-vxv`) implemented, in `idle_chapters/ui/errors.py`.
 
 **Agent projection** (future) — "What do I branch on?"
 
@@ -113,9 +113,9 @@ Templates never use language expressing fear, pressure, urgency, scarcity, defic
 
 ### What Phase C changed
 
-The CLI game now routes its error paths through the structured error model. `idle_chapters/ui/errors.py` renders player-facing copy (`print_error`, `invalid_choice`), with `main.py` exposing a `--verbose` flag (`set_verbose`) that prepends the Z535 signal word and sends the three-panel WHAT/MEANS/DO detail to stderr. Concretely:
+The CLI game now routes its error paths through the structured error model. `idle_chapters/ui/errors.py` renders player-facing copy (`print_error`, `invalid_choice`), with `main.py` exposing a `-v` / `--verbose` flag (`set_verbose`) that prepends the Z535 signal word and sends the three-panel WHAT/MEANS/DO detail to stderr. Concretely:
 
-- Menu misses render `intent_no_match`; cottage choices use `print_error(invalid_choice(...))`.
+- Both welcome menu misses and cottage choices render `intent_no_match` via `print_error(invalid_choice(...))`.
 - Save failures (`IOError`) render `persistence_failure`.
 - Auto-recovering load notices stayed inline, reworded to be tone-contract-compliant (a corrupt/missing save is not an error the player must act on).
 - Schema-validation detail is verbose-only stderr, so the normal player never sees it.

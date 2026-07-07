@@ -1,5 +1,6 @@
 import pytest
 
+from idle_chapters.services import errors as errors_mod
 from idle_chapters.services.errors import GameError, ErrorKind, Effect, Recovery, Signal
 
 
@@ -137,9 +138,6 @@ class TestDeveloperProjection:
         assert projection["context"]["session_id"] == "abc-123"
 
 
-from idle_chapters.services.errors import Effect, ErrorKind, GameError, Recovery
-
-
 class TestPlayerMessage:
     def test_renders_template_with_context(self):
         err = GameError(
@@ -169,3 +167,14 @@ class TestPlayerMessage:
             recovery=Recovery.TERMINAL,
         )
         assert err.project_player()["title"] == err.player_message
+
+    def test_no_template_entry_uses_default_fallback(self, monkeypatch):
+        # _load_templates is lru_cache'd, so patch the function itself.
+        monkeypatch.setattr(errors_mod, "_load_templates", lambda: {})
+        err = GameError(
+            kind=ErrorKind.INTENT_NO_MATCH,
+            effect=Effect.NONE,
+            recovery=Recovery.CORRECTABLE,
+            context={"input": "dance"},
+        )
+        assert err.player_message == "Something unexpected happened."
