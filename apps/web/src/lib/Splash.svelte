@@ -82,14 +82,17 @@
 			return () => clearTimeout(timer);
 		}
 
-		// Art fully revealed — show menu after a gentle pause
-		if (!typewriterDone) {
-			typewriterDone = true;
-			const timer = setTimeout(() => {
-				menuVisible = true;
-			}, MENU_DELAY_MS);
-			return () => clearTimeout(timer);
-		}
+		typewriterDone = true;
+	});
+
+	// Separate effect: setting typewriterDone above re-runs the first effect,
+	// whose cleanup would cancel a timer started there.
+	$effect(() => {
+		if (!typewriterDone || menuVisible) return;
+		const timer = setTimeout(() => {
+			menuVisible = true;
+		}, MENU_DELAY_MS);
+		return () => clearTimeout(timer);
 	});
 
 	function handleKeydown(e: KeyboardEvent) {
