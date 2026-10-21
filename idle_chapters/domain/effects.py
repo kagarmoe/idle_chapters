@@ -36,13 +36,16 @@ def apply_effects(state: PlayerState, effects: dict) -> PlayerState:
     for flag in effects.get("clear_flags") or []:
         flags.discard(flag)
 
+    visit_counts = state.visit_counts
     move_to = effects.get("move_to")
-    if move_to is not None:
+    if move_to is not None and move_to != place_id:
         place_id = move_to
+        visit_counts = {**visit_counts, move_to: visit_counts.get(move_to, 0) + 1}
 
     return replace(
         state,
         inventory=inventory,
         flags=flags,
         current_place_id=place_id,
+        visit_counts=visit_counts,
     )

@@ -43,3 +43,20 @@ def test_apply_effects_prevents_negative_inventory() -> None:
     assert exc_info.value.item_id == "item_1"
     assert exc_info.value.required == 1
     assert exc_info.value.available == 0
+
+
+def _at(place: str, visits: dict[str, int]) -> PlayerState:
+    return PlayerState(session_id="s", current_place_id=place, inventory={}, flags=set(), time_tick=0, visit_counts=visits)
+
+
+def test_move_to_a_new_place_counts_an_arrival() -> None:
+    state = _at("home", {"home": 1, "town": 1})
+    moved = apply_effects(state, {"move_to": "town"})
+    assert moved.visit_counts == {"home": 1, "town": 2}
+    assert state.visit_counts == {"home": 1, "town": 1}
+
+
+def test_staying_put_counts_nothing() -> None:
+    state = _at("home", {"home": 1})
+    assert apply_effects(state, {"move_to": "home"}).visit_counts == {"home": 1}
+    assert apply_effects(state, {"set_flags": ["rested"]}).visit_counts == {"home": 1}
