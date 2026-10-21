@@ -175,11 +175,11 @@ def test_event_store_ordering(unique_session_id) -> None:
 
 
 @mongo
-def test_journal_pages_are_indexed_by_session_then_time() -> None:
+def test_journal_pages_are_indexed_by_session_then_time(monkeypatch) -> None:
     from idle_chapters.persistence import mongo as mongo_module
 
     mongo_module.get_db().journal_pages.drop_indexes()
-    mongo_module._CLIENT = None
+    monkeypatch.setattr(mongo_module, "_CLIENT", None)
     db = mongo_module.get_db()
 
     keys = [index["key"] for index in db.journal_pages.index_information().values()]
