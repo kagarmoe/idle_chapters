@@ -4,9 +4,11 @@ on:
   push:
     paths:
       - 'docs/**'
+      - '.github/workflows/docs.yml'
   pull_request:
     paths:
       - 'docs/**'
+      - '.github/workflows/docs.yml'
 
 jobs:
   validate:
@@ -23,3 +25,10 @@ jobs:
 
       - name: Validate openapi.json is valid JSON
         run: python3 -c "import json, pathlib; json.loads(pathlib.Path('docs/openapi.json').read_text())"
+
+      # Redoc's "latest" jumped a major to a module-only bundle and blanked the page.
+      - name: Check Redoc loads as a module from a major-version URL
+        run: |
+          # `if` rather than `!`: bash -e ignores a failing negated command.
+          if grep -E "src=[\"'][^\"']*(/latest/|@latest)" docs/index.html; then exit 1; fi
+          grep -E "<script type=[\"']module[\"'] src=[\"'][^\"']*redoc(/v[0-9]+\.x/|@[0-9])" docs/index.html
