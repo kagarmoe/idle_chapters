@@ -1,0 +1,10 @@
+type: '@swamp/vercel/projects/projects'
+typeVersion: 2026.10.20.4
+id: 7e5a5f79-2ee2-4e23-b5b4-e509fcaa350b
+name: idle-chapters-web
+version: 1
+tags: {}
+globalArguments:
+  name: idle-chapters
+  token: ${{ vault.get("default", "vercel_token") }}
+methods: {}
