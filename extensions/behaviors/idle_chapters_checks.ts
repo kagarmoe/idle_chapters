@@ -113,7 +113,7 @@ async function expectOk(url: string, init?: RequestInit) {
 /** Quality gates and shipping for the Idle Chapters repo. */
 export const behavior = {
   type: "@kagarmoe/idle-chapters-checks",
-  version: "2026.10.21.2",
+  version: "2026.10.21.3",
   globalArguments: GlobalArgsSchema,
   resources: {
     "gate": {
@@ -135,6 +135,11 @@ export const behavior = {
       description: "Adds e2eWeb, smoke and deployApi; new globals have defaults",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.10.21.3",
+      description: "test runs the Mongo-gated tests on the in-memory backend, as CI does on mongo:7",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   methods: {
     validateAssets: {
@@ -154,6 +159,8 @@ export const behavior = {
         runGate("test", [{
           argv: [...context.globalArgs.python, "-m", "pytest", "-q"],
           cwd: context.repoDir,
+          // CI runs the Mongo-gated tests against mongo:7; mongomock runs them here (close, not identical).
+          env: { MONGO_URL: "memory://" },
         }], context),
     },
     buildWeb: {
