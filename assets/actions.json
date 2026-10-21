@@ -89,7 +89,7 @@
       },
       "effects": {
         "add_items": {
-          "chamomile_flower": 1,
+          "chamomile_flowers": 1,
           "black_tea": 1,
           "biscuits": 1
         },
@@ -154,7 +154,7 @@
           "water_bottle": 1,
           "water": 1,
           "mirror": 1,
-          "chamomile_flower": 1,
+          "chamomile_flowers": 1,
           "black_tea": 1,
           "biscuits": 1
         },
