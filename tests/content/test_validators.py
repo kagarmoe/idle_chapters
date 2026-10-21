@@ -22,6 +22,13 @@ def test_validate_cross_file_integrity_passes() -> None:
     validate_cross_file_integrity(repo)
 
 
+def test_shipped_assets_pass_cross_file_integrity() -> None:
+    from idle_chapters.content.repo import ContentRepo
+    from idle_chapters.content.validators import validate_cross_file_integrity
+
+    validate_cross_file_integrity(ContentRepo())
+
+
 def test_validate_cross_file_integrity_missing_place() -> None:
     from idle_chapters.content.validators import validate_cross_file_integrity
 

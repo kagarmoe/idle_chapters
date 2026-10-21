@@ -1963,7 +1963,7 @@
       },
       "conditions": {
         "npc_id": "npc_cat_moss",
-        "place_id": "town_bakery_stoop",
+        "place_id": "town_bakery",
         "zone_id": null,
         "time_of_day": null,
         "weather": null,
@@ -2003,7 +2003,7 @@
       },
       "conditions": {
         "npc_id": "npc_cat_moss",
-        "place_id": "town_bakery_stoop",
+        "place_id": "town_bakery",
         "zone_id": null,
         "time_of_day": null,
         "weather": null,
@@ -2022,7 +2022,7 @@
       "directional_guidance": {
         "target_item_id": null,
         "target_tag": "trinket",
-        "hint_place_id": "town_bakery_stoop"
+        "hint_place_id": "town_bakery"
       },
       "effects": {
         "set_flags": [
@@ -2055,7 +2055,7 @@
       },
       "conditions": {
         "npc_id": "npc_cat_moss",
-        "place_id": "town_bakery_stoop",
+        "place_id": "town_bakery",
         "zone_id": null,
         "time_of_day": null,
         "weather": null,
@@ -2074,7 +2074,7 @@
       "directional_guidance": {
         "target_item_id": null,
         "target_tag": "trinket",
-        "hint_place_id": "town_bakery_stoop"
+        "hint_place_id": "town_bakery"
       },
       "effects": {
         "set_flags": [
@@ -2107,7 +2107,7 @@
       },
       "conditions": {
         "npc_id": "npc_cat_moss",
-        "place_id": "town_bakery_stoop",
+        "place_id": "town_bakery",
         "zone_id": null,
         "time_of_day": null,
         "weather": null,
@@ -2128,7 +2128,7 @@
       "directional_guidance": {
         "target_item_id": null,
         "target_tag": "trinket",
-        "hint_place_id": "town_bakery_stoop"
+        "hint_place_id": "town_bakery"
       },
       "effects": {
         "set_flags": [
@@ -2161,7 +2161,7 @@
       },
       "conditions": {
         "npc_id": "npc_crow_ink",
-        "place_id": "town_clocktree",
+        "place_id": "town",
         "zone_id": null,
         "time_of_day": [
           "morning"
@@ -2213,7 +2213,7 @@
       },
       "conditions": {
         "npc_id": "npc_crow_ink",
-        "place_id": "town_clocktree",
+        "place_id": "town",
         "zone_id": null,
         "time_of_day": [
           "morning"
@@ -2263,7 +2263,7 @@
       },
       "conditions": {
         "npc_id": "npc_crow_ink",
-        "place_id": "town_clocktree",
+        "place_id": "town",
         "zone_id": null,
         "time_of_day": null,
         "weather": null,
@@ -2313,7 +2313,7 @@
       },
       "conditions": {
         "npc_id": "npc_dog_bram",
-        "place_id": "town_docks_gate",
+        "place_id": "beach_boardwalk",
         "zone_id": null,
         "time_of_day": [
           "evening"
@@ -2370,7 +2370,7 @@
       },
       "conditions": {
         "npc_id": "npc_dog_bram",
-        "place_id": "town_docks_gate",
+        "place_id": "beach_boardwalk",
         "zone_id": null,
         "time_of_day": [
           "evening"
@@ -2427,7 +2427,7 @@
       },
       "conditions": {
         "npc_id": "npc_dog_bram",
-        "place_id": "town_docks_gate",
+        "place_id": "beach_boardwalk",
         "zone_id": null,
         "time_of_day": [
           "evening"

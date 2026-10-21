@@ -544,7 +544,7 @@
       "display_name": "Moss",
       "npc_kind": "animal",
       "species": "cat",
-      "home_location_id": "town_bakery_stoop",
+      "home_location_id": "town_bakery",
       "spawn_rules": {
         "presence": "always",
         "schedule_id": null,
@@ -620,7 +620,7 @@
       "display_name": "Ink",
       "npc_kind": "animal",
       "species": "crow",
-      "home_location_id": "town_clocktree",
+      "home_location_id": "town",
       "spawn_rules": {
         "presence": "rotating",
         "schedule_id": "schedule_crow_visits",
@@ -690,7 +690,7 @@
       "display_name": "Bram",
       "npc_kind": "animal",
       "species": "dog",
-      "home_location_id": "town_docks_gate",
+      "home_location_id": "beach_boardwalk",
       "spawn_rules": {
         "presence": "scheduled",
         "schedule_id": "schedule_evenings",

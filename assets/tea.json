@@ -12,7 +12,7 @@
       "base_liquid": "water",
       "ingredients": [
         {
-          "ingredient_ref": "chamomile_flower",
+          "ingredient_ref": "chamomile_flowers",
           "role": "base",
           "amount_hint": "1 tbsp dried flowers"
         },
@@ -84,7 +84,7 @@
       "base_liquid": "water",
       "ingredients": [
         {
-          "ingredient_ref": "chamomile_flower",
+          "ingredient_ref": "chamomile_flowers",
           "role": "base",
           "amount_hint": "1 tbsp dried flowers"
         },
