@@ -52,6 +52,11 @@ def validate_cross_file_integrity(repo) -> None:
             if ingredient_ref and not _ingredient_ref_valid(ingredient_ref, collectible_ids):
                 raise ValueError(f"Missing ingredient_ref: {ingredient_ref}")
 
+    for action in repo.actions_by_id.values():
+        move_to = (action.get("effects") or {}).get("move_to")
+        location = (action.get("when") or {}).get("location")
+        _ensure_refs_exist([ref for ref in (move_to, location) if ref], place_ids, "place_id")
+
     for entry in repo.lexicon_by_key.values():
         scope = entry.get("scope")
         if scope and scope != "Global":

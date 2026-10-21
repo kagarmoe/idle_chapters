@@ -54,3 +54,41 @@ def test_broken_content_fails_health_and_is_never_cached(monkeypatch) -> None:
     assert res.json()["type"].endswith("engine_failure")
     assert "nowhere_place" in res.json()["detail"]
     assert deps._CONTENT_REPO is None
+
+
+def test_travel_walks_every_path_and_gives_the_kit_once(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+
+    client = TestClient(server)
+    created = client.post("/v1/sessions", json={"place_id": "cottage_home"})
+    session_id = created.json()["session_id"]
+    offered = {a["action_id"] for a in created.json()["view"]["eligible_actions"]}
+
+    for action_id in [
+        "look_around", "pick_up_journal",
+        "head_to_town", "wander_home", "walk_to_town",
+        "walk_to_meadow", "back_into_town_from_meadow",
+        "follow_forest_path", "back_into_town_from_forest",
+        "stroll_to_beach", "back_into_town_from_beach",
+        "wander_home",
+    ]:
+        assert action_id in offered, (action_id, offered)
+        response = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
+        assert response.status_code == 200, response.text
+        offered = {a["action_id"] for a in response.json()["view"]["eligible_actions"]}
+
+    state = client.get(f"/v1/sessions/{session_id}").json()["state"]
+    assert state["current_place_id"] == "cottage_home"
+    from idle_chapters.persistence.state_store import StateStore
+
+    visits = StateStore().get_state(session_id).visit_counts
+    assert visits == {"cottage_home": 3, "town": 5, "meadow": 1, "forest": 1, "beach": 1}
+    assert state["inventory"]["journal"] == 1
+    assert state["inventory"]["bag"] == 1
+    assert "walk_to_town" in offered
+    assert not offered & {"look_around", "head_to_town"}

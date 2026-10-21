@@ -43,7 +43,10 @@
       "action_id": "look_around",
       "label": "Look around",
       "when": {
-        "location": "cottage_home"
+        "location": "cottage_home",
+        "flags_not_set": [
+          "looked_around"
+        ]
       },
       "result": "You rise from the bed and take in the cottage's cozy glow. Outside, the garden brightens with color and soft birdsong. The air feels fresh and welcoming, and you take a moment to enjoy the simple calm before choosing what comes next.",
       "intent_signature": {
@@ -63,7 +66,10 @@
           "water_bottle": 1,
           "water": 1,
           "mirror": 1
-        }
+        },
+        "set_flags": [
+          "looked_around"
+        ]
       }
     },
     {
@@ -132,7 +138,10 @@
       "action_id": "head_to_town",
       "label": "Head to town for a snack",
       "when": {
-        "location": "cottage_home"
+        "location": "cottage_home",
+        "flags_not_set": [
+          "left_cottage_first"
+        ]
       },
       "result": "With your things gathered, you step toward town for a gentle bite to eat.",
       "intent_signature": {
@@ -148,18 +157,184 @@
         ]
       },
       "effects": {
-        "add_items": {
-          "journal": 1,
-          "bag": 1,
-          "water_bottle": 1,
-          "water": 1,
-          "mirror": 1,
-          "chamomile_flowers": 1,
-          "black_tea": 1,
-          "biscuits": 1
-        },
+        "move_to": "town",
         "set_flags": [
           "left_cottage_first"
+        ]
+      }
+    },
+    {
+      "action_id": "walk_to_town",
+      "label": "Walk into town",
+      "when": {
+        "location": "cottage_home",
+        "flags_set": [
+          "left_cottage_first"
+        ]
+      },
+      "effects": {
+        "move_to": "town"
+      },
+      "result": "The lane into town is as easy as you remember.",
+      "intent_signature": {
+        "keywords": [
+          "town",
+          "walk",
+          "lane"
+        ],
+        "phrases": [
+          "walk into town",
+          "go to town"
+        ]
+      }
+    },
+    {
+      "action_id": "wander_home",
+      "label": "Wander home",
+      "when": {
+        "zone_not": "cottage"
+      },
+      "effects": {
+        "move_to": "cottage_home"
+      },
+      "result": "You take the long way home, in no particular hurry.",
+      "intent_signature": {
+        "keywords": [
+          "home",
+          "cottage"
+        ],
+        "phrases": [
+          "wander home",
+          "go home"
+        ]
+      }
+    },
+    {
+      "action_id": "walk_to_meadow",
+      "label": "Walk out to the meadow",
+      "when": {
+        "location": "town"
+      },
+      "effects": {
+        "move_to": "meadow"
+      },
+      "result": "The houses thin into tall grass and open sky.",
+      "intent_signature": {
+        "keywords": [
+          "meadow",
+          "grass",
+          "field"
+        ],
+        "phrases": [
+          "walk to the meadow",
+          "go to the meadow"
+        ]
+      }
+    },
+    {
+      "action_id": "follow_forest_path",
+      "label": "Follow the forest path",
+      "when": {
+        "location": "town"
+      },
+      "effects": {
+        "move_to": "forest"
+      },
+      "result": "The trees gather softly overhead, and the air cools.",
+      "intent_signature": {
+        "keywords": [
+          "forest",
+          "trees",
+          "woods"
+        ],
+        "phrases": [
+          "follow the forest path",
+          "go to the forest"
+        ]
+      }
+    },
+    {
+      "action_id": "stroll_to_beach",
+      "label": "Stroll down to the beach",
+      "when": {
+        "location": "town"
+      },
+      "effects": {
+        "move_to": "beach"
+      },
+      "result": "The street slopes gently toward the sound of waves.",
+      "intent_signature": {
+        "keywords": [
+          "beach",
+          "sea",
+          "waves"
+        ],
+        "phrases": [
+          "stroll to the beach",
+          "go to the beach"
+        ]
+      }
+    },
+    {
+      "action_id": "back_into_town_from_meadow",
+      "label": "Head back into town",
+      "when": {
+        "location": "meadow"
+      },
+      "effects": {
+        "move_to": "town"
+      },
+      "result": "The path bends back toward the rooftops of town.",
+      "intent_signature": {
+        "keywords": [
+          "town",
+          "back"
+        ],
+        "phrases": [
+          "head back into town",
+          "back to town"
+        ]
+      }
+    },
+    {
+      "action_id": "back_into_town_from_forest",
+      "label": "Head back into town",
+      "when": {
+        "location": "forest"
+      },
+      "effects": {
+        "move_to": "town"
+      },
+      "result": "The path bends back toward the rooftops of town.",
+      "intent_signature": {
+        "keywords": [
+          "town",
+          "back"
+        ],
+        "phrases": [
+          "head back into town",
+          "back to town"
+        ]
+      }
+    },
+    {
+      "action_id": "back_into_town_from_beach",
+      "label": "Head back into town",
+      "when": {
+        "location": "beach"
+      },
+      "effects": {
+        "move_to": "town"
+      },
+      "result": "The path bends back toward the rooftops of town.",
+      "intent_signature": {
+        "keywords": [
+          "town",
+          "back"
+        ],
+        "phrases": [
+          "head back into town",
+          "back to town"
         ]
       }
     }

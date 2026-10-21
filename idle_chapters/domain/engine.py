@@ -51,7 +51,9 @@ class Engine:
             action_ref = entry_node.get("action_ref")
             action = repo.actions_by_id.get(action_ref, {}) if action_ref else {}
 
-            choices = self._choices_from_node(entry_node, nodes_by_id, new_state, repo)
+            choices = self._with_paths(
+                self._choices_from_node(entry_node, nodes_by_id, new_state, repo), new_state, repo
+            )
             journal_page = self._render_journal(action, new_state, repo, seed=seed)
 
             return StepResult(
@@ -70,7 +72,7 @@ class Engine:
                 current_node_id=None,
             )
 
-            choices = scene.get("choices", [])
+            choices = self._with_paths(scene.get("choices", []), new_state, repo)
             journal_page = self._render_journal_procedural(scene, new_state, repo, seed=seed)
 
             return StepResult(
@@ -103,7 +105,24 @@ class Engine:
                 unmet_conditions=["action not found in current scene"],
             )
 
+        if not evaluate_conditions(state, action.get("when"), repo):
+            raise ActionNotEligible(
+                action_id=choice_id,
+                session_id=state.session_id,
+                unmet_conditions=["when conditions not met"],
+            )
+
         new_state = apply_effects(state, action.get("effects", {}))
+
+        if new_state.current_place_id != state.current_place_id:
+            # A path: its own page tells the walk, then the destination takes over.
+            arrived = self._handle_enter(new_state, repo, seed)
+            return StepResult(
+                journal_page=self._render_journal(action, arrived.new_state, repo, seed=seed),
+                choices=arrived.choices,
+                new_state=arrived.new_state,
+                debug={**arrived.debug, "choice_id": choice_id},
+            )
 
         scene = self._find_current_scene(state, repo)
         choices: list[dict] = []
@@ -126,10 +145,23 @@ class Engine:
 
         return StepResult(
             journal_page=journal_page,
-            choices=choices,
+            choices=self._with_paths(choices, new_state, repo),
             new_state=new_state,
             debug={"seed": seed, "choice_id": choice_id},
         )
+
+    @staticmethod
+    def _with_paths(choices: list[dict], state: PlayerState, repo) -> list[dict]:
+        """Every eligible way out of this place, after the scene's own choices."""
+        offered = {c.get("action_id") for c in choices}
+        paths = [
+            {"action_id": a["action_id"], "label": a.get("label", a["action_id"])}
+            for a in repo.actions_by_id.values()
+            if (a.get("effects") or {}).get("move_to") not in (None, state.current_place_id)
+            and a["action_id"] not in offered
+            and evaluate_conditions(state, a.get("when"), repo)
+        ]
+        return [*choices, *paths]
 
     def _find_current_scene(self, state: PlayerState, repo) -> dict | None:
         scenes = repo.scenes_by_place_id.get(state.current_place_id, [])

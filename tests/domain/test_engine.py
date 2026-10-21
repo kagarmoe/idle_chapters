@@ -209,7 +209,8 @@ def test_visit_gated_action_appears_from_the_second_arrival() -> None:
 
 
 def _paths_repo() -> SimpleNamespace:
-    template = {"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}
+    # A hint with no section keyword renders the action's result.
+    template = {"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["What happened."], "tags": []}
     return SimpleNamespace(
         places_by_id={
             "home": {"place_id": "home", "zone_id": "cottage"},
