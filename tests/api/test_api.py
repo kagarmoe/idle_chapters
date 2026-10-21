@@ -32,6 +32,9 @@ class StubJournalStore:
     def list_pages(self, session_id: str) -> list[dict]:
         return self._pages.get(session_id, [])
 
+    def count_pages(self, session_id: str) -> int:
+        return len(self._pages.get(session_id, []))
+
     def get_page(self, session_id: str, page_id: str) -> dict | None:
         for p in self._pages.get(session_id, []):
             if p.get("page_id") == page_id:
@@ -223,6 +226,19 @@ def test_get_session_returns_state(service) -> None:
 
 def test_get_session_missing_returns_none(service) -> None:
     assert service.get_session("nonexistent") is None
+
+
+def test_each_step_is_seeded_from_session_and_page_count(service) -> None:
+    import hashlib
+
+    def expected(session_id: str, pages: int) -> int:
+        return int.from_bytes(hashlib.sha256(f"{session_id}:{pages}".encode()).digest()[:8], "big")
+
+    session_id, created = service.create_session()
+    stepped = service.perform_action(session_id, created.choices[0]["action_id"])
+
+    assert created.debug["seed"] == expected(session_id, 0)
+    assert stepped.debug["seed"] == expected(session_id, 1)
 
 
 def test_enter_returns_choices(service) -> None:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import logging
 from uuid import uuid4
 
@@ -45,7 +46,7 @@ class SessionService:
         )
 
         try:
-            result = self._engine.step(state, "enter", None, self._repo)
+            result = self._engine.step(state, "enter", None, self._repo, seed=self._seed(session_id))
         except (SceneNotAvailable, InvalidLocation) as e:
             raise self._domain_error(e) from e
         except Exception as e:
@@ -59,7 +60,7 @@ class SessionService:
         state = self._load_state(session_id)
 
         try:
-            result = self._engine.step(state, "enter", None, self._repo)
+            result = self._engine.step(state, "enter", None, self._repo, seed=self._seed(session_id))
         except (SceneNotAvailable, InvalidLocation) as e:
             raise self._domain_error(e) from e
         except Exception as e:
@@ -73,7 +74,7 @@ class SessionService:
         state = self._load_state(session_id)
 
         try:
-            result = self._engine.step(state, "choose option", action_id, self._repo)
+            result = self._engine.step(state, "choose option", action_id, self._repo, seed=self._seed(session_id))
         except (ActionNotEligible, InsufficientInventory, InvalidLocation,
                 SceneNotAvailable) as e:
             raise self._domain_error(e) from e
@@ -88,7 +89,7 @@ class SessionService:
         state = self._load_state(session_id)
 
         try:
-            current_result = self._engine.step(state, "enter", None, self._repo)
+            current_result = self._engine.step(state, "enter", None, self._repo, seed=self._seed(session_id))
         except Exception as e:
             raise self._engine_error(session_id, e) from e
 
@@ -113,7 +114,7 @@ class SessionService:
             )
 
         try:
-            result = self._engine.step(state, "choose option", matched_id, self._repo)
+            result = self._engine.step(state, "choose option", matched_id, self._repo, seed=self._seed(session_id))
         except (ActionNotEligible, InsufficientInventory, InvalidLocation,
                 SceneNotAvailable) as e:
             raise self._domain_error(e) from e
@@ -128,6 +129,11 @@ class SessionService:
         return self._state_store.get_state(session_id)
 
     # ---- internal helpers ----
+
+    def _seed(self, session_id: str) -> int:
+        """Same session at the same step rolls the same scene, template and variant."""
+        step = self._journal_store.count_pages(session_id)
+        return int.from_bytes(hashlib.sha256(f"{session_id}:{step}".encode()).digest()[:8], "big")
 
     def _load_state(self, session_id: str) -> PlayerState:
         state = self._state_store.get_state(session_id)

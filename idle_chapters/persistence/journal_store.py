@@ -25,6 +25,9 @@ class JournalStore:
         doc["created_at"] = datetime.now(timezone.utc).isoformat()
         self._collection.insert_one(doc)
 
+    def count_pages(self, session_id: str) -> int:
+        return self._collection.count_documents({"session_id": session_id})
+
     def list_pages(self, session_id: str) -> list[dict]:
         """Return all journal pages for a session, ordered by creation time."""
         cursor = self._collection.find(
