@@ -57,7 +57,7 @@ Status values: DONE, PARTIAL, NOT STARTED, SUPERSEDED. Size: S < 1 day, M = a fe
 |---|---|---|---|---|---|---|
 | F01 | Content loading + JSON-schema validation at boot, in-memory `ContentRepo` + indices | V1_PLAYABLE_PLAN M1, ARCHITECTURE | DONE | `content/loader.py`, `content/repo.py`, `content/manifest.py` | Indices are built; most are unused by the engine (see F08, F14, F15) | – |
 | F02 | Cross-file referential integrity checks | V1 M1.4 | PARTIAL | `content/validators.py`, `tests/content/test_validators.py` | **Never called** by `ContentRepo` or server startup. The plan says fail fast at boot. Wire one call | S |
-| F03 | Authored scene graph + manifest (cottage first wake) | COTTAGE_STORYLET_GRAPH, SCENE_AND_ENGINE, SCHEMA_UPDATE | DONE | `assets/scenes/cottage_wake_v1.json`, `assets/scenes/manifest.json` | Only **1 scene**; V1 M2.5 targeted 6–10. Flag drift: doc says `left_cottage_once`, data has `left_cottage_first`. The graph doc says `make_tea` adds `chamomile_flower`; data has `chamomile_flowers` | M |
+| F03 | Authored scene graph + manifest (cottage first wake) | COTTAGE_STORYLET_GRAPH, SCENE_AND_ENGINE, SCHEMA_UPDATE | DONE | `assets/scenes/cottage_wake_v1.json`, `assets/scenes/manifest.json` | 3 scenes: cottage first wake, cottage homecoming (ic-13) and the town bakery (ic-15); V1 M2.5 targeted 6–10. Flag drift: doc says `left_cottage_once`, data has `left_cottage_first`. The graph doc says `make_tea` adds `chamomile_flower`; data has `chamomile_flowers` | M |
 | F04 | Global reusable action catalog with `when` gating | SCENE_AND_ENGINE, SCHEMA_UPDATE | DONE | `assets/actions.json` (6 actions), `schemas/actions.schema.json` | All 6 are cottage-only | – |
 | F05 | Declarative conditions (location, zone, flags, inventory, visits, seen, day) | SCENE_AND_ENGINE, SCHEMA_UPDATE, overview draft | DONE | `domain/conditions.py`, `tests/domain/test_conditions.py` | `time_of_day` is skipped (`conditions.py:53`). No cooldown, once-per-day or mutual-exclusion rules | S |
 | F06 | Effect reducers (add/remove items, flags, move) | ARCHITECTURE, SCENE_AND_ENGINE | PARTIAL | `domain/effects.py` | No `time.advance`. `move_to` counts an arrival in `visit_counts` (ic-4); no seen-interaction updates. No action uses `move_to`. `RANDOM_CHOICE` and mood effects (overview draft) are absent | S |
@@ -118,7 +118,7 @@ Status values: DONE, PARTIAL, NOT STARTED, SUPERSEDED. Size: S < 1 day, M = a fe
 
 | Plan file | Status | Evidence |
 |---|---|---|
-| `implementation/V1_PLAYABLE_PLAN.md` | **Partial** | M0–M6 done with gaps: M2 has 1 scene, not 6–10, and the generator isn't interaction-shaped; M1.4 validators aren't wired. M7 (CLI over the API) is not done. The "Plan for Tomorrow" section (players API, Typer CLI, SDK) is only partly done (players API) |
+| `implementation/V1_PLAYABLE_PLAN.md` | **Partial** | M0–M6 done with gaps: M2 has 3 scenes, not 6–10, and the generator isn't interaction-shaped; M1.4 validators aren't wired. M7 (CLI over the API) is not done. The "Plan for Tomorrow" section (players API, Typer CLI, SDK) is only partly done (players API) |
 | `plans/2026-02-27-m5-persistence-design.md` + `-plan.md` | Executed | `idle_chapters/persistence/*`, `tests/persistence/test_persistence.py` |
 | `plans/2026-02-27-m6-fastapi-design.md` + `-plan.md` | Executed | `services/session_service.py`, `api/routers/sessions.py`, `api/deps.py` |
 | `plans/2026-03-17-deployment-design.md` | Partial | Backend prep and web UI done; nothing hosted; no submodule or Railway |

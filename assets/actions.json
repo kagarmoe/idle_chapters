@@ -716,6 +716,53 @@
           "back to the beach"
         ]
       }
+    },
+    {
+      "action_id": "linger_at_the_counter",
+      "label": "Linger at the counter",
+      "when": {
+        "location": "town_bakery"
+      },
+      "effects": {},
+      "result": "Loaves and pastries glow on the shelves, and the warm air smells of butter and spice.",
+      "intent_signature": {
+        "keywords": [
+          "counter",
+          "linger",
+          "browse"
+        ],
+        "phrases": [
+          "linger at the counter",
+          "look at the pastries"
+        ]
+      }
+    },
+    {
+      "action_id": "enjoy_a_cinnamon_roll",
+      "label": "Enjoy a cinnamon roll",
+      "when": {
+        "location": "town_bakery"
+      },
+      "effects": {
+        "add_items": {
+          "cinnamon_roll": 1
+        }
+      },
+      "result": "The baker sets a warm cinnamon roll on a little plate for you, and tucks another into a paper bag for later. You eat yours slowly by the window, sticky fingers and all.",
+      "intent_signature": {
+        "keywords": [
+          "cinnamon",
+          "roll",
+          "snack",
+          "eat",
+          "pastry"
+        ],
+        "phrases": [
+          "enjoy a cinnamon roll",
+          "have a snack",
+          "eat something"
+        ]
+      }
     }
   ]
 }
