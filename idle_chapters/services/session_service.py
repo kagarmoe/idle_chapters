@@ -126,6 +126,20 @@ class SessionService:
         self._persist(session_id, result)
         return result
 
+    def resume(self, session_id: str) -> StepResult:
+        """Where the player left off: the saved node's choices and the last page. Writes nothing."""
+        state = self._load_state(session_id)
+        pages = self._journal_store.list_pages(session_id)
+        page = None
+        if pages:
+            page = {k: v for k, v in pages[-1].items() if k not in ("session_id", "created_at")}
+        return StepResult(
+            journal_page=page,
+            choices=self._engine.choices_at(state, self._repo) or [],
+            new_state=state,
+            debug={"selected_scene_id": state.current_scene_id},
+        )
+
     def get_session(self, session_id: str) -> PlayerState | None:
         """Load and return current player state, or None if not found."""
         return self._state_store.get_state(session_id)
