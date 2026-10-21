@@ -8,6 +8,7 @@
 </head>
 <body>
   <redoc spec-url='openapi.json'></redoc>
-  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+  <!-- Redoc 3 ships an ES module bundle; it must load as type="module". -->
+  <script type="module" src="https://cdn.redoc.ly/redoc/v3.x/bundles/redoc.standalone.js"></script>
 </body>
 </html>
