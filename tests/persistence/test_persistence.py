@@ -172,3 +172,15 @@ def test_event_store_ordering(unique_session_id) -> None:
     events = store.list_events(unique_session_id)
     types = [e["event_type"] for e in events]
     assert types.index("enter") < types.index("choose")
+
+
+@mongo
+def test_journal_pages_are_indexed_by_session_then_time() -> None:
+    from idle_chapters.persistence import mongo as mongo_module
+
+    mongo_module.get_db().journal_pages.drop_indexes()
+    mongo_module._CLIENT = None
+    db = mongo_module.get_db()
+
+    keys = [index["key"] for index in db.journal_pages.index_information().values()]
+    assert [("session_id", 1), ("created_at", 1)] in keys

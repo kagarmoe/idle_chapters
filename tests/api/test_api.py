@@ -246,6 +246,7 @@ def test_each_step_is_seeded_from_session_and_page_count(service) -> None:
 
     assert created.debug["seed"] == expected(session_id, 0)
     assert stepped.debug["seed"] == expected(session_id, 1)
+    assert service.enter(session_id).debug["seed"] == expected(session_id, 2)
 
 
 def test_enter_returns_choices(service) -> None:

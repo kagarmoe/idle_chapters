@@ -88,9 +88,10 @@ class SessionService:
     def submit_intent(self, session_id: str, text: str) -> StepResult:
         """Match free-text input to an eligible action and execute it."""
         state = self._load_state(session_id)
+        seed = self._seed(session_id)
 
         try:
-            current_result = self._engine.step(state, "enter", None, self._repo, seed=self._seed(session_id))
+            current_result = self._engine.step(state, "enter", None, self._repo, seed=seed)
         except Exception as e:
             raise self._engine_error(session_id, e) from e
 
@@ -115,7 +116,7 @@ class SessionService:
             )
 
         try:
-            result = self._engine.step(state, "choose option", matched_id, self._repo, seed=self._seed(session_id))
+            result = self._engine.step(state, "choose option", matched_id, self._repo, seed=seed)
         except (ActionNotEligible, InsufficientInventory, InvalidLocation,
                 SceneNotAvailable) as e:
             raise self._domain_error(e) from e
