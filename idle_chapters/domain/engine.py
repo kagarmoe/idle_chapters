@@ -252,7 +252,8 @@ class Engine:
             return "spell"
 
         place = repo.places_by_id.get(state.current_place_id, {})
-        if place.get("is_threshold"):
+        # Arriving is told as a walk (tea pages show the action's result); spells are for what you do once there.
+        if place.get("is_threshold") and not action.get("effects", {}).get("move_to"):
             return "spell"
 
         return "tea"

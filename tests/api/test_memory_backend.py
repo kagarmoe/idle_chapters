@@ -1,3 +1,5 @@
+import json
+
 from fastapi.testclient import TestClient
 
 
@@ -104,10 +106,13 @@ def test_every_sub_place_can_be_visited_and_left(monkeypatch) -> None:
 
     client = TestClient(server)
     session_id = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()["session_id"]
+    results = {a["action_id"]: a["result"] for a in json.load(open("assets/actions.json"))["actions"]}
+    pages = []
 
     def take(action_id: str) -> set[str]:
         response = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
         assert response.status_code == 200, response.text
+        pages.append(response.json()["journal_page"]["body"])
         return {a["action_id"] for a in response.json()["view"]["eligible_actions"]}
 
     def place() -> str:
@@ -134,6 +139,7 @@ def test_every_sub_place_can_be_visited_and_left(monkeypatch) -> None:
             assert action_id in offered, (action_id, offered)
             offered = take(action_id)
             assert place() == sub_place
+            assert results[action_id] in pages[-1], (action_id, pages[-1])
             assert {back, "wander_home"} <= offered, offered
             offered = take(back)
             assert place() == root
