@@ -143,7 +143,7 @@
           "left_cottage_first"
         ]
       },
-      "result": "With your things gathered, you step toward town for a gentle bite to eat.",
+      "result": "You step toward town for a gentle bite to eat.",
       "intent_signature": {
         "keywords": [
           "town",

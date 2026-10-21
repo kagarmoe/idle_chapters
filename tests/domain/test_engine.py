@@ -222,8 +222,9 @@ def _paths_repo() -> SimpleNamespace:
                 "place_id": "home",
                 "entry_node": "n_rest",
                 "nodes": [
-                    {"node_id": "n_rest", "action_ref": "rest", "choices": ["n_tea"]},
+                    {"node_id": "n_rest", "action_ref": "rest", "choices": ["n_tea", "n_go"]},
                     {"node_id": "n_tea", "action_ref": "tea", "choices": []},
+                    {"node_id": "n_go", "action_ref": "go_town", "choices": []},
                 ],
             }],
         },

@@ -6,12 +6,12 @@
     {
       "node_id": "cottage_wake",
       "action_ref": "cottage_wake",
-      "choices": ["rest_longer", "look_around"]
+      "choices": ["rest_longer", "look_around", "make_tea", "pick_up_journal"]
     },
     {
       "node_id": "rest_longer",
       "action_ref": "rest_longer",
-      "choices": ["look_around"]
+      "choices": ["look_around", "make_tea", "pick_up_journal"]
     },
     {
       "node_id": "look_around",
@@ -21,7 +21,7 @@
     {
       "node_id": "make_tea",
       "action_ref": "make_tea",
-      "choices": ["look_around", "head_to_town"]
+      "choices": ["look_around", "pick_up_journal", "head_to_town"]
     },
     {
       "node_id": "pick_up_journal",

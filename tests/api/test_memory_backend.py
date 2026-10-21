@@ -92,3 +92,21 @@ def test_travel_walks_every_path_and_gives_the_kit_once(monkeypatch) -> None:
     assert state["inventory"]["bag"] == 1
     assert "walk_to_town" in offered
     assert not offered & {"look_around", "head_to_town"}
+
+
+def test_leaving_early_keeps_tea_and_the_journal_for_later(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+
+    client = TestClient(server)
+    session_id = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()["session_id"]
+    for action_id in ["look_around", "head_to_town", "wander_home"]:
+        response = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
+        assert response.status_code == 200, response.text
+
+    offered = {a["action_id"] for a in response.json()["view"]["eligible_actions"]}
+    assert {"make_tea", "pick_up_journal"} <= offered
