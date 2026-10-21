@@ -147,6 +147,41 @@ def test_every_sub_place_can_be_visited_and_left(monkeypatch) -> None:
             offered = take(way_back)
 
 
+def test_the_bakery_offers_a_cinnamon_roll_whenever_you_like(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+    from idle_chapters.content.repo import ContentRepo
+
+    client = TestClient(server)
+    actions = ContentRepo().actions_by_id
+    session_id = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()["session_id"]
+
+    def take(action_id: str) -> set[str]:
+        response = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
+        assert response.status_code == 200, response.text
+        assert actions[action_id]["result"] in response.json()["journal_page"]["body"]
+        return {a["action_id"] for a in response.json()["view"]["eligible_actions"]}
+
+    for action_id in ["look_around", "head_to_town"]:
+        take(action_id)
+    offered = take("visit_bakery")
+    for action_id, next_offer in [
+        ("enjoy_a_cinnamon_roll", "linger_at_the_counter"),
+        ("linger_at_the_counter", "enjoy_a_cinnamon_roll"),
+        ("enjoy_a_cinnamon_roll", "linger_at_the_counter"),
+    ]:
+        assert {action_id, "back_to_town_centre"} <= offered, offered
+        offered = take(action_id)
+        assert next_offer in offered, offered
+
+    state = client.get(f"/v1/sessions/{session_id}").json()["state"]
+    assert state["inventory"]["cinnamon_roll"] == 2
+
+
 def test_leaving_early_keeps_tea_and_the_journal_for_later(monkeypatch) -> None:
     from idle_chapters.persistence import mongo
 

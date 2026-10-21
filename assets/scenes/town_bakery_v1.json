@@ -1,0 +1,21 @@
+{
+  "scene_id": "town_bakery_v1",
+  "place_id": "town_bakery",
+  "entry_node": "linger_at_the_counter",
+  "nodes": [
+    {
+      "node_id": "linger_at_the_counter",
+      "action_ref": "linger_at_the_counter",
+      "choices": [
+        "enjoy_a_cinnamon_roll"
+      ]
+    },
+    {
+      "node_id": "enjoy_a_cinnamon_roll",
+      "action_ref": "enjoy_a_cinnamon_roll",
+      "choices": [
+        "linger_at_the_counter"
+      ]
+    }
+  ]
+}
