@@ -1,3 +1,5 @@
+import json
+
 from fastapi.testclient import TestClient
 
 
@@ -92,6 +94,57 @@ def test_travel_walks_every_path_and_gives_the_kit_once(monkeypatch) -> None:
     assert state["inventory"]["bag"] == 1
     assert "walk_to_town" in offered
     assert not offered & {"look_around", "head_to_town"}
+
+
+def test_every_sub_place_can_be_visited_and_left(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+
+    client = TestClient(server)
+    session_id = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()["session_id"]
+    results = {a["action_id"]: a["result"] for a in json.load(open("assets/actions.json"))["actions"]}
+    pages = []
+
+    def take(action_id: str) -> set[str]:
+        response = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
+        assert response.status_code == 200, response.text
+        pages.append(response.json()["journal_page"]["body"])
+        return {a["action_id"] for a in response.json()["view"]["eligible_actions"]}
+
+    def place() -> str:
+        return client.get(f"/v1/sessions/{session_id}").json()["state"]["current_place_id"]
+
+    take("look_around")
+    offered = take("head_to_town")
+    zones = [
+        ("town", None, None, "back_to_town_centre", {
+            "visit_bakery": "town_bakery", "visit_mercantile": "town_store", "visit_street_vendor": "town_vendor"}),
+        ("forest", "follow_forest_path", "back_into_town_from_forest", "back_to_forest", {
+            "walk_forest_trail": "forest_trail", "visit_tiny_castle": "forest_castle", "visit_waterfall": "forest_waterfall"}),
+        ("meadow", "walk_to_meadow", "back_into_town_from_meadow", "back_to_meadow", {
+            "walk_shepherds_path": "meadow_path", "stroll_up_the_hill": "meadow_hill", "visit_shrine": "meadow_shrine"}),
+        ("beach", "stroll_to_beach", "back_into_town_from_beach", "back_to_beach", {
+            "stroll_boardwalk": "beach_boardwalk", "visit_tidepools": "beach_tidepools", "walk_out_on_pier": "beach_pier"}),
+    ]
+    for root, way_out, way_back, back, sub_places in zones:
+        if way_out:
+            offered = take(way_out)
+        assert place() == root
+        assert back not in offered
+        for action_id, sub_place in sub_places.items():
+            assert action_id in offered, (action_id, offered)
+            offered = take(action_id)
+            assert place() == sub_place
+            assert results[action_id] in pages[-1], (action_id, pages[-1])
+            assert {back, "wander_home"} <= offered, offered
+            offered = take(back)
+            assert place() == root
+        if way_back:
+            offered = take(way_back)
 
 
 def test_leaving_early_keeps_tea_and_the_journal_for_later(monkeypatch) -> None:

@@ -314,3 +314,10 @@ def test_a_scene_opens_only_when_its_entry_action_may() -> None:
     for seed in range(8):
         assert engine.step(first, "enter", None, repo, seed=seed).new_state.current_scene_id == "s_wake"
         assert engine.step(back, "enter", None, repo, seed=seed).new_state.current_scene_id == "s_return"
+
+
+def test_arriving_at_a_threshold_is_told_as_a_walk_not_a_spell() -> None:
+    repo = SimpleNamespace(places_by_id={"falls": {"place_id": "falls", "is_threshold": True}})
+    at_falls = PlayerState(session_id="s", current_place_id="falls", inventory={}, flags=set(), time_tick=0)
+    assert Engine._infer_entry_type({"effects": {}}, at_falls, repo) == "spell"
+    assert Engine._infer_entry_type({"effects": {"move_to": "falls"}}, at_falls, repo) == "tea"

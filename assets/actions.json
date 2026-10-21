@@ -383,6 +383,339 @@
           "sit by the fire"
         ]
       }
+    },
+    {
+      "action_id": "visit_bakery",
+      "label": "Step into the bakery",
+      "when": {
+        "location": "town"
+      },
+      "effects": {
+        "move_to": "town_bakery"
+      },
+      "result": "Warm bread and cinnamon greet you at the door.",
+      "intent_signature": {
+        "keywords": [
+          "bakery",
+          "bread"
+        ],
+        "phrases": [
+          "step into the bakery",
+          "go to the bakery"
+        ]
+      }
+    },
+    {
+      "action_id": "visit_mercantile",
+      "label": "Browse the mercantile",
+      "when": {
+        "location": "town"
+      },
+      "effects": {
+        "move_to": "town_store"
+      },
+      "result": "Shelves of jars, twine and small useful things line the walls.",
+      "intent_signature": {
+        "keywords": [
+          "mercantile",
+          "store",
+          "shop"
+        ],
+        "phrases": [
+          "browse the mercantile",
+          "go to the store"
+        ]
+      }
+    },
+    {
+      "action_id": "visit_street_vendor",
+      "label": "Stop by the street vendor",
+      "when": {
+        "location": "town"
+      },
+      "effects": {
+        "move_to": "town_vendor"
+      },
+      "result": "A cheerful cart offers whatever is fresh today.",
+      "intent_signature": {
+        "keywords": [
+          "vendor",
+          "cart"
+        ],
+        "phrases": [
+          "stop by the street vendor",
+          "visit the vendor"
+        ]
+      }
+    },
+    {
+      "action_id": "walk_forest_trail",
+      "label": "Wander the trail",
+      "when": {
+        "location": "forest"
+      },
+      "effects": {
+        "move_to": "forest_trail"
+      },
+      "result": "The trail winds softly between mossy roots.",
+      "intent_signature": {
+        "keywords": [
+          "trail"
+        ],
+        "phrases": [
+          "wander the trail",
+          "walk the trail"
+        ]
+      }
+    },
+    {
+      "action_id": "visit_tiny_castle",
+      "label": "Visit the tiny castle",
+      "when": {
+        "location": "forest"
+      },
+      "effects": {
+        "move_to": "forest_castle"
+      },
+      "result": "A castle no taller than your knee sits among the ferns, as if it has always been there.",
+      "intent_signature": {
+        "keywords": [
+          "castle"
+        ],
+        "phrases": [
+          "visit the tiny castle",
+          "go to the castle"
+        ]
+      }
+    },
+    {
+      "action_id": "visit_waterfall",
+      "label": "Follow the sound of the waterfall",
+      "when": {
+        "location": "forest"
+      },
+      "effects": {
+        "move_to": "forest_waterfall"
+      },
+      "result": "Cool spray drifts from a waterfall tumbling into a clear pool.",
+      "intent_signature": {
+        "keywords": [
+          "waterfall"
+        ],
+        "phrases": [
+          "follow the sound of the waterfall",
+          "go to the waterfall"
+        ]
+      }
+    },
+    {
+      "action_id": "walk_shepherds_path",
+      "label": "Take the shepherd's path",
+      "when": {
+        "location": "meadow"
+      },
+      "effects": {
+        "move_to": "meadow_path"
+      },
+      "result": "A worn path curves gently through the grass.",
+      "intent_signature": {
+        "keywords": [
+          "path",
+          "shepherd"
+        ],
+        "phrases": [
+          "take the shepherd's path",
+          "walk the path"
+        ]
+      }
+    },
+    {
+      "action_id": "stroll_up_the_hill",
+      "label": "Stroll up the hill",
+      "when": {
+        "location": "meadow"
+      },
+      "effects": {
+        "move_to": "meadow_hill"
+      },
+      "result": "At the top, the whole valley rests quietly below you.",
+      "intent_signature": {
+        "keywords": [
+          "hill"
+        ],
+        "phrases": [
+          "stroll up the hill",
+          "climb the hill"
+        ]
+      }
+    },
+    {
+      "action_id": "visit_shrine",
+      "label": "Visit the shrine",
+      "when": {
+        "location": "meadow"
+      },
+      "effects": {
+        "move_to": "meadow_shrine"
+      },
+      "result": "A small stone shrine waits beneath the trees, quiet and kind.",
+      "intent_signature": {
+        "keywords": [
+          "shrine"
+        ],
+        "phrases": [
+          "visit the shrine",
+          "go to the shrine"
+        ]
+      }
+    },
+    {
+      "action_id": "stroll_boardwalk",
+      "label": "Stroll the boardwalk",
+      "when": {
+        "location": "beach"
+      },
+      "effects": {
+        "move_to": "beach_boardwalk"
+      },
+      "result": "Sun-warmed boards creak softly underfoot.",
+      "intent_signature": {
+        "keywords": [
+          "boardwalk"
+        ],
+        "phrases": [
+          "stroll the boardwalk",
+          "walk the boardwalk"
+        ]
+      }
+    },
+    {
+      "action_id": "visit_tidepools",
+      "label": "Peer into the tidepools",
+      "when": {
+        "location": "beach"
+      },
+      "effects": {
+        "move_to": "beach_tidepools"
+      },
+      "result": "Tiny creatures go about their slow, bright business in the pools.",
+      "intent_signature": {
+        "keywords": [
+          "tidepools",
+          "pools"
+        ],
+        "phrases": [
+          "peer into the tidepools",
+          "visit the tidepools"
+        ]
+      }
+    },
+    {
+      "action_id": "walk_out_on_pier",
+      "label": "Walk out on the pier",
+      "when": {
+        "location": "beach"
+      },
+      "effects": {
+        "move_to": "beach_pier"
+      },
+      "result": "The pier stretches over the water, and gulls drift overhead.",
+      "intent_signature": {
+        "keywords": [
+          "pier"
+        ],
+        "phrases": [
+          "walk out on the pier",
+          "go to the pier"
+        ]
+      }
+    },
+    {
+      "action_id": "back_to_town_centre",
+      "label": "Wander back to the town centre",
+      "when": {
+        "zone": "town"
+      },
+      "effects": {
+        "move_to": "town"
+      },
+      "result": "The street opens out into the heart of town again.",
+      "intent_signature": {
+        "keywords": [
+          "town",
+          "centre",
+          "back"
+        ],
+        "phrases": [
+          "back to the town centre",
+          "wander back to town"
+        ]
+      }
+    },
+    {
+      "action_id": "back_to_forest",
+      "label": "Wander back through the trees",
+      "when": {
+        "zone": "forest"
+      },
+      "effects": {
+        "move_to": "forest"
+      },
+      "result": "The trees part, and you find the main path again.",
+      "intent_signature": {
+        "keywords": [
+          "forest",
+          "trees",
+          "back"
+        ],
+        "phrases": [
+          "wander back through the trees",
+          "back to the forest"
+        ]
+      }
+    },
+    {
+      "action_id": "back_to_meadow",
+      "label": "Wander back across the meadow",
+      "when": {
+        "zone": "meadow"
+      },
+      "effects": {
+        "move_to": "meadow"
+      },
+      "result": "The grass sways as you make your way back.",
+      "intent_signature": {
+        "keywords": [
+          "meadow",
+          "back"
+        ],
+        "phrases": [
+          "wander back across the meadow",
+          "back to the meadow"
+        ]
+      }
+    },
+    {
+      "action_id": "back_to_beach",
+      "label": "Wander back along the sand",
+      "when": {
+        "zone": "beach"
+      },
+      "effects": {
+        "move_to": "beach"
+      },
+      "result": "Your footprints lead you gently back along the shore.",
+      "intent_signature": {
+        "keywords": [
+          "beach",
+          "sand",
+          "back"
+        ],
+        "phrases": [
+          "wander back along the sand",
+          "back to the beach"
+        ]
+      }
     }
   ]
 }
