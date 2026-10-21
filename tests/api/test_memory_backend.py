@@ -32,3 +32,25 @@ def test_real_app_defaults_to_developer_projection(monkeypatch) -> None:
     body = TestClient(create_app()).get("/v1/sessions/nonexistent").json()
     for member in ("detail", "effect", "recovery", "signal"):
         assert member in body, body
+
+
+def test_broken_content_fails_health_and_is_never_cached(monkeypatch) -> None:
+    from idle_chapters.api import deps
+    from idle_chapters.content import repo as content_repo
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+    monkeypatch.setattr(deps, "_CONTENT_REPO", None)
+
+    broken = content_repo.ContentRepo()
+    broken.npcs_by_id["ghost"] = {"npc_id": "ghost", "home_location_id": "nowhere_place"}
+    monkeypatch.setattr(content_repo, "ContentRepo", lambda: broken)
+
+    from idle_chapters.api.server import create_app
+
+    res = TestClient(create_app()).get("/health")
+    assert res.status_code == 500, res.text
+    assert res.json()["type"].endswith("engine_failure")
+    assert "nowhere_place" in res.json()["detail"]
+    assert deps._CONTENT_REPO is None
