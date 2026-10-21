@@ -1475,6 +1475,18 @@
           "view": {
             "$ref": "#/components/schemas/ViewModel"
           },
+          "journal_page": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Journal Page"
+          },
           "state": {
             "anyOf": [
               {

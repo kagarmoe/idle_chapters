@@ -41,6 +41,7 @@ export interface SessionCreateResponse {
 export interface SessionGetResponse {
 	session_id: string;
 	view: ViewModel;
+	journal_page: Record<string, unknown> | null;
 	state: Record<string, unknown> | null;
 }
 

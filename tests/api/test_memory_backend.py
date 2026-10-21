@@ -32,3 +32,21 @@ def test_real_app_defaults_to_developer_projection(monkeypatch) -> None:
     body = TestClient(create_app()).get("/v1/sessions/nonexistent").json()
     for member in ("detail", "effect", "recovery", "signal"):
         assert member in body, body
+
+
+def test_get_session_resumes_the_view_it_left(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+
+    client = TestClient(server)
+    created = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()
+    assert created["view"]["eligible_actions"]
+
+    resumed = client.get(f"/v1/sessions/{created['session_id']}")
+    assert resumed.status_code == 200, resumed.text
+    assert resumed.json()["view"]["eligible_actions"] == created["view"]["eligible_actions"]
+    assert resumed.json()["journal_page"] == created["journal_page"]

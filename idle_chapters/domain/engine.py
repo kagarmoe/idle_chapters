@@ -131,6 +131,21 @@ class Engine:
             debug={"seed": seed, "choice_id": choice_id},
         )
 
+    def choices_at(self, state: PlayerState, repo) -> list[dict] | None:
+        """Choices at the saved node, or None when it is not an authored node."""
+        scene = next(
+            (s for s in repo.scenes_by_place_id.get(state.current_place_id, [])
+             if s.get("scene_id") == state.current_scene_id),
+            None,
+        )
+        if not scene or not state.current_node_id:
+            return None
+        nodes_by_id = {n["node_id"]: n for n in scene.get("nodes", [])}
+        node = nodes_by_id.get(state.current_node_id)
+        if node is None:
+            return None
+        return self._choices_from_node(node, nodes_by_id, state, repo)
+
     def _find_current_scene(self, state: PlayerState, repo) -> dict | None:
         scenes = repo.scenes_by_place_id.get(state.current_place_id, [])
         if state.current_scene_id:

@@ -122,12 +122,12 @@ def get_session(
     session_id: str,
     service: SessionService = Depends(get_session_service),
 ) -> SessionGetResponse:
-    state = service.get_session(session_id)
-    if state is None:
-        _raise_session_not_found(session_id)
+    result = service.resume(session_id)
+    state = result.new_state
     return SessionGetResponse(
         session_id=session_id,
-        view=ViewModel(),
+        view=_view_from_result(result),
+        journal_page=result.journal_page,
         state={
             "current_place_id": state.current_place_id,
             "inventory": state.inventory,

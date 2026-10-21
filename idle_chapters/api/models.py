@@ -98,6 +98,7 @@ class SessionGetResponse(BaseModel):
 
     session_id: str
     view: ViewModel
+    journal_page: dict | None = None
     state: dict | None = None
 
 
