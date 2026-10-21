@@ -127,3 +127,24 @@ def test_look_around_waits_after_tea_and_the_journal(monkeypatch) -> None:
         assert response.status_code == 200, response.text
 
     assert "look_around" in {a["action_id"] for a in response.json()["view"]["eligible_actions"]}
+
+
+def test_docs_mark_the_projection_the_server_defaults_to() -> None:
+    from idle_chapters.api.server import create_app
+
+    summaries = []
+
+    def walk(node) -> None:
+        if isinstance(node, dict):
+            if isinstance(node.get("summary"), str) and "projection" in node["summary"].lower():
+                summaries.append(node["summary"])
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+
+    walk(create_app().openapi())
+    defaults = [s for s in summaries if "(default)" in s]
+    assert defaults
+    assert all(s.startswith("Developer") for s in defaults), defaults

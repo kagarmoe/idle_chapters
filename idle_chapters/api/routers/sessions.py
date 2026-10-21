@@ -170,9 +170,9 @@ curl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/
   -d '{"action_id": "rest_longer"}'
 ```
 
-To see developer error details, add the projection header:
+Errors carry developer detail by default. To get the player's wording instead, add the projection header:
 ```bash
-curl -H "Accept-Projection: developer" http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action ...
+curl -H "Accept-Projection: player" http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action ...
 ```
 """,
 )

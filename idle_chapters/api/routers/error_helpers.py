@@ -56,11 +56,11 @@ SESSION_NOT_FOUND_RESPONSES = {
             "application/json": {
                 "examples": {
                     "player": {
-                        "summary": "Player projection (default)",
+                        "summary": "Player projection (Accept-Projection: player)",
                         "value": _SESSION_NOT_FOUND_PLAYER_EXAMPLE["value"],
                     },
                     "developer": {
-                        "summary": "Developer projection (Accept-Projection: developer)",
+                        "summary": "Developer projection (default)",
                         "value": _SESSION_NOT_FOUND_DEVELOPER_EXAMPLE["value"],
                     },
                 },
@@ -76,7 +76,7 @@ ACTION_NOT_ELIGIBLE_RESPONSES = {
             "application/json": {
                 "examples": {
                     "player": {
-                        "summary": "Player projection (default)",
+                        "summary": "Player projection (Accept-Projection: player)",
                         "value": {
                             "type": "urn:idle-chapters:error:action_not_eligible",
                             "title": "That doesn't seem possible right now. Maybe explore a bit more first.",
@@ -84,7 +84,7 @@ ACTION_NOT_ELIGIBLE_RESPONSES = {
                         },
                     },
                     "developer": {
-                        "summary": "Developer projection (Accept-Projection: developer)",
+                        "summary": "Developer projection (default)",
                         "value": {
                             "type": "urn:idle-chapters:error:action_not_eligible",
                             "title": "Action Not Eligible",
@@ -110,7 +110,7 @@ INTENT_NO_MATCH_RESPONSES = {
             "application/json": {
                 "examples": {
                     "player": {
-                        "summary": "Player projection (default)",
+                        "summary": "Player projection (Accept-Projection: player)",
                         "value": {
                             "type": "urn:idle-chapters:error:intent_no_match",
                             "title": "Hmm, I'm not sure what you mean by \"fly away\". These are the things you could do here: Rest a bit longer, Wake in the cottage.",
@@ -118,7 +118,7 @@ INTENT_NO_MATCH_RESPONSES = {
                         },
                     },
                     "developer": {
-                        "summary": "Developer projection (Accept-Projection: developer)",
+                        "summary": "Developer projection (default)",
                         "value": {
                             "type": "urn:idle-chapters:error:intent_no_match",
                             "title": "Intent No Match",
@@ -144,7 +144,7 @@ PLAYER_NOT_FOUND_RESPONSES = {
             "application/json": {
                 "examples": {
                     "player": {
-                        "summary": "Player projection (default)",
+                        "summary": "Player projection (Accept-Projection: player)",
                         "value": {
                             "type": "urn:idle-chapters:error:player_not_found",
                             "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
@@ -152,7 +152,7 @@ PLAYER_NOT_FOUND_RESPONSES = {
                         },
                     },
                     "developer": {
-                        "summary": "Developer projection (Accept-Projection: developer)",
+                        "summary": "Developer projection (default)",
                         "value": {
                             "type": "urn:idle-chapters:error:player_not_found",
                             "title": "Player Not Found",
