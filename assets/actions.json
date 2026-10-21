@@ -4,7 +4,10 @@
       "action_id": "cottage_wake",
       "label": "Wake in the cottage",
       "when": {
-        "location": "cottage_home"
+        "location": "cottage_home",
+        "flags_not_set": [
+          "left_cottage_first"
+        ]
       },
       "result": "The cottage rests in a quiet countryside, with a thatched roof, whitewashed walls, and a garden of cheerful blooms. Inside, a soft fire glows, wood furniture adds warmth, and small, familiar details make the space feel lived-in. You wake here, calm and well-rested, with time to ease into the day.",
       "intent_signature": {
@@ -48,7 +51,7 @@
           "looked_around"
         ]
       },
-      "result": "You rise from the bed and take in the cottage's cozy glow. Outside, the garden brightens with color and soft birdsong. The air feels fresh and welcoming, and you take a moment to enjoy the simple calm before choosing what comes next.",
+      "result": "You take in the cottage's cozy glow. Outside, the garden brightens with color and soft birdsong. The air feels fresh and welcoming, and you take a moment to enjoy the simple calm before choosing what comes next.",
       "intent_signature": {
         "keywords": [
           "look",
@@ -81,7 +84,7 @@
           "made_tea"
         ]
       },
-      "result": "You fill the kettle and set it on to warm. While it hums, you choose your tea, set out a favorite cup, and let the morning settle around you. When the water is ready, you pour slowly and watch the steam curl up, soft and fragrant. You take your time with the first sip, hands wrapped around the warmth, and let the quiet of the cottage keep you company.",
+      "result": "You fill the kettle and set it on to warm. While it hums, you choose your tea, set out a favorite cup, and let the day settle around you. When the water is ready, you pour slowly and watch the steam curl up, soft and fragrant. You take your time with the first sip, hands wrapped around the warmth, and let the quiet of the cottage keep you company.",
       "intent_signature": {
         "keywords": [
           "tea",
@@ -335,6 +338,49 @@
         "phrases": [
           "head back into town",
           "back to town"
+        ]
+      }
+    },
+    {
+      "action_id": "settle_in",
+      "label": "Settle in at home",
+      "when": {
+        "location": "cottage_home",
+        "flags_set": [
+          "left_cottage_first"
+        ]
+      },
+      "effects": {},
+      "result": "You ease the door shut behind you. The cottage is just as you left it, quiet and warm, and there is nowhere else you need to be.",
+      "intent_signature": {
+        "keywords": [
+          "settle",
+          "home"
+        ],
+        "phrases": [
+          "settle in"
+        ]
+      }
+    },
+    {
+      "action_id": "sit_by_the_fire",
+      "label": "Sit by the fire",
+      "when": {
+        "location": "cottage_home",
+        "flags_set": [
+          "left_cottage_first"
+        ]
+      },
+      "effects": {},
+      "result": "You sink into the chair by the fire and let its warmth find your hands. There is nothing to do just now, and that is enough.",
+      "intent_signature": {
+        "keywords": [
+          "sit",
+          "fire",
+          "rest"
+        ],
+        "phrases": [
+          "sit by the fire"
         ]
       }
     }

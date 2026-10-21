@@ -148,3 +148,31 @@ def test_docs_mark_the_projection_the_server_defaults_to() -> None:
     defaults = [s for s in summaries if "(default)" in s]
     assert defaults
     assert all(s.startswith("Developer") for s in defaults), defaults
+
+
+def test_coming_home_settles_in_rather_than_waking_again(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+
+    client = TestClient(server)
+    created = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()
+    session_id = created["session_id"]
+    assert created["view"]["scene_id"] == "cottage_wake_v1"
+
+    def take(action_id: str) -> dict:
+        response = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
+        assert response.status_code == 200, response.text
+        return response.json()["view"]
+
+    take("head_to_town")
+    home = take("wander_home")
+    assert home["scene_id"] == "cottage_home_return_v1"
+    assert "sit_by_the_fire" in {a["action_id"] for a in home["eligible_actions"]}
+
+    entered = client.post(f"/v1/sessions/{session_id}/enter").json()["view"]
+    assert "You ease the door shut behind you." in entered["prompt"]
+    assert "bed" not in take("look_around")["prompt"]

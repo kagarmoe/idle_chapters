@@ -16,7 +16,7 @@ doc as `2026-10-21-feature-inventory.md`). Ordering rules, in order:
 |---|---|---|---|---|
 | 1 | Splash menu never appears (New Game unreachable on the web) | F44 | S | Blocks all web play |
 | 2 | Continue shows an empty scene | F30, F44 | S | `GET /sessions/{id}` returns an empty view; resume must re-render the current node |
-| 3 | Travel: leave the cottage, reach town and the other zones | F21, F06 | M | Done for zone roots (ic-5). Follow-ups: sub-places, cottage homecoming scene |
+| 3 | Travel: leave the cottage, reach town and the other zones | F21, F06 | M | Done for zone roots (ic-5); coming home settles in (ic-13; its page shows on enter, which the web client does not call yet). Follow-up: sub-places (ic-12) |
 | 4 | Pin the API's projection default (re-scoped) | F39 | S | Developer stays the default, by the author's choice (commit 1bc483c: the API serves developers, the frontend serves players). Existing tests cover both headers on the real app; nothing pinned the omitted-header default, so a test now does. The web client's player header is still untested |
 | 5 | Deterministic scenes: seed from session + state | F34, F20 | S | Reconnect re-rolls the scene; `result_variants` unpicked |
 | 6 | Visit counts update (done, ic-4: arrivals, not refreshes) | F19 | S | Seen interactions moved to #8, since nothing performs interactions yet |

@@ -1,50 +1,49 @@
-# Cottage scene graph (first wake)
+# Cottage scene graphs
 
-## Node: `cottage_wake`
-- **Prompt**: waking text
-- **Choices**:
-  - `rest_longer`
-  - `look_around`
+Two authored scenes live at `cottage_home`. A scene opens when its entry node's
+action passes its `when` (the scene schema has no `when` of its own), and the two
+entry actions gate on opposite sides of `left_cottage_first`, so exactly one is
+open at a time.
 
-## Node: `rest_longer`
-- **Prompt/Result**: lingering/rest text
-- **Choices**:
-  - `look_around`
+After every step the engine also offers each eligible path (an action with
+`effects.move_to`) after the scene's own choices, so a way out of the cottage is
+always on offer.
 
-## Node: `look_around`
-- **Prompt/Result**: cottage overview
-- **Effects**:
-  - add items: `bag`, `water_bottle`, `water`, `mirror`
-- **Choices**:
-  - `make_tea` (if not already done)
-  - `pick_up_journal` (if not already done)
-  - `head_to_town`
+## First morning: `cottage_wake_v1`
 
-## Node: `make_tea`
-- **Prompt/Result**: tea ritual text (and recipe rendering)
-- **Effects**:
-  - add items: `chamomile_flower`, `black_tea`, `biscuits`
-  - set flag: `made_tea`
-- **Choices**:
-  - `look_around`
-  - `head_to_town`
+Opens while `left_cottage_first` is not set.
 
-## Node: `pick_up_journal`
-- **Prompt/Result**: journal description
-- **Effects**:
-  - add item: `journal`
-  - set flag: `journal_available`
-- **Choices**:
-  - `make_tea` (if not already done)
-  - `head_to_town`
+| Node | Choices |
+|---|---|
+| `cottage_wake` (entry) | `rest_longer`, `look_around`, `make_tea`, `pick_up_journal` |
+| `rest_longer` | `look_around`, `make_tea`, `pick_up_journal` |
+| `look_around` | `make_tea`, `pick_up_journal`, `head_to_town` |
+| `make_tea` | `look_around`, `pick_up_journal`, `head_to_town` |
+| `pick_up_journal` | `look_around`, `make_tea`, `head_to_town` |
+| `head_to_town` | (none; it is a path to `town`) |
 
-## Node: `head_to_town`
-- **Prompt/Result**: leaving text
-- **Effects** (catch‑all, no penalty):
-  - add items: `journal`, `bag`, `water_bottle`, `water`, `mirror`, `chamomile_flower`, `black_tea`, `biscuits`
-  - set flag: `left_cottage_once`
+## Coming home: `cottage_home_return_v1`
 
-## Gating / Eligibility (engine)
-- `make_tea`: eligible when `made_tea` flag is not set.
-- `pick_up_journal`: eligible when `journal_available` flag is not set.
-- `head_to_town`: always eligible; adds missing items idempotently.
+Opens once `left_cottage_first` is set.
+
+| Node | Choices |
+|---|---|
+| `settle_in` (entry) | `sit_by_the_fire`, `look_around`, `make_tea`, `pick_up_journal` |
+| each of those four | the other three |
+
+Arriving by a path shows the path's own journal page. The `settle_in` page shows
+on the next enter (`POST /v1/sessions/{id}/enter`); the web client does not call
+enter yet, so web players see the scene's choices but not its text until resume
+re-renders the current node (priorities row 2).
+
+## Once-only actions
+
+Each starting item comes from exactly one action, once:
+
+- `look_around`: `bag`, `water_bottle`, `water`, `mirror`; sets `looked_around`.
+- `make_tea`: `chamomile_flowers`, `black_tea`, `biscuits`; sets `made_tea`.
+- `pick_up_journal`: `journal`; sets `journal_available`.
+- `head_to_town`: no items; moves to `town` and sets `left_cottage_first`. After that, `walk_to_town` is the way into town.
+
+A choice whose flag is already set is not offered, so leaving early never closes
+anything off: the cottage offers what is left whenever you come home.
