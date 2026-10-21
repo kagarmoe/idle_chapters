@@ -1,0 +1,53 @@
+{
+  "scene_id": "cottage_home_return_v1",
+  "place_id": "cottage_home",
+  "entry_node": "settle_in",
+  "nodes": [
+    {
+      "node_id": "settle_in",
+      "action_ref": "settle_in",
+      "choices": [
+        "sit_by_the_fire",
+        "look_around",
+        "make_tea",
+        "pick_up_journal"
+      ]
+    },
+    {
+      "node_id": "sit_by_the_fire",
+      "action_ref": "sit_by_the_fire",
+      "choices": [
+        "look_around",
+        "make_tea",
+        "pick_up_journal"
+      ]
+    },
+    {
+      "node_id": "look_around",
+      "action_ref": "look_around",
+      "choices": [
+        "sit_by_the_fire",
+        "make_tea",
+        "pick_up_journal"
+      ]
+    },
+    {
+      "node_id": "make_tea",
+      "action_ref": "make_tea",
+      "choices": [
+        "sit_by_the_fire",
+        "look_around",
+        "pick_up_journal"
+      ]
+    },
+    {
+      "node_id": "pick_up_journal",
+      "action_ref": "pick_up_journal",
+      "choices": [
+        "sit_by_the_fire",
+        "look_around",
+        "make_tea"
+      ]
+    }
+  ]
+}

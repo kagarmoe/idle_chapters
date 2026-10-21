@@ -286,3 +286,31 @@ def test_a_path_whose_when_fails_is_refused() -> None:
 
     with pytest.raises(ActionNotEligible):
         engine.step(home, "choose option", "locked", repo, seed=1)
+
+
+def test_a_scene_opens_only_when_its_entry_action_may() -> None:
+    template = {"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["What happened."], "tags": []}
+
+    def scene(scene_id: str, entry: str) -> dict:
+        return {"scene_id": scene_id, "place_id": "home", "entry_node": entry, "nodes": [{"node_id": entry, "action_ref": entry, "choices": []}]}
+
+    repo = SimpleNamespace(
+        places_by_id={"home": {"place_id": "home", "zone_id": "cottage"}},
+        scenes_by_place_id={"home": [scene("s_wake", "wake"), scene("s_return", "settle")]},
+        actions_by_id={
+            "wake": {"action_id": "wake", "when": {"flags_not_set": ["left"]}},
+            "settle": {"action_id": "settle", "when": {"flags_set": ["left"]}},
+        },
+        journal_templates_by_entry_type={"tea": [template]},
+        journal_templates_by_id={"t1": template},
+        lexicon_by_key={},
+        collectibles_by_id={},
+        ingredient_substitutions_by_token={},
+    )
+    engine = Engine()
+    first = PlayerState(session_id="s", current_place_id="home", inventory={}, flags=set(), time_tick=0)
+    back = PlayerState(session_id="s", current_place_id="home", inventory={}, flags={"left"}, time_tick=0)
+
+    for seed in range(8):
+        assert engine.step(first, "enter", None, repo, seed=seed).new_state.current_scene_id == "s_wake"
+        assert engine.step(back, "enter", None, repo, seed=seed).new_state.current_scene_id == "s_return"

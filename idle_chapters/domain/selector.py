@@ -23,8 +23,16 @@ def merge_with_authored(candidates: Iterable[dict], authored: Iterable[dict]) ->
 
 
 def eligible_scenes(state, repo) -> list[dict]:
-    """Get scenes eligible for the current place."""
-    return list(repo.scenes_by_place_id.get(state.current_place_id, []))
+    """Scenes at the current place whose entry action may happen now."""
+    from idle_chapters.domain.conditions import evaluate_conditions
+
+    def opens(scene: dict) -> bool:
+        # The scene schema has no `when`; a scene is gated by its entry node's action instead.
+        entry = next((n for n in scene.get("nodes", []) if n.get("node_id") == scene.get("entry_node")), {})
+        action = repo.actions_by_id.get(entry.get("action_ref"))
+        return action is None or evaluate_conditions(state, action.get("when"), repo)
+
+    return [s for s in repo.scenes_by_place_id.get(state.current_place_id, []) if opens(s)]
 
 
 def eligible_actions(state, repo) -> list[dict]:
