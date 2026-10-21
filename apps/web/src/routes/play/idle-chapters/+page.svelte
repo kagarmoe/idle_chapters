@@ -51,9 +51,17 @@
 		try {
 			const res = await sessions.get(savedId);
 			sessionId = res.session_id;
-			view = res.view;
-			journalPage = null;
-			choices = res.view.eligible_actions;
+			if (res.view.eligible_actions.length > 0) {
+				view = res.view;
+				journalPage = res.journal_page;
+				choices = res.view.eligible_actions;
+			} else {
+				// shortcut: procedural scenes and dead-end nodes save no choices, so Continue re-enters (new roll, new page) until they do
+				const step = await sessions.enter(savedId);
+				view = step.view;
+				journalPage = step.journal_page;
+				choices = step.choices.length > 0 ? step.choices : step.view.eligible_actions;
+			}
 			typewriterDone = false;
 			screen = 'playing';
 		} catch (err) {

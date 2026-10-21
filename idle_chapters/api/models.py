@@ -82,11 +82,27 @@ class SessionGetResponse(BaseModel):
     model_config = ConfigDict(json_schema_extra={"example": {
         "session_id": "a1b2c3d4e5f67890abcdef1234567890",
         "view": {
-            "prompt": None,
-            "scene_id": None,
-            "eligible_actions": [],
+            "prompt": "You wake slowly in your cottage. Morning light rests on the quilt.",
+            "scene_id": "cottage_wake_v1",
+            "eligible_actions": [
+                {"action_id": "rest_longer", "label": "Rest a bit longer"},
+                {"action_id": "look_around", "label": "Look around"},
+                {"action_id": "head_to_town", "label": "Head to town for a snack"},
+            ],
             "visible_items": [],
             "visible_npcs": [],
+        },
+        "journal_page": {
+            "page_id": "jp-a1b2c3",
+            "date": "2026-04-04",
+            "place_id": "cottage_home",
+            "entry_type": "tea",
+            "mood": "Home",
+            "need": "Permission to rest and recover",
+            "ingredients": ["chamomile", "lavender"],
+            "prompt": "What softened today? What can wait until tomorrow?",
+            "body": "You wake slowly in your cottage. Morning light rests on the quilt.",
+            "tags": [],
         },
         "state": {
             "current_place_id": "cottage_home",
@@ -98,6 +114,7 @@ class SessionGetResponse(BaseModel):
 
     session_id: str
     view: ViewModel
+    journal_page: dict | None = None
     state: dict | None = None
 
 

@@ -422,3 +422,43 @@ def test_http_state_persists_across_calls(client) -> None:
     state_response = client.get(f"/v1/sessions/{session_id}")
     assert state_response.status_code == 200
     assert state_response.json()["session_id"] == session_id
+
+
+def _store_snapshot(stores, session_id):
+    import copy
+
+    state_store, journal_store, event_store = stores
+    return copy.deepcopy((
+        state_store.get_state(session_id),
+        journal_store.list_pages(session_id),
+        event_store.list_events(session_id),
+    ))
+
+
+def test_resume_returns_current_node_and_last_page_without_writing(service, stores) -> None:
+    session_id, created = service.create_session()
+    assert created.choices
+    before = _store_snapshot(stores, session_id)
+
+    resumed = service.resume(session_id)
+
+    assert resumed.choices == created.choices
+    assert resumed.journal_page["body"] == created.journal_page["body"]
+    assert _store_snapshot(stores, session_id) == before
+
+
+def test_resume_without_an_authored_node_returns_no_choices_and_writes_nothing(service, stores) -> None:
+    from dataclasses import replace
+
+    session_id, _ = service.create_session()
+    state_store = stores[0]
+    state_store.upsert_state(session_id, replace(state_store.get_state(session_id), current_node_id=None))
+    before = _store_snapshot(stores, session_id)
+
+    resumed = service.resume(session_id)
+
+    assert resumed.choices == []
+    assert resumed.journal_page is not None
+    assert _store_snapshot(stores, session_id) == before
+
+

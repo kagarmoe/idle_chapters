@@ -264,3 +264,21 @@ def test_coming_home_settles_in_rather_than_waking_again(monkeypatch) -> None:
     entered = client.post(f"/v1/sessions/{session_id}/enter").json()["view"]
     assert "You ease the door shut behind you." in entered["prompt"]
     assert "bed" not in take("look_around")["prompt"]
+
+
+def test_get_session_resumes_the_view_it_left(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+
+    client = TestClient(server)
+    created = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()
+    assert created["view"]["eligible_actions"]
+
+    resumed = client.get(f"/v1/sessions/{created['session_id']}")
+    assert resumed.status_code == 200, resumed.text
+    assert resumed.json()["view"]["eligible_actions"] == created["view"]["eligible_actions"]
+    assert resumed.json()["journal_page"] == created["journal_page"]
