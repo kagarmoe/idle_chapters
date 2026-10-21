@@ -8,6 +8,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 
+from idle_chapters.api.deps import get_content_repo
 from idle_chapters.api.routers import journal, players, sessions, world
 from idle_chapters.services.errors import GameError
 
@@ -55,6 +56,7 @@ def create_app() -> FastAPI:
 
     @app.get("/health")
     def health() -> dict:
+        get_content_repo()
         return {"status": "ok"}
 
     return app

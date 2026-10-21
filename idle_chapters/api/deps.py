@@ -4,6 +4,7 @@ from pymongo.database import Database
 
 from idle_chapters.api.db import get_db as _get_db
 from idle_chapters.domain.engine import Engine
+from idle_chapters.services.errors import Effect, ErrorKind, GameError, Recovery
 from idle_chapters.services.session_service import SessionService
 
 
@@ -15,8 +16,23 @@ def get_content_repo():
     global _CONTENT_REPO
     if _CONTENT_REPO is None:
         from idle_chapters.content.repo import ContentRepo
+        from idle_chapters.content.validators import validate_cross_file_integrity
 
-        _CONTENT_REPO = ContentRepo()
+        repo = ContentRepo()
+        try:
+            validate_cross_file_integrity(repo)
+        except ValueError as exc:
+            raise GameError(
+                kind=ErrorKind.ENGINE_FAILURE,
+                effect=Effect.NONE,
+                recovery=Recovery.ESCALATE,
+                detail=(
+                    f"WHAT: Content failed cross-file integrity: {exc}\n"
+                    f"MEANS: Nothing was modified; no request can be served until content is fixed.\n"
+                    f"DO: Fix the dangling reference in assets/ and redeploy."
+                ),
+            ) from exc
+        _CONTENT_REPO = repo
     return _CONTENT_REPO
 
 
