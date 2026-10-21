@@ -67,6 +67,8 @@ Full RFC 9457 response with extension members. Includes a three-panel detail mes
 
 Plus a signal word (DANGER, WARNING, CAUTION, NOTICE) derived from effect and recovery, so severity is visible at a glance.
 
+**Choosing a projection over HTTP.** The API returns the developer projection unless the request sends `Accept-Projection: player`: the API serves developers, the frontend serves players. The web client sends that header on every request (`apps/web/src/lib/api.ts`), and it is the only thing keeping developer titles away from players; no test covers it yet.
+
 **CLI projection** — "What does the player see in the terminal?"
 
 Reuses the player templates, formatted for terminal output. In verbose mode (`-v` / `--verbose`), prepends the Z535 signal word and renders the three-panel detail to stderr. This is the projection Phase C (beads issue `chapters-vxv`) implemented, in `idle_chapters/ui/errors.py`.
