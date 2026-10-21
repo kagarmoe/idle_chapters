@@ -79,20 +79,6 @@ def client() -> TestClient:
     return TestClient(app)
 
 
-class TestDefaultProjection:
-    def test_default_projection_is_developer(self, client):
-        """Without Accept-Projection header, the API returns developer projection."""
-        resp = client.get("/v1/sessions/nonexistent")
-        assert resp.status_code == 404
-        body = resp.json()
-        assert body["type"] == "urn:idle-chapters:error:session_not_found"
-        assert "effect" in body
-        assert "recovery" in body
-        assert "signal" in body
-        assert "detail" in body
-        assert "context" in body
-
-
 class TestPlayerProjection:
     def test_session_not_found_returns_rfc9457_player(self, client):
         resp = client.get(

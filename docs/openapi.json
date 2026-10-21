@@ -241,7 +241,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:player_not_found",
                       "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
@@ -249,7 +249,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:player_not_found",
                       "title": "Player Not Found",
@@ -324,7 +324,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:player_not_found",
                       "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
@@ -332,7 +332,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:player_not_found",
                       "title": "Player Not Found",
@@ -441,7 +441,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
@@ -449,7 +449,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "Session Not Found",
@@ -517,7 +517,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
@@ -525,7 +525,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "Session Not Found",
@@ -563,7 +563,7 @@
           "sessions"
         ],
         "summary": "Submit Action",
-        "description": "Execute a chosen action in the current scene.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"action_id\": \"rest_longer\"}'\n```\n\nTo see developer error details, add the projection header:\n```bash\ncurl -H \"Accept-Projection: developer\" http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action ...\n```",
+        "description": "Execute a chosen action in the current scene.\n\n**curl:**\n```bash\ncurl -X POST http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"action_id\": \"rest_longer\"}'\n```\n\nErrors carry developer detail by default. To get the player's wording instead, add the projection header:\n```bash\ncurl -H \"Accept-Projection: player\" http://localhost:8000/v1/sessions/a1b2c3d4e5f67890abcdef1234567890/action ...\n```",
         "operationId": "submit_action_v1_sessions__session_id__action_post",
         "parameters": [
           {
@@ -603,7 +603,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
@@ -611,7 +611,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "Session Not Found",
@@ -636,7 +636,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:action_not_eligible",
                       "title": "That doesn't seem possible right now. Maybe explore a bit more first.",
@@ -644,7 +644,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:action_not_eligible",
                       "title": "Action Not Eligible",
@@ -726,7 +726,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
@@ -734,7 +734,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "Session Not Found",
@@ -759,7 +759,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:intent_no_match",
                       "title": "Hmm, I'm not sure what you mean by \"fly away\". These are the things you could do here: Rest a bit longer, Wake in the cottage.",
@@ -767,7 +767,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:intent_no_match",
                       "title": "Intent No Match",
@@ -831,7 +831,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "That story has found its own ending. You're welcome to begin a new one whenever you'd like.",
@@ -839,7 +839,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:session_not_found",
                       "title": "Session Not Found",
@@ -1021,7 +1021,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:player_not_found",
                       "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
@@ -1029,7 +1029,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:player_not_found",
                       "title": "Player Not Found",
@@ -1101,7 +1101,7 @@
               "application/json": {
                 "examples": {
                   "player": {
-                    "summary": "Player projection (default)",
+                    "summary": "Player projection (Accept-Projection: player)",
                     "value": {
                       "type": "urn:idle-chapters:error:player_not_found",
                       "title": "That traveler doesn't seem to be around. Perhaps they've wandered somewhere new.",
@@ -1109,7 +1109,7 @@
                     }
                   },
                   "developer": {
-                    "summary": "Developer projection (Accept-Projection: developer)",
+                    "summary": "Developer projection (default)",
                     "value": {
                       "type": "urn:idle-chapters:error:player_not_found",
                       "title": "Player Not Found",
