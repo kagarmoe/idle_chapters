@@ -174,6 +174,22 @@ def test_render_journal_page_determinism():
     assert page_a["mood"] == page_b["mood"]
 
 
+def test_result_variants_are_picked_by_seed():
+    repo = _make_repo()
+    action = {"action_id": "a1", "result_variants": ["First light.", "Second light.", "Third light."]}
+
+    bodies = [
+        render_journal_page(
+            place_id="cottage_home", entry_type="tea", action=action,
+            state=_make_state(), repo=repo, seed=seed,
+        )["body"]
+        for seed in (0, 1, 2)
+    ]
+
+    for body, variant in zip(bodies, action["result_variants"]):
+        assert variant in body
+
+
 def test_render_journal_page_mood_from_place():
     repo = _make_repo()
     state = _make_state()

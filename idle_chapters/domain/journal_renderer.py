@@ -71,6 +71,7 @@ def render_journal_page(
         ingredients=ingredients,
         repo=repo,
         entry_type=entry_type,
+        seed=seed,
     )
 
     page_id = _generate_page_id(place_id, entry_type, seed)
@@ -139,6 +140,7 @@ def _assemble_body(
     ingredients: list[str],
     repo,
     entry_type: str,
+    seed: int | None = None,
 ) -> str:
     """Assemble the markdown body from template structure and context."""
     lines: list[str] = []
@@ -149,7 +151,7 @@ def _assemble_body(
         action_result = action.get("result", "")
         if not action_result:
             variants = action.get("result_variants", [])
-            action_result = variants[0] if variants else ""
+            action_result = variants[(seed or 0) % len(variants)] if variants else ""
 
     ingredient_names = _resolve_ingredient_names(ingredients, repo)
 
