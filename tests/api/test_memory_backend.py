@@ -1,5 +1,3 @@
-import json
-
 from fastapi.testclient import TestClient
 
 
@@ -106,7 +104,9 @@ def test_every_sub_place_can_be_visited_and_left(monkeypatch) -> None:
 
     client = TestClient(server)
     session_id = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()["session_id"]
-    results = {a["action_id"]: a["result"] for a in json.load(open("assets/actions.json"))["actions"]}
+    from idle_chapters.content.repo import ContentRepo
+
+    results = {action_id: action["result"] for action_id, action in ContentRepo().actions_by_id.items()}
     pages = []
 
     def take(action_id: str) -> set[str]:
