@@ -1,0 +1,23 @@
+type: '@swamp/vercel/projects/projects'
+typeVersion: 2026.10.20.4
+id: 57f6ae01-4bf0-453e-9f21-56e6b890bf7c
+name: idle-chapters-api
+version: 1
+tags: {}
+globalArguments:
+  name: idle-chapters-api
+  framework: fastapi
+  gitRepository:
+    repo: kagarmoe/idle_chapters
+    type: github
+  environmentVariables:
+    - key: MONGO_URL
+      target: [production, preview]
+      type: encrypted
+      value: ${{ vault.get("default", "api_mongo_url") }}
+    - key: CORS_ORIGINS
+      target: [production, preview]
+      type: plain
+      value: ${{ vault.get("default", "api_cors_origins") }}
+  token: ${{ vault.get("default", "vercel_token") }}
+methods: {}
