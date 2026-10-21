@@ -44,7 +44,10 @@ def create_app() -> FastAPI:
     @app.on_event("startup")
     def export_openapi():
         spec = app.openapi()
-        Path("docs/openapi.json").write_text(json.dumps(spec, indent=2))
+        try:
+            Path("docs/openapi.json").write_text(json.dumps(spec, indent=2))
+        except OSError:
+            pass  # serverless hosts have a read-only filesystem; CI checks the committed spec
 
     @app.get("/")
     def root() -> RedirectResponse:
