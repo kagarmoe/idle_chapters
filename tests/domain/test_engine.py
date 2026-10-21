@@ -254,6 +254,9 @@ def test_paths_follow_the_scene_choices_once_each() -> None:
     entered = engine.step(home, "enter", None, repo, seed=1)
     assert _ids(entered) == ["tea", "go_town"]
 
+    stayed = engine.step(entered.new_state, "choose option", "tea", repo, seed=1)
+    assert _ids(stayed) == ["go_town"]
+
 
 def test_taking_a_path_tells_the_walk_and_arrives() -> None:
     repo, engine = _paths_repo(), Engine()

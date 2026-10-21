@@ -110,3 +110,20 @@ def test_leaving_early_keeps_tea_and_the_journal_for_later(monkeypatch) -> None:
 
     offered = {a["action_id"] for a in response.json()["view"]["eligible_actions"]}
     assert {"make_tea", "pick_up_journal"} <= offered
+
+
+def test_look_around_waits_after_tea_and_the_journal(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+
+    client = TestClient(server)
+    session_id = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()["session_id"]
+    for action_id in ["make_tea", "pick_up_journal"]:
+        response = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
+        assert response.status_code == 200, response.text
+
+    assert "look_around" in {a["action_id"] for a in response.json()["view"]["eligible_actions"]}

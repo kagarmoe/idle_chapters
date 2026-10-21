@@ -26,7 +26,7 @@
     {
       "node_id": "pick_up_journal",
       "action_ref": "pick_up_journal",
-      "choices": ["make_tea", "head_to_town"]
+      "choices": ["look_around", "make_tea", "head_to_town"]
     },
     {
       "node_id": "head_to_town",
