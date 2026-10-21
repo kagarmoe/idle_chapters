@@ -1,0 +1,463 @@
+type: '@swamp/stagecraft/factory'
+typeVersion: 2026.10.12.1
+id: 4ba1f283-047f-4775-90f9-680194d0cf05
+name: ic-features
+version: 1
+tags: {}
+globalArguments:
+  tracker: ic
+  definition:
+    schemaVersion: 3
+    description: |-
+      One Idle Chapters feature or fix from the prioritized list
+      (design-docs/plans/2026-10-21-feature-priorities-design.md), from plan to
+      a deployed, smoke-tested production.
+
+      Agents plan, review, implement test-first, verify with the swamp ic-checks
+      workflow, review the change, merge it, and ship it with the swamp ic-ship
+      workflow. The author pre-authorized merge and deploy, so no stage waits
+      for a person; a person may send a plan or change back (revise) and must
+      confirm abandoning work. A blocking review finding or a failed check
+      sends the work back. Every check and the release are bound to an exact
+      commit. Every change obeys design-docs/game_design/tone_contract.md.
+    stages:
+      - id: plan
+        initial: true
+        maxCycles: 3
+        tracker: { status: open }
+        description: Plan the change against the code and the design docs.
+        work:
+          mode: interactive
+          skills: []
+          systemPrompt: |
+            Read the ticket, the design docs it names, and
+            design-docs/game_design/tone_contract.md. Read the code the change
+            touches. Record plan with a summary, the steps in order (each naming
+            the files it touches) and the testing strategy: the failing test
+            written first, at the cheapest tier that catches the regression,
+            running in CI. Keep the change the smallest complete slice.
+
+            On a later plan, read the injected plan, plan-review and
+            plan-feedback and address them. Record feedbackIncorporated as the
+            last plan's list, adding the newest feedback word for word unless it
+            is already the last entry.
+          context:
+            inject: [plan, plan-review, plan-feedback]
+        artifacts:
+          - name: plan
+            schema:
+              type: object
+              required: [summary, steps, testingStrategy]
+              properties:
+                summary: { type: string, minLength: 1 }
+                steps:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required: [description, files]
+                    additionalProperties: false
+                    properties:
+                      description: { type: string, minLength: 1 }
+                      files: { type: array, items: { type: string, minLength: 1 } }
+                testingStrategy: { type: string, minLength: 1 }
+                feedbackIncorporated:
+                  type: array
+                  items: { type: string, minLength: 1 }
+        transitions:
+          - name: submit
+            to: plan-review
+            gates:
+              - type: artifact-exists
+                config: { artifact: plan }
+
+      - id: plan-review
+        tracker: { status: open }
+        description: >-
+          Adversarial review of the current plan. An open critical or high
+          finding sends it back; none lets it through to implement, carrying the
+          medium and low findings along.
+        work:
+          mode: dispatch
+          skills: [adversarial-review]
+          systemPrompt: |
+            You are an adversarial reviewer. Try to refute this plan for the
+            Idle Chapters game: {{planSummary}}
+            Check its steps against the code, its testing strategy against the
+            risks, and its content against
+            design-docs/game_design/tone_contract.md.
+            Rate a finding critical or high only if the plan would ship a
+            defect, lose data, break the tone contract or another stated rule,
+            or make the declared checks meaningless. Process or wording gaps
+            the automated checks already cover are medium at most. Judge the
+            plan against the size of the change: a small change gets a short
+            review, and each finding gets the smallest adequate fix. Do not
+            soften the severity of a real defect.
+          let:
+            planSummary: artifacts["plan"].payload.summary
+          context:
+            inject: [plan]
+        artifacts:
+          - name: plan-review
+            kind: findings
+            reviews: plan
+        evidence:
+          - name: plan-feedback
+            description: A person's feedback on the plan, in their words; revise needs it.
+            recordedBy: person
+            schema:
+              type: object
+              required: [feedback]
+              additionalProperties: false
+              properties:
+                feedback: { type: string, minLength: 1 }
+        transitions:
+          - name: approve
+            to: implement
+            description: >-
+              No blocking finding. The author pre-authorized the work, so this
+              needs no person.
+            gates:
+              - type: artifact-fresh
+                config: { artifact: plan-review, recordedThisCycle: true }
+              - type: findings-clear
+                config: { artifact: plan-review, blocking: [critical, high] }
+          - name: rework
+            to: plan
+            description: >-
+              The fresh plan review has an open critical or high finding, so the
+              plan goes back to be fixed.
+            gates:
+              - type: artifact-fresh
+                config: { artifact: plan-review, recordedThisCycle: true }
+              - type: findings-open
+                config: { artifact: plan-review, blocking: [critical, high] }
+          - name: revise
+            to: plan
+            manual: true
+            description: >-
+              A person sent the plan back to change it, with their feedback
+              recorded first so the next plan answers it.
+            gates:
+              - type: evidence-recorded
+                config: { name: plan-feedback }
+
+      - id: implement
+        maxCycles: 4
+        tracker: { status: in_progress }
+        description: Implement the plan test-first on a branch and commit it.
+        work:
+          mode: interactive
+          skills: [superpowers:test-driven-development]
+          systemPrompt: |
+            Work on branch ic/<work item key> from origin/main (create it on
+            the first pass). Write the failing test first and see it fail,
+            then the smallest code that passes. Follow the plan; obey the tone
+            contract. Commit, push the branch, and record change-summary with
+            the full 40-character SHA of the commit to check and review. Do not
+            open a pull request. After a check or review sends the work back,
+            fix it, commit, push, and record change-summary again.
+          context:
+            inject: [plan, plan-review, code-review, checks]
+        artifacts:
+          - name: change-summary
+            schema:
+              type: object
+              required: [summary, commit, branch, files]
+              properties:
+                summary: { type: string, minLength: 1 }
+                commit: { type: string, pattern: "^[0-9a-f]{40}$" }
+                branch: { type: string, pattern: "^ic/" }
+                files: { type: array, minItems: 1, items: { type: string } }
+        transitions:
+          - name: submit
+            to: verify
+            gates:
+              - type: artifact-exists
+                config: { artifact: change-summary }
+
+      - id: verify
+        tracker: { status: in_progress }
+        description: >-
+          Run the ic-checks swamp workflow on the change-summary commit and
+          record one result per check.
+        work:
+          mode: interactive
+          systemPrompt: |
+            Check out commit {{commit}} (detached is fine) and run the stage's
+            command. Record checks with that commit, the overall status, the
+            workflow run id, and one result per workflow step (name, status
+            and, when it failed, the output that shows why). Record only what
+            you ran and saw.
+          command: swamp workflow run ic-checks --json
+          let:
+            commit: artifacts["change-summary"].payload.commit
+        evidence:
+          - name: checks
+            schema:
+              type: object
+              required: [commit, status, runId, results]
+              properties:
+                commit: { type: string, pattern: "^[0-9a-f]{40}$" }
+                status: { enum: [passed, failed] }
+                runId: { type: string, minLength: 1 }
+                results:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required: [name, status]
+                    additionalProperties: false
+                    properties:
+                      name: { type: string, minLength: 1 }
+                      status: { enum: [passed, failed, skipped] }
+                      detail: { type: string }
+              if:
+                properties: { status: { const: passed } }
+              then:
+                properties:
+                  results:
+                    not:
+                      contains:
+                        properties: { status: { const: failed } }
+        transitions:
+          - name: passed
+            to: code-review
+            gates:
+              - type: evidence-recorded
+                config: { name: checks, requireField: { status: passed } }
+              - type: cel
+                config:
+                  expr: >-
+                    evidence["checks"].payload.commit ==
+                    artifacts["change-summary"].payload.commit
+                  message: checks must be for the change-summary commit
+          - name: failed
+            to: implement
+            description: The checks failed, so the change goes back to be fixed.
+            gates:
+              - type: evidence-recorded
+                config: { name: checks, requireField: { status: failed } }
+
+      - id: code-review
+        tracker: { status: in_progress }
+        description: >-
+          Adversarial review of the change. An open critical or high finding
+          sends it back; none lets it through to release.
+        work:
+          mode: dispatch
+          skills: [adversarial-review]
+          systemPrompt: |
+            You are an adversarial reviewer. Review commit {{commit}} of the
+            Idle Chapters repo (git show it): {{changeSummary}}
+            Check it against the plan and against
+            design-docs/game_design/tone_contract.md. Confirm the new test
+            fails without the change and runs in CI.
+            Rate a finding critical or high only if the change would ship a
+            defect, lose data, break the tone contract or another stated rule,
+            or make the declared checks meaningless. Process or wording gaps
+            the automated checks already cover are medium at most. Judge the
+            change against its size: a small change gets a short review, and
+            each finding gets the smallest adequate fix. Do not soften the
+            severity of a real defect.
+          let:
+            commit: artifacts["change-summary"].payload.commit
+            changeSummary: artifacts["change-summary"].payload.summary
+          context:
+            inject: [plan, change-summary]
+        artifacts:
+          - name: code-review
+            kind: findings
+            reviews: change-summary
+        transitions:
+          - name: accept
+            to: release
+            description: >-
+              No blocking finding. The author pre-authorized merge and deploy,
+              so this needs no person.
+            gates:
+              - type: artifact-fresh
+                config: { artifact: code-review, recordedThisCycle: true }
+              - type: findings-clear
+                config: { artifact: code-review, blocking: [critical, high] }
+          - name: rework
+            to: implement
+            description: >-
+              The fresh code review has an open critical or high finding, so the
+              change goes back to be fixed.
+            gates:
+              - type: artifact-fresh
+                config: { artifact: code-review, recordedThisCycle: true }
+              - type: findings-open
+                config: { artifact: code-review, blocking: [critical, high] }
+          - name: revise
+            to: implement
+            manual: true
+            description: A person sent the change back without a blocking finding.
+
+      - id: release
+        tracker: { status: in_progress }
+        description: >-
+          Merge the reviewed branch and ship the merge commit with the ic-ship
+          swamp workflow (checks, API deploy at that commit, production smoke).
+        work:
+          mode: interactive
+          systemPrompt: |
+            Open a pull request from the change-summary branch to main with gh,
+            wait for its checks to pass, and squash-merge it. Then run
+            `swamp workflow run ic-ship --input commit=<merge commit SHA> --json`
+            on a checkout of that commit. Record release with the merge commit,
+            the pull request URL, the ic-ship run id and the run's status, as
+            observed.
+          let:
+            commit: artifacts["change-summary"].payload.commit
+        evidence:
+          - name: release
+            schema:
+              type: object
+              required: [commit, url, shipRunId, status]
+              properties:
+                commit: { type: string, pattern: "^[0-9a-f]{40}$" }
+                url: { type: string, format: uri }
+                shipRunId: { type: string, minLength: 1 }
+                status: { enum: [succeeded, failed] }
+        transitions:
+          - name: released
+            to: done
+            gates:
+              - type: evidence-recorded
+                config: { name: release, requireField: { status: succeeded } }
+          - name: rework
+            to: implement
+            manual: true
+            description: >-
+              The merge or ship failed in a way the change must fix; a person
+              sends it back.
+
+      - id: done
+        terminal: true
+        tracker: { status: shipped }
+
+      - id: abandoned
+        terminal: true
+        tracker: { status: closed }
+
+    globalTransitions:
+      - name: abandon
+        to: abandoned
+        gates:
+          - type: human-approval
+            config: { id: abandon-confirmation }
+  scenarios:
+    - scenario: plan-to-done
+      description: >-
+        A change walks from plan to a shipped release with no person: a high
+        plan finding sends the plan back, a low one passes; a failed check and a
+        critical code finding each send the work back; checks for another
+        commit do not count; a failed ship does not finish the work.
+      steps:
+        - record: { artifact: plan }
+          payload:
+            summary: Fix continue
+            steps: [{ description: Re-render node, files: [idle_chapters/api/routers/sessions.py] }]
+            testingStrategy: API test first
+        - move: submit
+        - record: { artifact: plan-review }
+          payload: { findings: [{ id: F1, severity: high, description: No test }] }
+        - move: approve
+          expect: { refused: "unresolved blocking finding" }
+        - move: rework
+        - expect: { stage: plan }
+        - record: { artifact: plan }
+          payload:
+            summary: Fix continue
+            steps: [{ description: Re-render node, files: [idle_chapters/api/routers/sessions.py] }]
+            testingStrategy: Failing API test first
+        - move: submit
+        - record: { artifact: plan-review }
+          payload: { findings: [{ id: F2, severity: low, description: Naming }] }
+        - move: rework
+          expect: { refused: "no unresolved finding at a blocking severity" }
+        - move: approve
+        - record: { artifact: change-summary }
+          payload:
+            summary: Continue re-renders the node
+            commit: c5aaad329c9ceb4edc0504a98ff5d6e5528ac8fd
+            branch: ic/ic-1
+            files: [idle_chapters/api/routers/sessions.py]
+        - move: submit
+        - record: { evidence: checks }
+          payload:
+            commit: c5aaad329c9ceb4edc0504a98ff5d6e5528ac8fd
+            status: failed
+            runId: run-1
+            results: [{ name: test, status: failed, detail: 1 failed }]
+        - move: passed
+          expect: { refused: "field 'status' is \"failed\"" }
+        - move: failed
+        - expect: { stage: implement }
+        - record: { artifact: change-summary }
+          payload:
+            summary: Continue re-renders the node, fixed
+            commit: d6bbbe43ad0dfc5fce1615b09ff6e6f6639bd9ae
+            branch: ic/ic-1
+            files: [idle_chapters/api/routers/sessions.py]
+        - move: submit
+        - record: { evidence: checks }
+          note: Checks for another commit do not count
+          payload:
+            commit: c5aaad329c9ceb4edc0504a98ff5d6e5528ac8fd
+            status: passed
+            runId: run-2
+            results: [{ name: test, status: passed }]
+        - move: passed
+          expect: { refused: "checks must be for the change-summary commit" }
+        - record: { evidence: checks }
+          payload:
+            commit: d6bbbe43ad0dfc5fce1615b09ff6e6f6639bd9ae
+            status: passed
+            runId: run-3
+            results: [{ name: test, status: passed }]
+        - move: passed
+        - record: { artifact: code-review }
+          payload: { findings: [{ id: C1, severity: critical, description: Breaks tone }] }
+        - move: accept
+          expect: { refused: "unresolved blocking finding" }
+        - move: rework
+        - expect: { stage: implement }
+        - move: submit
+        - record: { evidence: checks }
+          payload:
+            commit: d6bbbe43ad0dfc5fce1615b09ff6e6f6639bd9ae
+            status: passed
+            runId: run-4
+            results: [{ name: test, status: passed }]
+        - move: passed
+        - record: { artifact: code-review }
+          payload: { findings: [] }
+        - move: accept
+        - record: { evidence: release }
+          payload:
+            commit: e7ccc954be1ead6ecf2726c7f7f7a7e0e9b0ca10
+            url: https://github.com/kagarmoe/idle_chapters/pull/1
+            shipRunId: ship-1
+            status: failed
+        - move: released
+          expect: { refused: "field 'status' is \"failed\"" }
+        - record: { evidence: release }
+          payload:
+            commit: e7ccc954be1ead6ecf2726c7f7f7a7e0e9b0ca10
+            url: https://github.com/kagarmoe/idle_chapters/pull/1
+            shipRunId: ship-2
+            status: succeeded
+        - move: released
+        - expect: { stage: done }
+    - scenario: abandon-needs-a-person
+      description: Abandoning work always waits for the author's confirmation.
+      steps:
+        - move: abandon
+          expect: { refused: abandon-confirmation }
+        - approve: abandon-confirmation
+        - move: abandon
+        - expect: { stage: abandoned }
+methods: {}

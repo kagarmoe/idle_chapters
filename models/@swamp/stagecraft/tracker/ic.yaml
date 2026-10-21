@@ -1,0 +1,9 @@
+type: '@swamp/stagecraft/tracker'
+typeVersion: 2026.10.12.2
+id: bfd9db68-b3c7-4a3a-9435-34994551c34d
+name: ic
+version: 1
+tags: {}
+globalArguments:
+  prefix: ic
+methods: {}
