@@ -43,6 +43,7 @@ class SessionService:
             inventory={},
             flags=set(),
             time_tick=0,
+            visit_counts={place_id: 1},
         )
 
         try:

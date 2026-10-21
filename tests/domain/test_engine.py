@@ -149,3 +149,60 @@ def test_engine_journal_page_reflects_step() -> None:
     result = engine.step(state=state, command="choose option", choice_id="a1", repo=repo, seed=123)
 
     assert result.journal_page is not None
+
+
+def _travel_repo() -> SimpleNamespace:
+    def scene(place: str, entry: str, choices: list[str], extra: list[dict]) -> dict:
+        return {
+            "scene_id": f"s_{place}",
+            "place_id": place,
+            "entry_node": entry,
+            "nodes": [{"node_id": entry, "action_ref": "rest", "choices": choices}, *extra],
+        }
+
+    template = {"template_id": "t1", "entry_type": "tea", "prompt": "What softened today?", "structure": ["A moment passed quietly."], "tags": []}
+    return SimpleNamespace(
+        places_by_id={
+            "home": {"place_id": "home", "zone_id": "cottage"},
+            "town": {"place_id": "town", "zone_id": "town"},
+        },
+        scenes_by_place_id={
+            "home": [scene("home", "n_home", ["n_go_town"], [
+                {"node_id": "n_go_town", "action_ref": "go_town", "choices": []},
+            ])],
+            "town": [scene("town", "n_town", ["n_go_home", "n_regular"], [
+                {"node_id": "n_go_home", "action_ref": "go_home", "choices": []},
+                {"node_id": "n_regular", "action_ref": "regular", "choices": []},
+            ])],
+        },
+        actions_by_id={
+            "rest": {"action_id": "rest", "label": "Rest", "effects": {}},
+            "go_town": {"action_id": "go_town", "label": "Walk to town", "effects": {"move_to": "town"}},
+            "go_home": {"action_id": "go_home", "label": "Walk home", "effects": {"move_to": "home"}},
+            "regular": {"action_id": "regular", "label": "Wave to the baker", "when": {"visit_count_min": {"town": 2}}},
+        },
+        journal_templates_by_entry_type={"tea": [template]},
+        journal_templates_by_id={"t1": template},
+        lexicon_by_key={},
+        collectibles_by_id={},
+        ingredient_substitutions_by_token={},
+    )
+
+
+def test_visit_gated_action_appears_from_the_second_arrival() -> None:
+    repo, engine = _travel_repo(), Engine()
+    state = PlayerState(session_id="s", current_place_id="home", inventory={}, flags=set(), time_tick=0, visit_counts={"home": 1})
+
+    def arrive_in_town(state):
+        state = engine.step(state, "enter", None, repo, seed=1).new_state
+        state = engine.step(state, "choose option", "go_town", repo, seed=1).new_state
+        return engine.step(state, "enter", None, repo, seed=1)
+
+    first = arrive_in_town(state)
+    assert first.new_state.visit_counts == {"home": 1, "town": 1}
+    assert "regular" not in {c["action_id"] for c in first.choices}
+
+    back_home = engine.step(first.new_state, "choose option", "go_home", repo, seed=1).new_state
+    second = arrive_in_town(back_home)
+    assert second.new_state.visit_counts == {"home": 2, "town": 2}
+    assert "regular" in {c["action_id"] for c in second.choices}

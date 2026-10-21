@@ -228,6 +228,13 @@ def test_get_session_missing_returns_none(service) -> None:
     assert service.get_session("nonexistent") is None
 
 
+def test_a_session_counts_its_start_place_once(service) -> None:
+    session_id, created = service.create_session()
+    service.enter(session_id)
+    service.perform_action(session_id, created.choices[0]["action_id"])
+    assert service.get_session(session_id).visit_counts == {"cottage_home": 1}
+
+
 def test_each_step_is_seeded_from_session_and_page_count(service) -> None:
     import hashlib
 
