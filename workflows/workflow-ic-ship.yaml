@@ -1,0 +1,57 @@
+id: dc713ffd-ae59-4605-83e0-b90009363808
+name: ic-ship
+description: >-
+  Ship one exact commit: run every check, deploy the API from that commit
+  (git archive, never the working tree), then smoke-test production. The web
+  app deploys itself when the commit lands on main (Vercel Git integration).
+inputs:
+  properties:
+    commit:
+      type: string
+      pattern: "^[0-9a-f]{40}$"
+      description: Full SHA of the merged commit on main
+  required: [commit]
+tags: {}
+jobs:
+  - name: checks
+    description: Every quality gate
+    steps:
+      - name: checks
+        task:
+          type: workflow
+          workflowIdOrName: ic-checks
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+    dependsOn: []
+    weight: 0
+  - name: deploy
+    description: Deploy the API at the exact commit, then smoke-test production
+    dependsOn:
+      - job: checks
+        condition:
+          type: succeeded
+    steps:
+      - name: deploy-api
+        task:
+          type: behavior
+          behavior: idle-chapters-checks
+          methodName: deployApi
+          inputs:
+            commit: ${{ inputs.commit }}
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+      - name: smoke
+        task:
+          type: behavior
+          behavior: idle-chapters-checks
+          methodName: smoke
+        dependsOn:
+          - step: deploy-api
+            condition:
+              type: succeeded
+        weight: 0
+        allowFailure: false
+    weight: 0
+version: 1

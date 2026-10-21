@@ -1,0 +1,54 @@
+id: 745e4625-4369-4431-bbbd-5f333d97bba8
+name: ic-checks
+description: >-
+  Every quality gate on the current checkout, cheapest first; any failure stops
+  the run. Steps run one after another because they share one behavior lock.
+tags: {}
+jobs:
+  - name: checks
+    description: Asset validation, Python tests, web type-check and build, web e2e
+    steps:
+      - name: validate-assets
+        task:
+          type: behavior
+          behavior: idle-chapters-checks
+          methodName: validateAssets
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+      - name: test
+        task:
+          type: behavior
+          behavior: idle-chapters-checks
+          methodName: test
+        dependsOn:
+          - step: validate-assets
+            condition:
+              type: succeeded
+        weight: 0
+        allowFailure: false
+      - name: build-web
+        task:
+          type: behavior
+          behavior: idle-chapters-checks
+          methodName: buildWeb
+        dependsOn:
+          - step: test
+            condition:
+              type: succeeded
+        weight: 0
+        allowFailure: false
+      - name: e2e-web
+        task:
+          type: behavior
+          behavior: idle-chapters-checks
+          methodName: e2eWeb
+        dependsOn:
+          - step: build-web
+            condition:
+              type: succeeded
+        weight: 0
+        allowFailure: false
+    dependsOn: []
+    weight: 0
+version: 1
