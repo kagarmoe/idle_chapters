@@ -8,6 +8,7 @@ from idle_chapters.domain.encounters import meet, present_npcs
 from idle_chapters.domain.errors import ActionNotEligible
 from idle_chapters.domain.ingredient_picker import pick_ingredients
 from idle_chapters.domain.journal_renderer import render_journal_page
+from idle_chapters.domain.scene_generator import CHOICES
 from idle_chapters.domain.selector import (
     choose_scene,
     eligible_scenes,
@@ -51,7 +52,10 @@ class Engine:
             names.append(f"{name} ×{qty}" if qty > 1 else name)
         return names
 
-    def _handle_enter(self, state: PlayerState, repo, seed, meeting: bool = True) -> StepResult:
+    def _handle_enter(
+        self, state: PlayerState, repo, seed, meeting: bool = True, told: str | None = None,
+    ) -> StepResult:
+        """Enter the current place. `told` is what the player just did, put first on the page."""
         authored = eligible_scenes(state, repo)
 
         if authored:
@@ -73,7 +77,10 @@ class Engine:
             choices = self._with_paths(
                 self._choices_from_node(entry_node, nodes_by_id, new_state, repo), new_state, repo
             )
-            journal_page = self._render_journal(self._told_with(action, line), new_state, repo, seed=seed)
+            action = self._told_with(action, line)
+            if told:
+                action = {**action, "result": f"{told}\n\n{action.get('result', '')}".strip()}
+            journal_page = self._render_journal(action, new_state, repo, seed=seed)
 
             return StepResult(
                 journal_page=journal_page,
@@ -94,8 +101,10 @@ class Engine:
             new_state, interaction_id, line = meet(new_state, repo, seed) if meeting else (new_state, None, None)
 
             choices = self._with_paths(scene.get("choices", []), new_state, repo)
-            told = {**scene, "prompt": self._told_with({"result": scene.get("prompt", "")}, line)["result"]}
-            journal_page = self._render_journal_procedural(told, new_state, repo, seed=seed)
+            prompt = self._told_with({"result": scene.get("prompt", "")}, line)["result"]
+            if told:
+                prompt = f"{told}\n\n{prompt}"
+            journal_page = self._render_journal_procedural({**scene, "prompt": prompt}, new_state, repo, seed=seed)
 
             return StepResult(
                 journal_page=journal_page,
@@ -117,11 +126,11 @@ class Engine:
 
         action = repo.actions_by_id.get(choice_id)
 
-        # Procedural scenes have choices that aren't real actions.
-        # Choosing one just cycles to a new scene; lingering is not arriving, so no one new speaks.
+        # Procedural scenes have choices that aren't real actions: choosing one tells what you did,
+        # then the next small moment; lingering is not arriving, so no one new speaks.
         if not action:
-            if state.current_node_id is None:
-                return self._handle_enter(self._tick(state), repo, seed, meeting=False)
+            if state.current_node_id is None and choice_id in CHOICES:
+                return self._handle_enter(self._tick(state), repo, seed, meeting=False, told=CHOICES[choice_id][1])
             raise ActionNotEligible(
                 action_id=choice_id,
                 session_id=state.session_id,

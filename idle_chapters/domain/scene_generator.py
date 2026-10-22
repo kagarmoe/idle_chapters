@@ -7,22 +7,27 @@ from idle_chapters.domain.errors import InvalidLocation
 from idle_chapters.domain.scene import Scene
 
 
-FAMILIES = [
-    "arrival",
-    "small_find",
-    "offer_help",
-    "quiet_notice",
-    "threshold_call",
-]
+# Each family is shaped like one structural interaction type (interactions_design.md §2):
+# (interaction_type, the senses it can draw on, its sentence). {A}/{a} is a sensory anchor.
+FAMILIES = {
+    "arrival": ("ambient_ack", ("sight", "smell", "sound"), "{A}, all around you."),
+    "small_find": ("light_request", ("sight",), "Near the {a}, something small catches your eye."),
+    "offer_help": ("micro_offer", ("sight", "smell", "sound"), "{A}. There is a good spot to sit, if you would like one."),
+    "quiet_notice": ("ambient_ack", ("sight", "smell", "sound"), "For a moment there is only {a}."),
+    "threshold_call": ("threshold_adjacent", ("sight",), "Past the {a}, the way goes on. It will keep."),
+}
 
-SAFE_CHOICE_LABELS = [
-    "Pause and breathe",
-    "Notice a detail",
-    "Sip and reflect",
-    "Wander softly",
-    "Listen closely",
-    "Jot a small note",
-]
+# Choices in a generated scene: lingering, never a task. Each tells what you did on the next page.
+CHOICES = {
+    "pause_and_breathe": ("Pause and breathe", "You pause and breathe in slowly, letting the moment be what it is."),
+    "notice_a_detail": ("Notice a detail", "You let your eyes rest on one small thing for as long as you like."),
+    "sip_and_reflect": ("Sip and reflect", "You take a slow sip of water and let your thoughts wander where they will."),
+    "wander_softly": ("Wander softly", "You wander a few easy steps, with nowhere you need to be."),
+    "listen_closely": ("Listen closely", "You listen for a while. Small sounds come and go."),
+    "jot_a_small_note": ("Jot a small note", "You jot a line or two in the margin of your journal."),
+}
+
+_PHRASE = {"sight": "{w}", "smell": "the smell of {w}", "sound": "the sound of {w}"}
 
 
 def _not_allowed_words(repo) -> set[str]:
@@ -33,32 +38,31 @@ def _not_allowed_words(repo) -> set[str]:
     return words
 
 
-def _descriptive_words(repo, place_id: str, zone_id: str | None) -> list[str]:
-    words: list[str] = []
-    for entry in repo.lexicon_by_key.values():
-        if entry.get("lexicon_type") != "Sensory":
+def _sensory_words(repo, place_id: str, zone_id: str | None, disallowed: set[str]) -> list[tuple[str, str]]:
+    """(sense, word) pairs for this place, from lexicon keys like smell_forest; never a not-allowed word."""
+    pairs = []
+    for key, entry in repo.lexicon_by_key.items():
+        sense = str(entry.get("key", key)).split("_")[0]
+        if entry.get("lexicon_type") != "Sensory" or sense not in _PHRASE:
             continue
-        scope = entry.get("scope")
-        if scope in ("Global", place_id, zone_id):
-            words.extend(entry.get("words", []))
-    return words
+        if entry.get("scope") in ("Global", place_id, zone_id):
+            pairs += [(sense, w) for w in entry.get("words", []) if all(bad not in w.lower() for bad in disallowed)]
+    return pairs
 
 
-def _safe_prompt(words: list[str], disallowed: set[str], rng: random.Random) -> str:
-    filtered = [word for word in words if all(bad not in word.lower() for bad in disallowed)]
-    if not filtered:
-        return "A quiet detail catches the eye."
-    chosen = rng.choice(filtered)
-    return f"{chosen} lingers nearby."
+def _prompt(family: str, pairs: list[tuple[str, str]], repo, rng: random.Random) -> str:
+    _, senses, sentence = FAMILIES[family]
+    usable = [(s, w) for s, w in pairs if s in senses]
+    if not usable:
+        feelings = [w for e in repo.lexicon_by_key.values() if e.get("lexicon_type") == "Emotion" for w in e.get("words", [])]
+        return f"Everything here feels {rng.choice(feelings)}." if feelings else "A quiet moment, just as it is."
+    sense, word = rng.choice(usable)
+    anchor = _PHRASE[sense].format(w=word)
+    return sentence.format(A=anchor[0].upper() + anchor[1:], a=anchor)
 
 
 def _choices(rng: random.Random) -> list[dict[str, Any]]:
-    labels = rng.sample(SAFE_CHOICE_LABELS, k=3)
-    return [
-        {"choice_id": "1", "label": labels[0], "effects": {}},
-        {"choice_id": "2", "label": labels[1], "effects": {}},
-        {"choice_id": "3", "label": labels[2], "effects": {}},
-    ]
+    return [{"choice_id": cid, "label": CHOICES[cid][0], "effects": {}} for cid in rng.sample(sorted(CHOICES), k=3)]
 
 
 def generate_scene(state, repo, seed: int | None = None) -> Scene:
@@ -70,11 +74,10 @@ def generate_scene(state, repo, seed: int | None = None) -> Scene:
     rng = random.Random(seed)
 
     entry_type = "spell" if place.get("is_threshold") else "tea"
-    family = rng.choice(FAMILIES)
+    family = rng.choice(sorted(FAMILIES))
 
-    disallowed = _not_allowed_words(repo)
-    words = _descriptive_words(repo, state.current_place_id, zone_id)
-    prompt = _safe_prompt(words, disallowed, rng)
+    pairs = _sensory_words(repo, state.current_place_id, zone_id, _not_allowed_words(repo))
+    prompt = _prompt(family, pairs, repo, rng)
 
     scene_id = f"{state.current_place_id}_{entry_type}_{family}"
     if seed is not None:
@@ -94,7 +97,8 @@ def generate_scene(state, repo, seed: int | None = None) -> Scene:
         debug={
             "seed": str(seed) if seed is not None else "none",
             "family_id": family,
-            "template_id": "procedural_v1",
+            "interaction_type": FAMILIES[family][0],
+            "template_id": "procedural_v2",
             "notes": "generated",
         },
     )

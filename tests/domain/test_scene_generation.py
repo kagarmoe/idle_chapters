@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 
 import pytest
-from idle_chapters.content.schema_utils import load_validator
 
 
 def _scene_to_dict(scene):
@@ -79,48 +78,38 @@ def test_generator_determinism() -> None:
     assert labels_a == labels_b
 
 
-@pytest.mark.skip(reason="scene.schema.json removed; scenes replaced by scenes")
-def test_generator_validates_against_schema(repo_root: Path) -> None:
-    from idle_chapters.content.repo import ContentRepo
-    from idle_chapters.domain.state import PlayerState
-    from idle_chapters.domain.scene_generator import generate_scene
-
-    schema_path = repo_root / "schemas" / "scene.schema.json"
-
-    repo = ContentRepo()
-    state = PlayerState(
-        session_id="session_1",
-        current_place_id="cottage_home",
-        inventory={},
-        flags=set(),
-        time_tick=0,
-    )
-
-    scene = _scene_to_dict(generate_scene(state=state, repo=repo, seed=99))
-    validator = load_validator(schema_path)
-    validator.validate(instance=scene)
-
-
 def test_generator_avoids_not_allowed_lexicon(repo_root: Path) -> None:
     from idle_chapters.content.repo import ContentRepo
     from idle_chapters.domain.state import PlayerState
-    from idle_chapters.domain.scene_generator import generate_scene
+    from idle_chapters.domain.scene_generator import CHOICES, generate_scene
 
     repo = ContentRepo()
-    state = PlayerState(
-        session_id="session_1",
-        current_place_id="cottage_home",
-        inventory={},
-        flags=set(),
-        time_tick=0,
-    )
-
-    scene = _scene_to_dict(generate_scene(state=state, repo=repo, seed=1))
     not_allowed = _load_not_allowed_words(repo_root)
-    text = _scene_text(scene)
+    results = " ".join(result for _, result in CHOICES.values()).lower()
+    for place_id in repo.places_by_id:
+        state = PlayerState(session_id="s", current_place_id=place_id, inventory={}, flags=set())
+        for seed in range(20):
+            text = _scene_text(_scene_to_dict(generate_scene(state=state, repo=repo, seed=seed)))
+            for word in not_allowed:
+                assert word not in text + results, f"{place_id}/{seed}: disallowed word {word}"
 
-    for word in not_allowed:
-        assert word not in text, f"Found disallowed word in scene: {word}"
+
+def test_a_lingering_choice_is_told_on_the_next_page_and_unknown_ones_are_refused() -> None:
+    from idle_chapters.content.repo import ContentRepo
+    from idle_chapters.domain.engine import Engine
+    from idle_chapters.domain.errors import ActionNotEligible
+    from idle_chapters.domain.scene_generator import CHOICES
+    from idle_chapters.domain.state import PlayerState
+
+    repo, engine = ContentRepo(), Engine()
+    state = PlayerState(session_id="s", current_place_id="forest_trail", inventory={}, flags=set())
+    entered = engine.step(state, "enter", None, repo, seed=3)
+    choice = entered.choices[0]["choice_id"]
+
+    lingered = engine.step(entered.new_state, "choose option", choice, repo, seed=4)
+    assert CHOICES[choice][1] in lingered.journal_page["body"]
+    with pytest.raises(ActionNotEligible):
+        engine.step(entered.new_state, "choose option", "1", repo, seed=4)
 
 
 def test_selector_merges_authored_anchors() -> None:
