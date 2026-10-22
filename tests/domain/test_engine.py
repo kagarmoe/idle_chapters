@@ -276,6 +276,19 @@ def test_taking_a_path_tells_the_walk_and_arrives() -> None:
     assert _ids(back) == ["tea", "go_town"]
 
 
+def test_time_moves_with_each_choice_and_shows_on_the_page() -> None:
+    repo, engine = _paths_repo(), Engine()
+    home = PlayerState(session_id="s", current_place_id="home", inventory={}, flags=set(), time_tick=0, visit_counts={"home": 1})
+
+    entered = engine.step(home, "enter", None, repo, seed=1)
+    assert entered.new_state.time_tick == 0
+    assert entered.journal_page["body"].startswith("Morning.")
+
+    stayed = engine.step(entered.new_state, "choose option", "tea", repo, seed=1)
+    walked = engine.step(stayed.new_state, "choose option", "go_town", repo, seed=1)
+    assert (stayed.new_state.time_tick, walked.new_state.time_tick) == (1, 2)
+
+
 def test_a_path_whose_when_fails_is_refused() -> None:
     import pytest
 

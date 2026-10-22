@@ -10,6 +10,8 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
+from idle_chapters.domain.daytime import time_of_day
+
 
 @dataclass
 class JournalPage:
@@ -73,6 +75,7 @@ def render_journal_page(
         entry_type=entry_type,
         seed=seed,
     )
+    body = f"{time_of_day(getattr(state, 'time_tick', 0)).capitalize()}.\n\n{body}"
 
     page_id = _generate_page_id(place_id, entry_type, seed)
     date = _current_date()

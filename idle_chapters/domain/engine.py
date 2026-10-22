@@ -98,7 +98,7 @@ class Engine:
         # Choosing one just cycles to a new scene.
         if not action:
             if state.current_node_id is None:
-                return self._handle_enter(state, repo, seed)
+                return self._handle_enter(self._tick(state), repo, seed)
             raise ActionNotEligible(
                 action_id=choice_id,
                 session_id=state.session_id,
@@ -112,7 +112,7 @@ class Engine:
                 unmet_conditions=["when conditions not met"],
             )
 
-        new_state = apply_effects(state, action.get("effects", {}))
+        new_state = self._tick(apply_effects(state, action.get("effects", {})))
 
         if new_state.current_place_id != state.current_place_id:
             # A path: its own page tells the walk, then the destination takes over.
@@ -153,6 +153,11 @@ class Engine:
             new_state=new_state,
             debug={"seed": seed, "choice_id": choice_id},
         )
+
+    @staticmethod
+    def _tick(state: PlayerState) -> PlayerState:
+        """Doing something lets the day drift on; looking and resuming do not."""
+        return replace(state, time_tick=state.time_tick + 1)
 
     @staticmethod
     def _with_paths(choices: list[dict], state: PlayerState, repo) -> list[dict]:
