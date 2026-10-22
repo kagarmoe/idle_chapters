@@ -1,7 +1,11 @@
 import json
 import textwrap
+from difflib import get_close_matches
+from functools import cache
 from pathlib import Path
 
+from idle_chapters.content.repo import ContentRepo
+from idle_chapters.domain.intent import match_intent, normalize
 from idle_chapters.ui.errors import invalid_choice, print_error
 from idle_chapters.ui.text import PADDING, fill_width, print_block
 from idle_chapters.scenes.inventory import load_inventory, save_inventory
@@ -209,6 +213,25 @@ def _make_tea(inventory):
     _render_tea_recipe(recipes[0])
 
 
+@cache
+def _repo():
+    return ContentRepo()
+
+
+def _pick(selection, choices):
+    """A number, words that match a choice (as the web client does), or a near-miss of a label."""
+    if selection.isdigit():
+        index = int(selection) - 1
+        return choices[index] if 0 <= index < len(choices) else None
+    by_id = {c["choice_id"]: c for c in choices}
+    chosen = match_intent(selection, choices, _repo())
+    if chosen:
+        return by_id[chosen]
+    labels = {normalize(c["label"]): c for c in choices}
+    close = get_close_matches(normalize(selection), labels, n=1, cutoff=0.8)
+    return labels[close[0]] if close else None
+
+
 def _run_interaction(interaction, state, add_collectible):
     while True:
         print()
@@ -234,30 +257,28 @@ def _run_interaction(interaction, state, add_collectible):
             )
             print(wrapped)
         while True:
-            selection = input(f"\nChoose an option (1-{len(choices)}): \n").strip()
-            if selection.isdigit():
-                index = int(selection) - 1
-                if 0 <= index < len(choices):
-                    chosen = choices[index]
-                    choice_id = chosen.get("choice_id")
-                    print()
-                    if chosen.get("peckish"):
-                        _prepare_for_town(state, add_collectible)
-                        return "leave"
-                    if choice_id == "make_tea":
-                        _make_tea(state.get("inventory", set()))
-                    else:
-                        print_block(chosen["result"])
-                    item = chosen.get("add_collectible")
-                    if item:
-                        if add_collectible(state["player"], item):
-                            state.setdefault("inventory", set()).add(item)
-                            state.setdefault("added_items", set()).add(item)
-                    if choice_id == "pick_up_journal":
-                        _ensure_journal_available(state)
-                    if chosen.get("end_scene"):
-                        return "leave"
-                    break
+            selection = input(f"\nChoose an option (1-{len(choices)}), or say what you'd like to do: \n").strip()
+            chosen = _pick(selection, choices)
+            if chosen:
+                choice_id = chosen.get("choice_id")
+                print()
+                if chosen.get("peckish"):
+                    _prepare_for_town(state, add_collectible)
+                    return "leave"
+                if choice_id == "make_tea":
+                    _make_tea(state.get("inventory", set()))
+                else:
+                    print_block(chosen["result"])
+                item = chosen.get("add_collectible")
+                if item:
+                    if add_collectible(state["player"], item):
+                        state.setdefault("inventory", set()).add(item)
+                        state.setdefault("added_items", set()).add(item)
+                if choice_id == "pick_up_journal":
+                    _ensure_journal_available(state)
+                if chosen.get("end_scene"):
+                    return "leave"
+                break
             print_error(invalid_choice(selection, [c["label"] for c in choices]))
         if not interaction.get("repeat"):
             return None
