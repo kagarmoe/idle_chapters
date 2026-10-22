@@ -88,6 +88,9 @@ of our own; every query filters to this project.
 
 - Notifier `axiom-discord`: type `discordWebhook`, the URL from
   `${{ vault.get("default", "discord_webhook_url") }}` (the owner chose Discord over email).
+- Swamp's own posts to the same channel go through `@keeb/discord/webhook` (behavior
+  `ic-alerts`, same vault key), for example a triage summary:
+  `swamp behavior run ic-alerts send --input content=...`. A test post returned 204.
 - Monitors, all Threshold type, each query dry-run against the last 24 h first:
 
   | Monitor | Query (after the base filter) | Fires when | Last 24 h |
