@@ -1,0 +1,20 @@
+name: Uptime
+
+# Monitoring design §4: Axiom sees only traffic that happens, so this asks every 15 minutes.
+# A failed scheduled run emails the repo owner; the steady /health heartbeat also feeds
+# Axiom's no-data monitor.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Production /health answers ok
+        run: |
+          body=$(curl -fsS --retry 2 --retry-delay 10 --max-time 20 https://idle-chapters.vercel.app/health)
+          echo "$body"
+          test "$(echo "$body" | jq -r .status)" = ok
