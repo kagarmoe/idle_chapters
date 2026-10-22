@@ -63,33 +63,46 @@ through the drain, in Axiom. Shape:
 - **SSR.** `hooks.server.ts` `handleError` logs the same line for server-rendering errors.
 - `docs/openapi.json` is regenerated for the new route (CI checks it).
 
-### 2. Logs reach Axiom (swamp)
+### 2. Logs reach Axiom (already in place)
 
-- **Vault** `default`: `axiom_token` (an Axiom API token that can manage datasets, monitors
-  and notifiers and run queries; swamp's own use) and `axiom_ingest_token` (ingest-only,
-  scoped to the one dataset; it goes in the drain's header).
-- **Behaviors**, each committed under `models/`:
-  - `@john/axiom-dataset` → dataset `idle-chapters`.
-  - `@swamp/vercel/drains/drains` → drain `idle-chapters-axiom`: project
-    `idle-chapters` only, production only, sources `lambda`, `edge`, `static`, `external`,
-    `firewall`, `build`; HTTP NDJSON to
-    `https://api.axiom.co/v1/datasets/idle-chapters/ingest`,
-    `Authorization: Bearer ${{ vault.get("default", "axiom_ingest_token") }}`.
-- Risk: the drain's `headers` field is not marked sensitive (its `secret` field is), so the
-  ingest token may appear in the drain's stored data. Hence an ingest-only, single-dataset
-  token: the worst a leak allows is writing junk into this dataset.
+Found on 2026-10-22: Axiom's Vercel integration (installed 2026-09-30) already drains every
+project on the team into the Axiom dataset `vercel` (org `kgarmoe-projects-hpnp`, edge
+`us-east-1`): about 11k events a day, seconds behind. So there is no drain or ingest token
+of our own; every query filters to this project.
+
+- Every query starts from
+  `['vercel'] | where ['vercel.projectName'] == 'idle-chapters' and ['vercel.environment'] == 'production'`.
+- Vercel's own fields: `level`, `message`, `request.statusCode`, `request.path`,
+  `report.durationMs`, `vercel.source` (`static`, `lambda`, `lambda-log`, …).
+- The app's error line arrives as text in `message` (Vercel tags it `level: info`), so it is
+  read with `extend e = parse_json(message) | where tostring(e.event) == 'error'`.
+  Verified with a production 404: the line arrived with `kind: session_not_found` and the
+  route template, not the raw id. Vercel's own request log line does carry the raw path.
+- **Vault** `default` (this worktree): `axiom_token` (query, datasets, monitors, notifiers).
+  `@john/axiom` reads it only from `AXIOM_TOKEN`, so a command that needs it reads it with
+  `swamp vault read-secret` into that variable for one run.
+- The Axiom behaviors live in `models/@john/`, which is gitignored (the owner's choice), so
+  they are local to the checkout that has the vault.
 
 ### 3. Alerts (swamp, `@john/axiom-monitor` + `@john/axiom-notifier`)
 
-- Notifier: email to the owner.
-- Monitors (5-minute interval unless noted):
-  - **Server errors**: any `level == "error"` from `api`/`ssr`, or any 5xx request. Threshold > 0.
-  - **Browser errors**: `source == "browser"` and `level == "error"`, more than 5 in 15 minutes.
-  - **Handled-error spike**: `level == "warning"` above a baseline (anomaly detection), so a
-    rise in 4xx shows even though none is fatal.
-  - **Latency**: p95 request duration over 2 s for 15 minutes.
-- Exact field names for Vercel's request logs in Axiom are confirmed from the first ingested
-  events before the monitor APL is written; the app's own lines use the shape above.
+- Notifier `axiom-discord`: type `discordWebhook`, the URL from
+  `${{ vault.get("default", "discord_webhook_url") }}` (the owner chose Discord over email).
+- Swamp's own posts to the same channel go through `@keeb/discord/webhook` (behavior
+  `ic-alerts`, same vault key), for example a triage summary:
+  `swamp behavior run ic-alerts send --input content=...`. A test post returned 204.
+- Monitors, all Threshold type, each query dry-run against the last 24 h first:
+
+  | Monitor | Query (after the base filter) | Fires when | Last 24 h |
+  |---|---|---|---|
+  | Server errors | app line `level == error`, or `request.statusCode >= 500` | > 0 in 5 min | 0 |
+  | Browser errors | app line `source == browser` and `level == error` | > 5 in 15 min | 0 |
+  | Handled errors | app line `level == warning` | > 20 in 15 min | 1 (a probe) |
+  | Latency | p95 `report.durationMs` on `lambda` | > 2000 ms over 15 min | 281 ms (159 requests) |
+  | Heartbeat | `request.path == '/health'` count | < 1 in 35 min, also on no data | 23 |
+
+- The handled-error monitor is a plain threshold, not anomaly detection: there is no
+  history yet to learn a baseline from. Revisit once a few weeks of data exist.
 
 ### 4. Uptime
 
@@ -100,23 +113,20 @@ an outage the job itself misses.
 
 ### 5. Reading it from swamp
 
-- `swamp workflow run @john/axiom-error-triage --input dataset=idle-chapters
-  --input "errorPredicate=tostring(['level']) in ('warning', 'error')"` — counts by source
-  and kind, plus the latest events.
-- A setup workflow, `ic-monitoring`, creates or updates the dataset, drain, notifier and
-  monitors, so the whole stack is re-creatable from the repo.
+- `swamp workflow run @john/axiom-error-triage --input dataset=vercel
+  --input "errorPredicate=['vercel.projectName'] == 'idle-chapters' and tostring(parse_json(message).event) == 'error'"`
+  counts errors by group and lists the latest ones.
 
 ## Order of work
 
-1. App instrumentation (section 1) — a PR with tests; no account needed.
-2. **The owner:** an Axiom account and org, the two tokens, stored with
-   `swamp vault put default axiom_token` and `… axiom_ingest_token`; confirm the alert email.
-3. Dataset and drain (section 2). The drain is an outward-facing change on the production
-   project: confirm before creating it.
-4. Monitors and notifier (section 3), after the first events show the real field names.
-5. Uptime job (section 4).
+1. App instrumentation (section 1). Done: PR #94.
+2. The owner: Axiom account, org and token, plus the Discord webhook, in the vault. Done.
+3. Logs into Axiom (section 2). Already in place through the Vercel integration.
+4. Monitors and the Discord notifier (section 3). Queries are verified; this waits on the
+   token gaining monitors and notifiers access.
+5. Uptime job (section 4). Done: PR #95.
 6. End to end: provoke a browser error, a handled 404 and a 500 in production; see each in
-   Axiom; see the server-error monitor email.
+   Axiom; see the server-error alert in Discord.
 
 ## Not doing
 
