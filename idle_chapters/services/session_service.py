@@ -133,6 +133,7 @@ class SessionService:
         try:
             choices = self._engine.choices_at(state, self._repo, seed=seed) or []
             visible_npcs = self._engine.visible_npcs(state, self._repo)
+            inventory = self._engine.carrying(state, self._repo)
         except Exception as e:
             raise self._engine_error(session_id, e) from e
         return StepResult(
@@ -141,6 +142,7 @@ class SessionService:
             new_state=state,
             debug={"selected_scene_id": state.current_scene_id},
             visible_npcs=visible_npcs,
+            inventory=inventory,
         )
 
     def get_session(self, session_id: str) -> PlayerState | None:

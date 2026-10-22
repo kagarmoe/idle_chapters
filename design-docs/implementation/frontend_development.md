@@ -51,8 +51,12 @@ The client always calls the API on its own origin. In dev, Vite forwards `/v1` a
 | `Splash.svelte` | Title screen with new game / continue options |
 | `Typewriter.svelte` | Animated text reveal for scene prompts |
 | `ChoiceBar.svelte` | Action buttons (disabled until typewriter finishes) |
-| `JournalCard.svelte` | Displays the current journal page |
-| `InventoryPanel.svelte` | Shows visible items and NPCs |
+| `JournalCard.svelte` | The journal so far, newest page first, folded until opened |
+| `InventoryPanel.svelte` | What the player carries, who is nearby, and items here |
+
+The play page also has a free-text box. *What can I do?*, *What is here?* and *Help* are
+answered on the page and change nothing; anything else goes to `POST /v1/sessions/{id}/intent`,
+and a no-match reply shows as a gentle note rather than the error screen.
 
 ### API Client
 

@@ -34,11 +34,21 @@ class Engine:
         else:
             raise ValueError(f"Unknown command: {command}")
         result.visible_npcs = self.visible_npcs(result.new_state, repo)
+        result.inventory = self.carrying(result.new_state, repo)
         return result
 
     @staticmethod
     def visible_npcs(state: PlayerState, repo) -> list[str]:
         return [n.get("display_name", n["npc_id"]) for n in present_npcs(state, repo)]
+
+    @staticmethod
+    def carrying(state: PlayerState, repo) -> list[str]:
+        """What the player carries, by display name."""
+        names = []
+        for item_id, qty in state.inventory.items():
+            name = getattr(repo, "collectibles_by_id", {}).get(item_id, {}).get("display_name", item_id.replace("_", " "))
+            names.append(f"{name} ×{qty}" if qty > 1 else name)
+        return names
 
     def _handle_enter(self, state: PlayerState, repo, seed, meeting: bool = True) -> StepResult:
         authored = eligible_scenes(state, repo)

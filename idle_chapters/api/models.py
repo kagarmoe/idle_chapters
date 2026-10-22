@@ -25,6 +25,7 @@ class ViewModel(BaseModel):
         ],
         "visible_items": [],
         "visible_npcs": [],
+        "inventory": [],
     }})
 
     prompt: str | None = None
@@ -32,6 +33,7 @@ class ViewModel(BaseModel):
     eligible_actions: list[ViewAction] = Field(default_factory=list)
     visible_items: list[str] = Field(default_factory=list)
     visible_npcs: list[str] = Field(default_factory=list)
+    inventory: list[str] = Field(default_factory=list, description="What the player carries, by display name")
 
 
 class SessionCreateRequest(BaseModel):
@@ -58,6 +60,7 @@ class SessionCreateResponse(BaseModel):
             ],
             "visible_items": [],
             "visible_npcs": [],
+            "inventory": [],
         },
         "journal_page": {
             "page_id": "jp-a1b2c3",
@@ -91,6 +94,7 @@ class SessionGetResponse(BaseModel):
             ],
             "visible_items": [],
             "visible_npcs": [],
+            "inventory": [],
         },
         "journal_page": {
             "page_id": "jp-a1b2c3",
@@ -129,6 +133,7 @@ class StepResponse(BaseModel):
             ],
             "visible_items": [],
             "visible_npcs": [],
+            "inventory": [],
         },
         "journal_page": {
             "page_id": "jp-d4e5f6",

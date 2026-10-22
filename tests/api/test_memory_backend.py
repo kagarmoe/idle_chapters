@@ -299,6 +299,7 @@ def test_get_session_resumes_the_view_it_left(monkeypatch) -> None:
         assert resumed.status_code == 200, resumed.text
         assert resumed.json()["view"]["eligible_actions"] == step["view"]["eligible_actions"]
         assert resumed.json()["journal_page"] == step["journal_page"]
+        assert resumed.json()["view"]["inventory"] == step["view"]["inventory"]
 
     assert_resumes(created)
     # After an authored action, then in a procedural place (town has no authored scene).
@@ -306,6 +307,8 @@ def test_get_session_resumes_the_view_it_left(monkeypatch) -> None:
         step = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
         assert step.status_code == 200, step.text
         assert_resumes(step.json())
+        # Looking around turns up the travel kit, carried by name from then on.
+        assert {"Bag", "Small Mirror"} <= set(step.json()["view"]["inventory"])
 
 
 def test_free_text_does_each_thing_in_turn_until_you_leave(monkeypatch) -> None:

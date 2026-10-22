@@ -1459,6 +1459,7 @@
                 "label": "Wake in the cottage"
               }
             ],
+            "inventory": [],
             "prompt": "The cottage rests in a quiet countryside, with a thatched roof and smoke curling from the chimney.",
             "scene_id": "cottage_home_tea_arrival_42",
             "visible_items": [],
@@ -1545,6 +1546,7 @@
                 "label": "Head to town for a snack"
               }
             ],
+            "inventory": [],
             "prompt": "You wake slowly in your cottage. Morning light rests on the quilt.",
             "scene_id": "cottage_wake_v1",
             "visible_items": [],
@@ -1611,6 +1613,7 @@
                 "label": "Wake in the cottage"
               }
             ],
+            "inventory": [],
             "prompt": "You stay tucked into the comfort of your cottage. Light drifts through the window.",
             "scene_id": "cottage_home_tea_arrival_42",
             "visible_items": [],
@@ -1717,6 +1720,14 @@
             },
             "type": "array",
             "title": "Visible Npcs"
+          },
+          "inventory": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Inventory",
+            "description": "What the player carries, by display name"
           }
         },
         "type": "object",
@@ -1732,6 +1743,7 @@
               "label": "Wake in the cottage"
             }
           ],
+          "inventory": [],
           "prompt": "The cottage rests in a quiet countryside, with a thatched roof and smoke curling from the chimney.",
           "scene_id": "cottage_home_tea_arrival_42",
           "visible_items": [],
