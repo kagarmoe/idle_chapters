@@ -8,7 +8,7 @@ globalArguments:
   name: idle-chapters
   teamId: team_SMACO8iOr6wPIGx5as56P468
   # One project serves web and API: vercel.json at the repo root declares both services.
-  rootDirectory: .
+  # Root Directory is the repo root (null), set by the useRepoRoot method; update cannot send null.
   framework: services
   token: ${{ vault.get("default", "vercel_token") }}
 methods: {}
