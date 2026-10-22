@@ -99,8 +99,11 @@ of our own; every query filters to this project.
   | Browser errors | app line `source == browser` and `level == error` | > 5 in 15 min | 0 |
   | Handled errors | app line `level == warning` | > 20 in 15 min | 1 (a probe) |
   | Latency | p95 `report.durationMs` on `lambda` | > 2000 ms over 15 min | 281 ms (159 requests) |
-  | Heartbeat | `request.path == '/health'` count | < 1 in 35 min, also on no data | 23 |
+  | Heartbeat | `request.path == '/health'` count | < 1 in 120 min, also on no data | 23 |
 
+- The heartbeat window was 35 min and false-alarmed on the first night: GitHub had not yet
+  started the new `*/15` cron, and its scheduled runs routinely start late or are skipped.
+  At 120 min it fires only when the uptime job has really stopped.
 - The handled-error monitor is a plain threshold, not anomaly detection: there is no
   history yet to learn a baseline from. Revisit once a few weeks of data exist.
 
