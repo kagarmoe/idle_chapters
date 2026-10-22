@@ -191,7 +191,10 @@ export const behavior = {
             throw new Error(`smoke: ${webUrl}/health never reported ${args.commit}; last saw ${JSON.stringify(seen).slice(0, 200)}`);
           }
           try {
-            const res = await fetch(`${webUrl}/health`, { signal: context.signal });
+            const res = await fetch(`${webUrl}/health`, {
+              // A hung request must not outlast the deploy wait; give each poll one interval.
+              signal: AbortSignal.any([context.signal, AbortSignal.timeout(deployPollMs)]),
+            });
             seen = res.ok ? await res.json() : `HTTP ${res.status}`;
           } catch (e) {
             seen = String(e);
