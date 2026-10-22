@@ -221,6 +221,15 @@ __marimo__/
 # Claude Code local settings
 .claude/settings.local.json
 
+# Local agent tooling, ignored so `git clean -fd` leaves it alone
+.claude/CLAUDE.md
+.claude/skills/
+.playwright-mcp/
+graphify-out/
+.beads.gate.lock
+# requirements.txt is the dependency source; uv.lock is a local by-product of `uv run`
+uv.lock
+
 # Serena (semantic code toolkit — project config + cache, local tooling)
 .serena/
 
