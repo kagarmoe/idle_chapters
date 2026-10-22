@@ -15,6 +15,7 @@ from idle_chapters.domain.selector import (
 )
 from idle_chapters.domain.state import PlayerState
 from idle_chapters.domain.step_result import StepResult
+from idle_chapters.domain.tea import TEA_ACTION, pick_recipe
 
 
 class Engine:
@@ -284,6 +285,11 @@ class Engine:
 
         entry_type = self._infer_entry_type(action, state, repo)
         ingredient_ids = pick_ingredients(state, repo, entry_type, seed=seed)
+        recipe = pick_recipe(state, repo, seed) if action.get("action_id") == TEA_ACTION else None
+        if recipe:
+            ingredient_ids = [i["ingredient_ref"] for i in recipe.get("ingredients", [])]
+            brewed = f"{recipe['display_name']}. {recipe.get('sensory_prompt', '')}".strip()
+            action = {**action, "result": f"{action.get('result', '')}\n\n{brewed}".strip()}
 
         return render_journal_page(
             place_id=state.current_place_id,
