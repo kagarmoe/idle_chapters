@@ -44,4 +44,45 @@ jobs:
         weight: 0
         allowFailure: false
     weight: 0
+  # Post the outcome to Discord; a Discord outage must not fail the release itself.
+  - name: notify-shipped
+    description: Tell Discord the commit is live and smoke-tested
+    dependsOn:
+      - job: deploy
+        condition:
+          type: succeeded
+    steps:
+      - name: post-shipped
+        task:
+          type: behavior
+          behavior: ic-alerts
+          methodName: send
+          inputs:
+            content: "✅ idle-chapters shipped ${{ inputs.commit }}: checks passed, live on production, smoke OK."
+            username: idle-chapters ship
+        dependsOn: []
+        weight: 0
+        allowFailure: true
+    weight: 0
+  - name: notify-failed
+    description: Tell Discord the release did not complete (checks failed or deploy/smoke failed)
+    dependsOn:
+      - job: deploy
+        condition:
+          type: not
+          condition:
+            type: succeeded
+    steps:
+      - name: post-failed
+        task:
+          type: behavior
+          behavior: ic-alerts
+          methodName: send
+          inputs:
+            content: "❌ idle-chapters ship of ${{ inputs.commit }} did not complete. Details: swamp report get @swamp/workflow-summary --workflow ic-ship"
+            username: idle-chapters ship
+        dependsOn: []
+        weight: 0
+        allowFailure: true
+    weight: 0
 version: 1
