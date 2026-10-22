@@ -62,7 +62,8 @@ def _example_keys(responses_dict: dict, status_code: int, example_name: str) -> 
 
 def _compare_shape(label: str, actual, example, errors: list[str], path: str = "") -> None:
     """Recursively compare the shape (keys and value types) of actual vs example."""
-    if isinstance(example, dict) and isinstance(actual, dict):
+    # An empty example dict documents a free-form map (inventory, seen_interactions): any keys.
+    if isinstance(example, dict) and isinstance(actual, dict) and example:
         actual_keys = set(actual.keys())
         example_keys = set(example.keys())
         extra = actual_keys - example_keys

@@ -109,6 +109,7 @@ class SessionGetResponse(BaseModel):
             "inventory": {},
             "flags": [],
             "time_tick": 0,
+            "seen_interactions": {},
         },
     }})
 

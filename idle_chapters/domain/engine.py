@@ -4,6 +4,7 @@ from dataclasses import replace
 
 from idle_chapters.domain.conditions import evaluate_conditions
 from idle_chapters.domain.effects import apply_effects
+from idle_chapters.domain.encounters import meet, present_npcs
 from idle_chapters.domain.errors import ActionNotEligible
 from idle_chapters.domain.ingredient_picker import pick_ingredients
 from idle_chapters.domain.journal_renderer import render_journal_page
@@ -27,13 +28,19 @@ class Engine:
         seed: int | None = None,
     ) -> StepResult:
         if command == "enter":
-            return self._handle_enter(state, repo, seed)
+            result = self._handle_enter(state, repo, seed)
         elif command == "choose option":
-            return self._handle_choose(state, choice_id, repo, seed)
+            result = self._handle_choose(state, choice_id, repo, seed)
         else:
             raise ValueError(f"Unknown command: {command}")
+        result.visible_npcs = self.visible_npcs(result.new_state, repo)
+        return result
 
-    def _handle_enter(self, state: PlayerState, repo, seed) -> StepResult:
+    @staticmethod
+    def visible_npcs(state: PlayerState, repo) -> list[str]:
+        return [n.get("display_name", n["npc_id"]) for n in present_npcs(state, repo)]
+
+    def _handle_enter(self, state: PlayerState, repo, seed, meeting: bool = True) -> StepResult:
         authored = eligible_scenes(state, repo)
 
         if authored:
@@ -46,6 +53,7 @@ class Engine:
                 current_scene_id=scene["scene_id"],
                 current_node_id=entry_node_id,
             )
+            new_state, interaction_id, line = meet(new_state, repo, seed) if meeting else (new_state, None, None)
 
             entry_node = nodes_by_id.get(entry_node_id, {})
             action_ref = entry_node.get("action_ref")
@@ -54,13 +62,14 @@ class Engine:
             choices = self._with_paths(
                 self._choices_from_node(entry_node, nodes_by_id, new_state, repo), new_state, repo
             )
-            journal_page = self._render_journal(action, new_state, repo, seed=seed)
+            journal_page = self._render_journal(self._told_with(action, line), new_state, repo, seed=seed)
 
             return StepResult(
                 journal_page=journal_page,
                 choices=choices,
                 new_state=new_state,
-                debug={"seed": seed, "selected_scene_id": scene["scene_id"]},
+                debug={"seed": seed, "selected_scene_id": scene["scene_id"],
+                       "interaction_id": interaction_id, "interaction_line": line},
             )
         else:
             candidates = generate_candidates(state, repo, seed, n=1)
@@ -71,15 +80,18 @@ class Engine:
                 current_scene_id=scene.get("scene_id"),
                 current_node_id=None,
             )
+            new_state, interaction_id, line = meet(new_state, repo, seed) if meeting else (new_state, None, None)
 
             choices = self._with_paths(scene.get("choices", []), new_state, repo)
-            journal_page = self._render_journal_procedural(scene, new_state, repo, seed=seed)
+            told = {**scene, "prompt": self._told_with({"result": scene.get("prompt", "")}, line)["result"]}
+            journal_page = self._render_journal_procedural(told, new_state, repo, seed=seed)
 
             return StepResult(
                 journal_page=journal_page,
                 choices=choices,
                 new_state=new_state,
-                debug={"seed": seed, "selected_scene_id": scene.get("scene_id")},
+                debug={"seed": seed, "selected_scene_id": scene.get("scene_id"),
+                       "interaction_id": interaction_id, "interaction_line": line},
             )
 
     def _handle_choose(
@@ -95,10 +107,10 @@ class Engine:
         action = repo.actions_by_id.get(choice_id)
 
         # Procedural scenes have choices that aren't real actions.
-        # Choosing one just cycles to a new scene.
+        # Choosing one just cycles to a new scene; lingering is not arriving, so no one new speaks.
         if not action:
             if state.current_node_id is None:
-                return self._handle_enter(self._tick(state), repo, seed)
+                return self._handle_enter(self._tick(state), repo, seed, meeting=False)
             raise ActionNotEligible(
                 action_id=choice_id,
                 session_id=state.session_id,
@@ -121,6 +133,7 @@ class Engine:
             if action.get("result") and arrival.get("result"):
                 # An authored arrival (coming home) is told on the same page as the walk.
                 action = {**action, "result": f"{action['result']} {arrival['result']}"}
+            action = self._told_with(action, arrived.debug.get("interaction_line"))
             return StepResult(
                 journal_page=self._render_journal(action, arrived.new_state, repo, seed=seed),
                 choices=arrived.choices,
@@ -155,6 +168,14 @@ class Engine:
         )
 
     @staticmethod
+    def _told_with(action: dict, line: str | None) -> dict:
+        """The action, with what someone here said or did as its own paragraph."""
+        if not line or not action:
+            return action
+        result = action.get("result")
+        return {**action, "result": f"{result}\n\n{line}" if result else line}
+
+    @staticmethod
     def _tick(state: PlayerState) -> PlayerState:
         """Doing something lets the day drift on; looking and resuming do not."""
         return replace(state, time_tick=state.time_tick + 1)
@@ -180,7 +201,7 @@ class Engine:
         if not state.current_node_id:
             if seed is None:
                 return None
-            rebuilt = self._handle_enter(state, repo, seed)
+            rebuilt = self._handle_enter(state, repo, seed, meeting=False)
             if rebuilt.new_state.current_node_id or rebuilt.new_state.current_scene_id != state.current_scene_id:
                 return None
             return rebuilt.choices

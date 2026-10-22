@@ -44,6 +44,7 @@ def _view_from_result(result: StepResult) -> ViewModel:
             )
             for c in result.choices
         ],
+        visible_npcs=result.visible_npcs,
     )
 
 
@@ -133,6 +134,7 @@ def get_session(
             "inventory": state.inventory,
             "flags": sorted(state.flags),
             "time_tick": state.time_tick,
+            "seen_interactions": state.seen_interactions,
         },
     )
 
