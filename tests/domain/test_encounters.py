@@ -1,3 +1,4 @@
+from dataclasses import replace
 from types import SimpleNamespace
 
 from idle_chapters.content.repo import ContentRepo
@@ -49,14 +50,34 @@ def test_time_of_day_and_cooldowns_decide_what_can_be_said() -> None:
         _interaction("evening_only", time_of_day=["evening"]),
         _interaction("daily", once_per_day=True, cooldown_days=1),
     )
-    morning = _state("porch")
-    assert meet(morning, repo, seed=1)[1] == "daily"
+    said, interaction_id, _ = meet(_state("porch"), repo, seed=1)
+    assert interaction_id == "daily"
     # Said once today: nothing else fits the morning, so nothing is said.
-    assert meet(_state("porch", seen_interactions={"daily": 1}), repo, seed=1)[1] is None
-    tomorrow = _state("porch", seen_interactions={"daily": 1}, time_tick=TICKS_PER_DAY)
+    assert meet(said, repo, seed=1)[1] is None
+    tomorrow = replace(said, time_tick=TICKS_PER_DAY)
     assert meet(tomorrow, repo, seed=1)[1] == "daily"
-    evening = _state("porch", seen_interactions={"daily": 1}, time_tick=4 * TICKS_PER_PHASE)
+    evening = replace(said, time_tick=4 * TICKS_PER_PHASE)
     assert meet(evening, repo, seed=1)[1] == "evening_only"
+    # Days away do not pile up: after a long absence it is still once a day.
+    back, _, _ = meet(replace(said, time_tick=9 * TICKS_PER_DAY), repo, seed=1)
+    assert meet(back, repo, seed=1)[1] is None
+
+
+def test_some_things_are_said_only_once_a_place_is_familiar() -> None:
+    repo = _repo(_interaction("familiar", affinity_min=1))
+    assert meet(_state("porch"), repo, seed=1)[1] is None
+    assert meet(_state("porch", visit_counts={"porch": 2}), repo, seed=1)[1] == "familiar"
+
+
+def test_lingering_in_a_procedural_place_is_not_arriving() -> None:
+    from idle_chapters.domain.engine import Engine
+
+    repo, engine = ContentRepo(), Engine()
+    entered = engine.step(_state("forest_trail"), "enter", None, repo, seed=3)
+    assert entered.debug["interaction_id"]
+    lingered = engine.step(entered.new_state, "choose option", "1", repo, seed=4)
+    assert lingered.debug["interaction_id"] is None
+    assert lingered.new_state.seen_interactions == entered.new_state.seen_interactions
 
 
 def test_the_bakery_has_elin_and_moss_and_one_of_them_says_something() -> None:

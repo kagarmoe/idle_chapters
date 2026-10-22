@@ -117,6 +117,15 @@
           "default": {},
           "description": "Interaction history: { interaction_id: times_seen or last_seen_timestamp }"
         },
+        "interaction_days": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "default": {},
+          "description": "The soft day each interaction was last seen: { interaction_id: day }, for cooldowns"
+        },
         "relationships": {
           "type": "object",
           "additionalProperties": {

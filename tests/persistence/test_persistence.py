@@ -34,6 +34,8 @@ def test_state_store_round_trip(unique_session_id) -> None:
         inventory={"item_1": 1},
         flags={"flag_a"},
         time_tick=1,
+        seen_interactions={"hello": 2},
+        interaction_days={"hello": 1},
     )
 
     store.upsert_state(unique_session_id, state)
@@ -47,6 +49,7 @@ def test_state_store_round_trip(unique_session_id) -> None:
     assert loaded.time_tick == state.time_tick
     assert loaded.visit_counts == state.visit_counts
     assert loaded.seen_interactions == state.seen_interactions
+    assert loaded.interaction_days == state.interaction_days
     assert loaded.current_scene_id == state.current_scene_id
     assert loaded.current_node_id == state.current_node_id
 

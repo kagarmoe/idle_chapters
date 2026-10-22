@@ -40,7 +40,7 @@ class Engine:
     def visible_npcs(state: PlayerState, repo) -> list[str]:
         return [n.get("display_name", n["npc_id"]) for n in present_npcs(state, repo)]
 
-    def _handle_enter(self, state: PlayerState, repo, seed) -> StepResult:
+    def _handle_enter(self, state: PlayerState, repo, seed, meeting: bool = True) -> StepResult:
         authored = eligible_scenes(state, repo)
 
         if authored:
@@ -53,7 +53,7 @@ class Engine:
                 current_scene_id=scene["scene_id"],
                 current_node_id=entry_node_id,
             )
-            new_state, interaction_id, line = meet(new_state, repo, seed)
+            new_state, interaction_id, line = meet(new_state, repo, seed) if meeting else (new_state, None, None)
 
             entry_node = nodes_by_id.get(entry_node_id, {})
             action_ref = entry_node.get("action_ref")
@@ -80,7 +80,7 @@ class Engine:
                 current_scene_id=scene.get("scene_id"),
                 current_node_id=None,
             )
-            new_state, interaction_id, line = meet(new_state, repo, seed)
+            new_state, interaction_id, line = meet(new_state, repo, seed) if meeting else (new_state, None, None)
 
             choices = self._with_paths(scene.get("choices", []), new_state, repo)
             told = {**scene, "prompt": self._told_with({"result": scene.get("prompt", "")}, line)["result"]}
@@ -107,10 +107,10 @@ class Engine:
         action = repo.actions_by_id.get(choice_id)
 
         # Procedural scenes have choices that aren't real actions.
-        # Choosing one just cycles to a new scene.
+        # Choosing one just cycles to a new scene; lingering is not arriving, so no one new speaks.
         if not action:
             if state.current_node_id is None:
-                return self._handle_enter(self._tick(state), repo, seed)
+                return self._handle_enter(self._tick(state), repo, seed, meeting=False)
             raise ActionNotEligible(
                 action_id=choice_id,
                 session_id=state.session_id,
@@ -201,7 +201,7 @@ class Engine:
         if not state.current_node_id:
             if seed is None:
                 return None
-            rebuilt = self._handle_enter(state, repo, seed)
+            rebuilt = self._handle_enter(state, repo, seed, meeting=False)
             if rebuilt.new_state.current_node_id or rebuilt.new_state.current_scene_id != state.current_scene_id:
                 return None
             return rebuilt.choices

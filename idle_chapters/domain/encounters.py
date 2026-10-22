@@ -41,10 +41,11 @@ def meet(state: PlayerState, repo, seed: int | None) -> tuple[PlayerState, str |
 
     # An NPC never moves the player.
     effects = {k: v for k, v in (interaction.get("effects") or {}).items() if k != "move_to" and v}
-    seen = dict(state.seen_interactions)
-    seen[interaction["interaction_id"]] = seen.get(interaction["interaction_id"], 0) + 1
-    new_state = replace(apply_effects(state, effects), seen_interactions=seen)
-    return new_state, interaction["interaction_id"], _line(interaction, speaker)
+    interaction_id = interaction["interaction_id"]
+    seen = {**state.seen_interactions, interaction_id: state.seen_interactions.get(interaction_id, 0) + 1}
+    days = {**state.interaction_days, interaction_id: day(state.time_tick)}
+    new_state = replace(apply_effects(state, effects), seen_interactions=seen, interaction_days=days)
+    return new_state, interaction_id, _line(interaction, speaker)
 
 
 def _speakers(interaction: dict, state: PlayerState, repo, npcs: list[dict]) -> list[dict]:
@@ -62,13 +63,17 @@ def _speakers(interaction: dict, state: PlayerState, repo, npcs: list[dict]) -> 
     required = c.get("requires_seen") or []
     if any(not seen.get(r) for r in ([required] if isinstance(required, str) else required)):
         return []
-    # shortcut: a cooldown is a budget (seen at most once per cooldown period since day 0), not a per-day timestamp; store last-seen days if it needs to be exact.
     cooldown = max(c.get("cooldown_days") or 0, 1 if c.get("once_per_day") else 0)
-    if cooldown and seen.get(interaction["interaction_id"], 0) > day(state.time_tick) // cooldown:
+    last_day = state.interaction_days.get(interaction["interaction_id"])
+    if cooldown and last_day is not None and day(state.time_tick) - last_day < cooldown:
         return []
     if c.get("npc_id"):
-        return [n for n in npcs if n["npc_id"] == c["npc_id"]]
-    return [n for n in npcs if n.get("npc_kind") == interaction.get("npc_kind")]
+        speakers = [n for n in npcs if n["npc_id"] == c["npc_id"]]
+    else:
+        speakers = [n for n in npcs if n.get("npc_kind") == interaction.get("npc_kind")]
+    # Affinity is read as familiarity with the speaker's place, never as a score (priorities: Not doing).
+    familiarity = c.get("affinity_min") or 0
+    return [n for n in speakers if state.visit_counts.get(n.get("home_location_id"), 0) > familiarity]
 
 
 def _line(interaction: dict, speaker: dict) -> str:

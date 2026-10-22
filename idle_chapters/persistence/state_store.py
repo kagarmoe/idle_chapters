@@ -33,6 +33,7 @@ class StateStore:
                 "time_tick": state.time_tick,
                 "visit_counts": dict(state.visit_counts),
                 "seen_interactions": dict(state.seen_interactions),
+                "interaction_days": dict(state.interaction_days),
                 "current_scene_id": state.current_scene_id,
                 "current_node_id": state.current_node_id,
             },
@@ -65,6 +66,7 @@ class StateStore:
             time_tick=s.get("time_tick", 0),
             visit_counts=dict(s.get("visit_counts") or {}),
             seen_interactions=dict(s.get("seen_interactions") or {}),
+            interaction_days=dict(s.get("interaction_days") or {}),
             current_scene_id=s.get("current_scene_id"),
             current_node_id=s.get("current_node_id"),
         )
