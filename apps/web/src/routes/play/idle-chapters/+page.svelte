@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Splash from '$lib/Splash.svelte';
-	import Typewriter from '$lib/Typewriter.svelte';
-	import ChoiceBar from '$lib/ChoiceBar.svelte';
-	import JournalCard from '$lib/JournalCard.svelte';
-	import InventoryPanel from '$lib/InventoryPanel.svelte';
-	import { sessions, type ViewModel, type ViewAction, ApiError } from '$lib/api';
-	import { reportError } from '$lib/report';
+	import Splash from '#lib/Splash.svelte';
+	import Typewriter from '#lib/Typewriter.svelte';
+	import ChoiceBar from '#lib/ChoiceBar.svelte';
+	import JournalCard from '#lib/JournalCard.svelte';
+	import InventoryPanel from '#lib/InventoryPanel.svelte';
+	import { sessions, type ViewModel, type ViewAction, ApiError } from '#lib/api.js';
+	import { reportError } from '#lib/report.js';
 
 	// ── Game states ────────────────────────────────────────────
 	type GameScreen = 'splash' | 'loading' | 'playing' | 'error';

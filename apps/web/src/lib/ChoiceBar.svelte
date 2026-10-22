@@ -7,7 +7,7 @@
     onchoose  — called with the chosen action_id
 -->
 <script lang="ts">
-	import type { ViewAction } from '$lib/api';
+	import type { ViewAction } from '#lib/api.js';
 
 	interface Props {
 		choices: ViewAction[];
