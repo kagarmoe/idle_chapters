@@ -233,6 +233,10 @@ uv.lock
 # Serena (semantic code toolkit — project config + cache, local tooling)
 .serena/
 
+# Local swamp models, not shared: Axiom behaviors and the stagecraft studio
+models/@john/
+models/@swamp/stagecraft/studio/
+
 # BEGIN swamp managed section - DO NOT EDIT
 
 # Runtime data (not needed in version control)
