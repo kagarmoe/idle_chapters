@@ -45,6 +45,7 @@ def _view_from_result(result: StepResult) -> ViewModel:
             for c in result.choices
         ],
         visible_npcs=result.visible_npcs,
+        inventory=result.inventory,
     )
 
 

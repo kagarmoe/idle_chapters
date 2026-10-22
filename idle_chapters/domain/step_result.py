@@ -14,3 +14,4 @@ class StepResult:
     new_state: PlayerState
     debug: dict | None = None
     visible_npcs: list[str] = field(default_factory=list)
+    inventory: list[str] = field(default_factory=list)

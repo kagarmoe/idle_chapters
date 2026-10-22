@@ -20,6 +20,8 @@ export interface ViewModel {
 	eligible_actions: ViewAction[];
 	visible_items: string[];
 	visible_npcs: string[];
+	/** What the player carries, as display names. */
+	inventory: string[];
 }
 
 export interface StepResponse {

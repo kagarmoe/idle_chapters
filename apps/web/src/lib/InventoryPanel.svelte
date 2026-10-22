@@ -2,18 +2,20 @@
   InventoryPanel.svelte — Shows the player's visible items and NPCs.
 
   Props:
-    items — array of item name strings
-    npcs  — array of NPC name strings
+    items    — items here that could be picked up
+    npcs     — who is nearby
+    carrying — what the player carries
 -->
 <script lang="ts">
 	interface Props {
 		items?: string[];
 		npcs?: string[];
+		carrying?: string[];
 	}
 
-	let { items = [], npcs = [] }: Props = $props();
+	let { items = [], npcs = [], carrying = [] }: Props = $props();
 
-	const hasContent = $derived(items.length > 0 || npcs.length > 0);
+	const hasContent = $derived(items.length > 0 || npcs.length > 0 || carrying.length > 0);
 </script>
 
 {#if hasContent}
@@ -23,6 +25,17 @@
 				<h4 class="inventory-heading">◆ Items</h4>
 				<ul class="inventory-list">
 					{#each items as item}
+						<li class="inventory-item">{item}</li>
+					{/each}
+				</ul>
+			</div>
+		{/if}
+
+		{#if carrying.length > 0}
+			<div class="inventory-section">
+				<h4 class="inventory-heading">◆ Carrying</h4>
+				<ul class="inventory-list">
+					{#each carrying as item}
 						<li class="inventory-item">{item}</li>
 					{/each}
 				</ul>

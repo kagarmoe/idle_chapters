@@ -1,34 +1,38 @@
 <!--
-  JournalCard.svelte — Displays the most recent journal page entry.
+  JournalCard.svelte — The journal so far, newest page first, folded away until opened.
 
   Props:
-    page — a journal page record from the API (or null if no entry yet)
+    pages — journal pages from the API, oldest first
 -->
 <script lang="ts">
 	interface Props {
-		page: Record<string, unknown> | null;
+		pages: Record<string, unknown>[];
 	}
 
-	let { page }: Props = $props();
+	let { pages }: Props = $props();
 
-	// Extract display fields from the freeform journal page
-	const title = $derived(page ? String(page.title ?? page.scene_id ?? 'Untitled') : '');
-	const body = $derived(page ? String(page.body ?? page.text ?? page.description ?? '') : '');
+	const newestFirst = $derived([...pages].reverse());
 </script>
 
-{#if page}
-	<aside class="journal-card" aria-label="Journal entry">
-		<div class="journal-header">
-			<span class="journal-icon">📖</span>
-			<span class="journal-label">Journal</span>
-		</div>
-		{#if title}
-			<h3 class="journal-title">{title}</h3>
-		{/if}
-		{#if body}
-			<p class="journal-body">{body}</p>
-		{/if}
-	</aside>
+{#if pages.length > 0}
+	<details class="journal-card">
+		<summary class="journal-header">
+			<span class="journal-icon" aria-hidden="true">📖</span>
+			<span class="journal-label">Journal · {pages.length} {pages.length === 1 ? 'page' : 'pages'}</span>
+		</summary>
+		<ol class="journal-pages">
+			{#each newestFirst as page (page.page_id)}
+				<li class="journal-page">
+					{#if page.prompt}
+						<h3 class="journal-title">{page.prompt}</h3>
+					{/if}
+					{#each String(page.body ?? '').split('\n\n') as paragraph}
+						<p class="journal-body">{paragraph}</p>
+					{/each}
+				</li>
+			{/each}
+		</ol>
+	</details>
 {/if}
 
 <style>
@@ -39,14 +43,13 @@
 		padding: 1rem 1.25rem;
 		margin-top: 1.5rem;
 		background-color: color-mix(in srgb, var(--color-parchment) 50%, white);
-		animation: fade-in 0.5s ease-out;
 	}
 
 	.journal-header {
 		display: flex;
 		align-items: center;
 		gap: 0.4rem;
-		margin-bottom: 0.5rem;
+		cursor: pointer;
 	}
 
 	.journal-icon {
@@ -59,6 +62,20 @@
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
 		color: var(--color-amber);
+	}
+
+	.journal-pages {
+		list-style: none;
+		padding: 0;
+		margin: 0.75rem 0 0;
+		max-height: 24rem;
+		overflow-y: auto;
+	}
+
+	.journal-page + .journal-page {
+		margin-top: 1rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--color-cloud);
 	}
 
 	.journal-title {
@@ -76,8 +93,7 @@
 		color: var(--color-ink-light);
 	}
 
-	@keyframes fade-in {
-		from { opacity: 0; transform: translateY(4px); }
-		to   { opacity: 1; transform: translateY(0); }
+	.journal-body + .journal-body {
+		margin-top: 0.4rem;
 	}
 </style>
