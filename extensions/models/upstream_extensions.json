@@ -126,5 +126,19 @@
     "filesChecksum": "707559f22ed7b3363a3ca2e8bceb9de458cb68a93876b2425e932651a76f857f",
     "serverUrl": "https://swamp-club.com",
     "publishedChannel": "stable"
+  },
+  "@maphew/bd": {
+    "version": "2026.10.21.1",
+    "pulledAt": "2026-10-22T00:34:20.817Z",
+    "files": [
+      ".swamp/pulled-extensions/@maphew/bd/files/LICENSE",
+      ".swamp/pulled-extensions/@maphew/bd/files/README.md",
+      ".swamp/pulled-extensions/@maphew/bd/manifest.yaml",
+      ".swamp/pulled-extensions/@maphew/bd/models/src/bd_project.ts"
+    ],
+    "checksum": "00d6b0b9363816c33bc9f82af25b843fa1ff8c806fce07d9d977d69e4066819e",
+    "filesChecksum": "e7e796f615eef5f9c4834f4d1644f92cab8f23d25571674b8f73fad518fc2824",
+    "serverUrl": "https://swamp-club.com",
+    "publishedChannel": "stable"
   }
 }
