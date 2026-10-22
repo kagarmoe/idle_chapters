@@ -1,0 +1,58 @@
+id: add4831f-0158-4fd2-a5bb-75d6abd736e8
+name: ic-tidy
+description: >-
+  Tidy the development environment: report repo hygiene, delete branches whose
+  PR was merged with no later commits (never kg/ branches, unmerged, PR-less or
+  worktree ones), and remove worktrees whose folder is gone. A dry run unless
+  apply=true. Steps run one after another because they share one behavior lock.
+inputs:
+  properties:
+    apply:
+      type: boolean
+      default: false
+      description: Actually delete; otherwise only report what would go
+tags: {}
+jobs:
+  - name: tidy
+    description: Report, then prune branches and dead worktrees
+    steps:
+      - name: check
+        description: Read-only hygiene report (git, worktrees, temp, beads)
+        task:
+          type: behavior
+          behavior: ic-housekeeping
+          methodName: check
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+      - name: branches
+        description: Delete merged branches (kg/ always kept)
+        task:
+          type: behavior
+          behavior: ic-housekeeping
+          methodName: pruneMergedBranches
+          inputs:
+            apply: ${{ inputs.apply }}
+        dependsOn:
+          - step: check
+            condition:
+              type: completed
+        weight: 0
+        allowFailure: false
+      - name: worktrees
+        description: Remove worktrees whose folder is missing on disk
+        task:
+          type: behavior
+          behavior: ic-housekeeping
+          methodName: pruneWorktrees
+          inputs:
+            dryRun: ${{ !inputs.apply }}
+        dependsOn:
+          - step: branches
+            condition:
+              type: completed
+        weight: 0
+        allowFailure: false
+    dependsOn: []
+    weight: 0
+version: 1
