@@ -56,7 +56,7 @@
 				journalPage = res.journal_page;
 				choices = res.view.eligible_actions;
 			} else {
-				// shortcut: procedural scenes and dead-end nodes save no choices, so Continue re-enters (new roll, new page) until they do
+				// Nothing to resume (a dead-end node, or a scene the server can no longer rebuild): re-enter for fresh choices.
 				const step = await sessions.enter(savedId);
 				view = step.view;
 				journalPage = step.journal_page;

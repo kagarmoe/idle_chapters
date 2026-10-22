@@ -117,6 +117,10 @@ class Engine:
         if new_state.current_place_id != state.current_place_id:
             # A path: its own page tells the walk, then the destination takes over.
             arrived = self._handle_enter(new_state, repo, seed)
+            arrival = self._entry_action(arrived.new_state, repo)
+            if action.get("result") and arrival.get("result"):
+                # An authored arrival (coming home) is told on the same page as the walk.
+                action = {**action, "result": f"{action['result']} {arrival['result']}"}
             return StepResult(
                 journal_page=self._render_journal(action, arrived.new_state, repo, seed=seed),
                 choices=arrived.choices,
@@ -163,14 +167,24 @@ class Engine:
         ]
         return [*choices, *paths]
 
-    def choices_at(self, state: PlayerState, repo) -> list[dict] | None:
-        """Choices at the saved node, or None when it is not an authored node."""
+    def choices_at(self, state: PlayerState, repo, seed: int | None = None) -> list[dict] | None:
+        """Choices where the player left off, or None when they cannot be rebuilt.
+
+        A procedural scene is rebuilt from the seed that rolled it.
+        """
+        if not state.current_node_id:
+            if seed is None:
+                return None
+            rebuilt = self._handle_enter(state, repo, seed)
+            if rebuilt.new_state.current_node_id or rebuilt.new_state.current_scene_id != state.current_scene_id:
+                return None
+            return rebuilt.choices
         scene = next(
             (s for s in repo.scenes_by_place_id.get(state.current_place_id, [])
              if s.get("scene_id") == state.current_scene_id),
             None,
         )
-        if not scene or not state.current_node_id:
+        if not scene:
             return None
         nodes_by_id = {n["node_id"]: n for n in scene.get("nodes", [])}
         node = nodes_by_id.get(state.current_node_id)
@@ -187,6 +201,19 @@ class Engine:
         if scenes:
             return scenes[0]
         return None
+
+    @staticmethod
+    def _entry_action(state: PlayerState, repo) -> dict:
+        """The action at the entry node of the authored scene just entered, if any."""
+        scene = next(
+            (s for s in repo.scenes_by_place_id.get(state.current_place_id, [])
+             if s.get("scene_id") == state.current_scene_id),
+            None,
+        )
+        if not scene or not state.current_node_id:
+            return {}
+        node = next((n for n in scene.get("nodes", []) if n["node_id"] == state.current_node_id), {})
+        return repo.actions_by_id.get(node.get("action_ref"), {})
 
     def _find_node_by_action(
         self, nodes_by_id: dict, action_id: str
