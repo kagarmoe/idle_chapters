@@ -5,8 +5,9 @@ name: ic-features
 version: 1
 tags: {}
 globalArguments:
-  tracker: ic
+  tracker: beads
   definition:
+    tracker: { kind: beads }
     schemaVersion: 3
     description: |-
       One Idle Chapters feature or fix from the prioritized list

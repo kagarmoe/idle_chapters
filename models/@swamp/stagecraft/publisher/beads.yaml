@@ -1,0 +1,11 @@
+type: '@swamp/stagecraft/publisher'
+typeVersion: 2026.10.12.1
+id: 629860b8-ff40-43af-a30f-2ad722947cd0
+name: beads
+version: 1
+tags: {}
+globalArguments:
+  tracker: bd-tracker
+  statuses: >-
+    {"open":"open","in_progress":"in_progress","shipped":"closed","closed":"closed"}
+methods: {}
