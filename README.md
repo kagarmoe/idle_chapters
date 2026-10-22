@@ -18,9 +18,13 @@ python -m idle_chapters
 ### Install and run tests
 
 ```bash
-pip install -r requirements.txt
-pytest
+scripts/bootstrap.sh   # swamp extensions, beads DB + hooks, web deps
+uv run --with-requirements requirements.txt python -m pytest -q
 ```
+
+Run it on every new clone or worktree. It installs no secrets: each clone's `default`
+swamp vault starts empty with its own key, so add what that machine needs with
+`swamp vault put default <KEY>` (e.g. the Discord webhook `ic-alerts` posts to).
 
 ### Local development
 
