@@ -83,11 +83,8 @@ def test_intent_no_match_maps_to_game_error():
         flags=set(),
     )
     engine = MagicMock()
-    # submit_intent first calls engine.step with "enter" to get choices
-    engine.step.return_value = MagicMock(
-        journal_page=None, new_state=state, debug={},
-        choices=[{"action_id": "make_tea", "label": "Make tea"}],
-    )
+    # submit_intent matches against the choices where the player left off
+    engine.choices_at.return_value = [{"action_id": "make_tea", "label": "Make tea"}]
     service = _make_service(state=state, engine=engine)
     with pytest.raises(GameError) as exc_info:
         service.submit_intent("s1", "fly to the moon")

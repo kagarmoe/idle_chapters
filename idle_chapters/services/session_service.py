@@ -5,6 +5,7 @@ import logging
 from uuid import uuid4
 
 from idle_chapters.domain.engine import Engine
+from idle_chapters.domain.intent import match_intent, split_clauses
 from idle_chapters.domain.errors import (
     ActionNotEligible,
     InsufficientInventory,
@@ -86,19 +87,23 @@ class SessionService:
         return result
 
     def submit_intent(self, session_id: str, text: str) -> StepResult:
-        """Match free-text input to an eligible action and execute it."""
-        state = self._load_state(session_id)
-        seed = self._seed(session_id)
+        """Do each thing the player asked for, in order, until one is not on offer or they leave."""
+        current = self.resume(session_id)
+        start_place = current.new_state.current_place_id
+        keep = [c.get("label", "") for c in current.choices]
+        keep += [p for a in self._repo.actions_by_id.values() for p in a.get("intent_signature", {}).get("phrases", [])]
 
-        try:
-            current_result = self._engine.step(state, "enter", None, self._repo, seed=seed)
-        except Exception as e:
-            raise self._engine_error(session_id, e) from e
+        result = None
+        for clause in split_clauses(text, keep):
+            matched_id = match_intent(clause, current.choices, self._repo)
+            if matched_id is None:
+                break
+            result = current = self.perform_action(session_id, matched_id)
+            if result.new_state.current_place_id != start_place:
+                break
 
-        matched_id = self._match_intent(text, current_result.choices)
-
-        if matched_id is None:
-            available = [c.get("label", "") for c in current_result.choices]
+        if result is None:
+            available = [c.get("label", "") for c in current.choices]
             raise GameError(
                 kind=ErrorKind.INTENT_NO_MATCH,
                 effect=Effect.NONE,
@@ -114,16 +119,6 @@ class SessionService:
                     "session_id": session_id,
                 },
             )
-
-        try:
-            result = self._engine.step(state, "choose option", matched_id, self._repo, seed=seed)
-        except (ActionNotEligible, InsufficientInventory, InvalidLocation,
-                SceneNotAvailable) as e:
-            raise self._domain_error(e) from e
-        except Exception as e:
-            raise self._engine_error(session_id, e) from e
-
-        self._persist(session_id, result)
         return result
 
     def resume(self, session_id: str) -> StepResult:
@@ -286,13 +281,3 @@ class SessionService:
             ),
             context={"session_id": session_id, "error": str(exc)},
         )
-
-    @staticmethod
-    def _match_intent(text: str, choices: list[dict]) -> str | None:
-        """Match free-text input against choice labels."""
-        text_lower = text.lower()
-        for choice in choices:
-            label = choice.get("label", "").lower()
-            if label and label in text_lower:
-                return choice.get("action_id") or choice.get("choice_id")
-        return None
