@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from idle_chapters.domain.daytime import day, time_of_day
+
 if TYPE_CHECKING:
     from idle_chapters.domain.state import PlayerState
 
@@ -50,14 +52,16 @@ def evaluate_conditions(state: PlayerState, when: dict | None, repo) -> bool:
         if state.seen_interactions.get(interaction, 0) < min_count:
             return False
 
-    # time_of_day: skip in v1 (always passes)
+    times = when.get("time_of_day")
+    if times and time_of_day(state.time_tick) not in times:
+        return False
 
     day_min = when.get("day_min")
-    if day_min is not None and state.time_tick < day_min:
+    if day_min is not None and day(state.time_tick) < day_min:
         return False
 
     day_max = when.get("day_max")
-    if day_max is not None and state.time_tick > day_max:
+    if day_max is not None and day(state.time_tick) > day_max:
         return False
 
     return True

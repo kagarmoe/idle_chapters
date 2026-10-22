@@ -118,46 +118,23 @@ def test_seen_interactions_min_fails() -> None:
     assert evaluate_conditions(_make_state(), when, _make_repo()) is False
 
 
-def test_day_min_passes() -> None:
-    state = _make_state(time_tick=5)
-    when = {"day_min": 3}
-    assert evaluate_conditions(state, when, _make_repo()) is True
+def test_day_bounds_count_whole_days_not_ticks() -> None:
+    from idle_chapters.domain.daytime import TICKS_PER_DAY
+
+    day_two = _make_state(time_tick=2 * TICKS_PER_DAY)
+    assert evaluate_conditions(day_two, {"day_min": 2, "day_max": 2}, _make_repo()) is True
+    assert evaluate_conditions(day_two, {"day_min": 3}, _make_repo()) is False
+    assert evaluate_conditions(_make_state(time_tick=TICKS_PER_DAY - 1), {"day_min": 1}, _make_repo()) is False
 
 
-def test_day_min_fails() -> None:
-    state = _make_state(time_tick=1)
-    when = {"day_min": 3}
-    assert evaluate_conditions(state, when, _make_repo()) is False
+def test_time_of_day_follows_the_ticks() -> None:
+    from idle_chapters.domain.daytime import TICKS_PER_PHASE, time_of_day
+
+    evening = {"time_of_day": ["evening", "night"]}
+    assert time_of_day(0) == "morning"
+    assert evaluate_conditions(_make_state(), evening, _make_repo()) is False
+    at_evening = _make_state(time_tick=4 * TICKS_PER_PHASE)
+    assert time_of_day(at_evening.time_tick) == "evening"
+    assert evaluate_conditions(at_evening, evening, _make_repo()) is True
 
 
-def test_day_max_passes() -> None:
-    state = _make_state(time_tick=2)
-    when = {"day_max": 5}
-    assert evaluate_conditions(state, when, _make_repo()) is True
-
-
-def test_day_max_fails() -> None:
-    state = _make_state(time_tick=10)
-    when = {"day_max": 5}
-    assert evaluate_conditions(state, when, _make_repo()) is False
-
-
-def test_combined_conditions() -> None:
-    state = _make_state(
-        flags={"made_tea"},
-        inventory={"key": 1},
-        time_tick=3,
-    )
-    when = {
-        "location": "cottage_home",
-        "flags_set": ["made_tea"],
-        "inventory_min": {"key": 1},
-        "day_min": 2,
-        "day_max": 5,
-    }
-    assert evaluate_conditions(state, when, _make_repo()) is True
-
-
-def test_time_of_day_always_passes() -> None:
-    when = {"time_of_day": ["morning", "afternoon"]}
-    assert evaluate_conditions(_make_state(), when, _make_repo()) is True
