@@ -110,5 +110,21 @@
     "filesChecksum": "a7c6c4504af43b3c17fb4fab8964a800568a5d77ec49d2440b6552d0bb22b7c5",
     "serverUrl": "https://swamp-club.com",
     "publishedChannel": "stable"
+  },
+  "@swamp/vercel/environment": {
+    "version": "2026.10.20.2",
+    "pulledAt": "2026-10-22T00:10:06.580Z",
+    "files": [
+      ".swamp/pulled-extensions/@swamp/vercel/environment/files/LICENSE.txt",
+      ".swamp/pulled-extensions/@swamp/vercel/environment/files/README.md",
+      ".swamp/pulled-extensions/@swamp/vercel/environment/manifest.yaml",
+      ".swamp/pulled-extensions/@swamp/vercel/environment/models/_lib/vercel.ts",
+      ".swamp/pulled-extensions/@swamp/vercel/environment/models/custom_environments.ts",
+      ".swamp/pulled-extensions/@swamp/vercel/environment/models/env.ts"
+    ],
+    "checksum": "cc291df73c49ec5af7ed7965fcdb3a06ae1044b974e6b4b25df2f5d7a022e9a0",
+    "filesChecksum": "707559f22ed7b3363a3ca2e8bceb9de458cb68a93876b2425e932651a76f857f",
+    "serverUrl": "https://swamp-club.com",
+    "publishedChannel": "stable"
   }
 }

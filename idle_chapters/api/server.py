@@ -57,7 +57,8 @@ def create_app() -> FastAPI:
     @app.get("/health")
     def health() -> dict:
         get_content_repo()
-        return {"status": "ok"}
+        # Vercel sets this per deployment; ic-ship's smoke waits for the merged commit.
+        return {"status": "ok", "commit": os.getenv("VERCEL_GIT_COMMIT_SHA")}
 
     return app
 

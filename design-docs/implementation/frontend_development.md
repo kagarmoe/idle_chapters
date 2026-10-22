@@ -4,7 +4,7 @@
 
 The browser-based game client lives in `apps/web/`. It is a SvelteKit application that communicates with the FastAPI backend over REST.
 
-**Status:** Functional prototype. Not deployed. Local development only.
+**Status:** Deployed at [idle-chapters.vercel.app/play/idle-chapters](https://idle-chapters.vercel.app/play/idle-chapters). One Vercel project serves the web app and the API on the same origin (Vercel Services; see `vercel.json` and the README's Deployment section).
 
 ## Tech Stack
 
@@ -29,7 +29,7 @@ npm run dev
 
 The game is available at [http://localhost:5173/play/idle-chapters](http://localhost:5173/play/idle-chapters).
 
-The API base URL is configured via the `VITE_API_URL` environment variable. When unset, it defaults to the same origin (expects the API at the same host).
+The client always calls the API on its own origin. In dev, Vite forwards `/v1` and `/health` to the API on port 8000 (`vite.config.ts`); in production, Vercel routes them to the API service. The API's CORS settings only matter for other local origins.
 
 ## Architecture
 
@@ -84,7 +84,6 @@ npm run build     # Production build
 
 ## What's Not Built Yet
 
-- Deployment configuration (no hosting target chosen)
 - Error messages currently hardcoded in the Svelte component rather than using the `title` from the player projection's `ProblemDetail`
 - No offline or service worker support
 - No accessibility audit

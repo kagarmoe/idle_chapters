@@ -1,8 +1,8 @@
 /**
  * Quality gates and shipping for Idle Chapters: asset/schema validation,
- * pytest, the web app's svelte-check + build + e2e, deploying the API at an
- * exact commit, and a live smoke test. Each method writes a record only when
- * it passes; a failure throws so workflows stop on it.
+ * pytest, the web app's svelte-check + build + e2e, and a live smoke test of
+ * the one Vercel project that serves both web and API. Each method writes a
+ * record only when it passes; a failure throws so workflows stop on it.
  *
  * @module
  */
@@ -20,10 +20,10 @@ const GlobalArgsSchema = z.object({
   webDir: z.string().default("apps/web"),
   // Local runs use an installed Chrome; CI installs Playwright's own build.
   playwrightChannel: z.string().default("chrome"),
-  apiUrl: z.string().default("https://idle-chapters-api.vercel.app"),
+  // Web app and API share this origin (vercel.json services).
   webUrl: z.string().default("https://idle-chapters.vercel.app"),
-  apiProjectId: z.string().default("prj_QlitUIikmNFcqZjBzIbTWpg6lSKi"),
-  vercelOrgId: z.string().default("team_SMACO8iOr6wPIGx5as56P468"),
+  deployWaitMs: z.number().default(600_000),
+  deployPollMs: z.number().default(15_000),
 });
 
 type GlobalArgs = z.infer<typeof GlobalArgsSchema>;
@@ -34,12 +34,6 @@ const GateSchema = z.object({
   durationMs: z.number(),
   outputTail: z.string(),
   checkedAt: z.iso.datetime(),
-});
-
-const DeploySchema = z.object({
-  commit: z.string(),
-  url: z.string(),
-  deployedAt: z.iso.datetime(),
 });
 
 type Context = {
@@ -113,18 +107,12 @@ async function expectOk(url: string, init?: RequestInit) {
 /** Quality gates and shipping for the Idle Chapters repo. */
 export const behavior = {
   type: "@kagarmoe/idle-chapters-checks",
-  version: "2026.10.21.3",
+  version: "2026.10.22.1",
   globalArguments: GlobalArgsSchema,
   resources: {
     "gate": {
       description: "A quality gate that passed",
       schema: GateSchema,
-      lifetime: "infinite",
-      garbageCollection: 20,
-    },
-    "deploy": {
-      description: "An API deployment of an exact commit",
-      schema: DeploySchema,
       lifetime: "infinite",
       garbageCollection: 20,
     },
@@ -138,6 +126,11 @@ export const behavior = {
     {
       toVersion: "2026.10.21.3",
       description: "test runs the Mongo-gated tests on the in-memory backend, as CI does on mongo:7",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.10.22.1",
+      description: "One Vercel project serves web and API: deployApi and the API-project globals go; smoke waits for the commit",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -184,72 +177,49 @@ export const behavior = {
           env: { CI: "1", PW_CHANNEL: context.globalArgs.playwrightChannel },
         }], context),
     },
-    deployApi: {
-      description:
-        "Deploy the API to Vercel production from an exact commit (git archive, not the working tree)",
-      arguments: z.object({ commit: z.string().regex(/^[0-9a-f]{40}$/) }),
-      execute: async (args: { commit: string }, context: Context) => {
-        const g = context.globalArgs;
-        const dir = await Deno.makeTempDir({ prefix: "ic-api-deploy-" });
-        try {
-          const tar = `${dir}.tar`;
-          await runSteps("deployApi", [
-            { argv: ["git", "archive", "-o", tar, args.commit], cwd: context.repoDir },
-            { argv: ["tar", "-xf", tar, "-C", dir], cwd: dir },
-          ], context);
-          await Deno.remove(tar);
-          // Kept out of the repo: root-level Vercel config would also apply to the web project.
-          await Deno.mkdir(`${dir}/.vercel`);
-          await Deno.writeTextFile(
-            `${dir}/.vercel/project.json`,
-            JSON.stringify({ projectId: g.apiProjectId, orgId: g.vercelOrgId }),
-          );
-          await Deno.writeTextFile(`${dir}/vercel.json`, JSON.stringify({ framework: "fastapi" }));
-          const output = await runSteps("deployApi", [{
-            argv: ["vercel", "deploy", "--prod", "--yes", "--cwd", dir],
-            cwd: dir,
-          }], context);
-          const url = output.match(/https:\/\/[a-z0-9-]+\.vercel\.app/)?.[0];
-          if (!url) throw new Error(`deployApi: no deployment URL in output:\n${output.slice(-TAIL_CHARS)}`);
-          const handle = await context.writeResource("deploy", "api", {
-            commit: args.commit,
-            url,
-            deployedAt: new Date().toISOString(),
-          });
-          return { dataHandles: [handle] };
-        } finally {
-          await Deno.remove(dir, { recursive: true });
-        }
-      },
-    },
     smoke: {
       description:
-        "Live smoke test: API health, a new session offers choices with CORS for the web origin, and the play page loads",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, never>, context: Context) => {
-        const { apiUrl, webUrl } = context.globalArgs;
+        "Live smoke test of production once Vercel has deployed the commit: health reports it, a new session offers choices and reads back, and the play page loads",
+      arguments: z.object({ commit: z.string().regex(/^[0-9a-f]{40}$/) }),
+      execute: async (args: { commit: string }, context: Context) => {
+        const { webUrl, deployWaitMs, deployPollMs } = context.globalArgs;
         const started = Date.now();
-        await expectOk(`${apiUrl}/health`);
-        const res = await fetch(`${apiUrl}/v1/sessions`, {
+        // Vercel's Git integration deploys main; until this commit is live, /health is old, missing or not JSON.
+        let seen: unknown = "no response";
+        while ((seen as { commit?: string })?.commit !== args.commit) {
+          if (Date.now() - started > deployWaitMs) {
+            throw new Error(`smoke: ${webUrl}/health never reported ${args.commit}; last saw ${JSON.stringify(seen).slice(0, 200)}`);
+          }
+          try {
+            const res = await fetch(`${webUrl}/health`, { signal: context.signal });
+            seen = res.ok ? await res.json() : `HTTP ${res.status}`;
+          } catch (e) {
+            seen = String(e);
+          }
+          if ((seen as { commit?: string })?.commit !== args.commit) {
+            await new Promise((r) => setTimeout(r, deployPollMs));
+          }
+        }
+        const res = await fetch(`${webUrl}/v1/sessions`, {
           method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "Accept-Projection": "player",
-            Origin: webUrl,
-          },
+          headers: { "content-type": "application/json", "Accept-Projection": "player" },
           body: JSON.stringify({ place_id: "cottage_home" }),
         });
         const session = await res.json();
         if (!res.ok || !session.view?.eligible_actions?.length) {
           throw new Error(`smoke: new session offered no choices (${res.status}): ${JSON.stringify(session).slice(0, 500)}`);
         }
-        if (res.headers.get("access-control-allow-origin") !== webUrl) {
-          throw new Error(`smoke: API does not allow CORS from ${webUrl}`);
-        }
+        // Read it back: sessions must persist between requests (MONGO_URL reaches the database).
+        await expectOk(`${webUrl}/v1/sessions/${session.session_id}`);
         await expectOk(`${webUrl}/play/idle-chapters`);
         const handle = await context.writeResource("gate", "smoke", {
           gate: "smoke",
-          commands: [`GET ${apiUrl}/health`, `POST ${apiUrl}/v1/sessions`, `GET ${webUrl}/play/idle-chapters`],
+          commands: [
+            `GET ${webUrl}/health (until commit ${args.commit})`,
+            `POST ${webUrl}/v1/sessions`,
+            `GET ${webUrl}/v1/sessions/${session.session_id}`,
+            `GET ${webUrl}/play/idle-chapters`,
+          ],
           durationMs: Date.now() - started,
           outputTail: `choices: ${session.view.eligible_actions.map((a: { action_id: string }) => a.action_id).join(", ")}`,
           checkedAt: new Date().toISOString(),

@@ -56,6 +56,21 @@ def test_broken_content_fails_health_and_is_never_cached(monkeypatch) -> None:
     assert deps._CONTENT_REPO is None
 
 
+def test_health_reports_the_deployed_commit(monkeypatch) -> None:
+    # ic-ship's smoke waits until production reports the merged commit.
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import create_app
+
+    monkeypatch.setenv("VERCEL_GIT_COMMIT_SHA", "abc123")
+    assert TestClient(create_app()).get("/health").json() == {"status": "ok", "commit": "abc123"}
+    monkeypatch.delenv("VERCEL_GIT_COMMIT_SHA")
+    assert TestClient(create_app()).get("/health").json() == {"status": "ok", "commit": None}
+
+
 def test_travel_walks_every_path_and_gives_the_kit_once(monkeypatch) -> None:
     from idle_chapters.persistence import mongo
 

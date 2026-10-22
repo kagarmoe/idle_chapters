@@ -1,0 +1,14 @@
+type: '@swamp/vercel/projects/env'
+typeVersion: 2026.10.20.3
+id: 6cad0821-a15a-45c1-997a-f69f1c961b37
+name: vite-api-url
+version: 1
+tags: {}
+# Retired: the web client calls the API on its own origin. Kept to look up and delete the stale variable.
+globalArguments:
+  name: vite-api-url
+  idOrName: idle-chapters
+  teamId: team_SMACO8iOr6wPIGx5as56P468
+  key: VITE_API_URL
+  token: ${{ vault.get("default", "vercel_token") }}
+methods: {}

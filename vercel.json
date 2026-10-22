@@ -1,0 +1,18 @@
+{
+  "services": {
+    "api": {
+      "root": "./",
+      "framework": "fastapi",
+      "entrypoint": "idle_chapters.api.server:server"
+    },
+    "web": {
+      "root": "apps/web/",
+      "framework": "sveltekit"
+    }
+  },
+  "rewrites": [
+    { "source": "/v1/(.*)", "destination": { "service": "api" } },
+    { "source": "/health", "destination": { "service": "api" } },
+    { "source": "/(.*)", "destination": { "service": "web" } }
+  ]
+}

@@ -28,9 +28,14 @@ pytest
 uvicorn idle_chapters.api.server:server
 ```
 
-MongoDB is required for session persistence. Set `MONGO_URL` or run `mongod` locally.
+MongoDB is required for session persistence. Set `MONGO_URL` (or `MONGO_URL=memory://` for an in-process store) or run `mongod` locally.
 
 - API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Web app: `cd apps/web && npm run dev`; the dev server forwards `/v1` and `/health` to the API on port 8000.
+
+### Deployment
+
+One Vercel project, `idle-chapters`, serves both the web app and the API on the same origin: `vercel.json` declares two [Vercel Services](https://vercel.com/docs/services), the SvelteKit app (`apps/web/`) and the FastAPI app (`idle_chapters.api.server:server`), and routes `/v1/*` and `/health` to the API. Vercel deploys `main` on every merge; PR CI is the gate. The `ic-ship` swamp workflow then waits for that commit to go live and smoke-tests production.
 
 ## Architecture
 

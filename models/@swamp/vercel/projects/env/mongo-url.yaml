@@ -1,0 +1,17 @@
+type: '@swamp/vercel/projects/env'
+typeVersion: 2026.10.20.3
+id: 4363ca58-5545-4d95-b14c-bbf7075a59fc
+name: mongo-url
+version: 1
+tags: {}
+globalArguments:
+  name: mongo-url
+  idOrName: idle-chapters
+  teamId: team_SMACO8iOr6wPIGx5as56P468
+  key: MONGO_URL
+  type: encrypted
+  target: [production, preview]
+  value: ${{ vault.get("default", "api_mongo_url") }}
+  comment: The API's database (Atlas); one project serves web and API.
+  token: ${{ vault.get("default", "vercel_token") }}
+methods: {}

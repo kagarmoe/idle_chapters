@@ -2,7 +2,7 @@
  * Typed API client for the Idle Chapters backend.
  *
  * Covers /v1/sessions/* and /v1/world/* endpoints.
- * Base URL is read from the VITE_API_URL environment variable.
+ * The API is served on the page's own origin (Vercel Services in production, the Vite proxy in dev).
  */
 
 // ---------------------------------------------------------------------------
@@ -104,10 +104,8 @@ class ApiError extends Error {
 
 export { ApiError };
 
-const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? '';
-
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-	const url = `${BASE_URL}${path}`;
+	const url = path;
 	const init: RequestInit = {
 		method,
 		headers: {
