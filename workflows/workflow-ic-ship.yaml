@@ -13,14 +13,19 @@ inputs:
       description: Full SHA of the merged commit on main
   required: [commit]
 tags: {}
+# The serve on Hestia is remote-only: every step needs placement.
+labels:
+  host: hippolyta
 jobs:
   - name: checks
-    description: Every quality gate
+    description: Every quality gate, on exactly this commit
     steps:
       - name: checks
         task:
           type: workflow
           workflowIdOrName: ic-checks
+          inputs:
+            ref: ${{ inputs.commit }}
         dependsOn: []
         weight: 0
         allowFailure: false
