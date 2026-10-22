@@ -332,3 +332,25 @@ def test_free_text_does_each_thing_in_turn_until_you_leave(monkeypatch) -> None:
     step, pages = say("head to town and then make tea")
     assert len(pages) == 2
     assert "wander_home" in {a["action_id"] for a in step["view"]["eligible_actions"]}
+
+
+def test_walking_into_the_bakery_meets_whoever_is_there(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+
+    client = TestClient(server)
+    session_id = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()["session_id"]
+    for action_id in ("head_to_town", "visit_bakery"):
+        step = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
+        assert step.status_code == 200, step.text
+    view = step.json()["view"]
+
+    assert {"Elin the Baker", "Moss"} <= set(view["visible_npcs"])
+    assert "Elin the Baker" in view["prompt"] or "Moss" in view["prompt"]
+    resumed = client.get(f"/v1/sessions/{session_id}").json()
+    assert resumed["view"]["visible_npcs"] == view["visible_npcs"]
+    assert sum(resumed["state"]["seen_interactions"].values()) >= 1

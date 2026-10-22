@@ -1527,6 +1527,7 @@
             "current_place_id": "cottage_home",
             "flags": [],
             "inventory": {},
+            "seen_interactions": {},
             "time_tick": 0
           },
           "view": {

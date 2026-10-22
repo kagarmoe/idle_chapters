@@ -13,3 +13,4 @@ class StepResult:
     choices: list[dict]
     new_state: PlayerState
     debug: dict | None = None
+    visible_npcs: list[str] = field(default_factory=list)

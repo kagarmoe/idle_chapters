@@ -132,6 +132,7 @@ class SessionService:
         seed = self._seed_at(session_id, len(pages) - 1) if pages else None
         try:
             choices = self._engine.choices_at(state, self._repo, seed=seed) or []
+            visible_npcs = self._engine.visible_npcs(state, self._repo)
         except Exception as e:
             raise self._engine_error(session_id, e) from e
         return StepResult(
@@ -139,6 +140,7 @@ class SessionService:
             choices=choices,
             new_state=state,
             debug={"selected_scene_id": state.current_scene_id},
+            visible_npcs=visible_npcs,
         )
 
     def get_session(self, session_id: str) -> PlayerState | None:
