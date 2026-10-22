@@ -202,5 +202,20 @@
     "filesChecksum": "9fe2f8f8895bcf4c943b2e4695eb9f23eade868412f3381e00abd8209dbe08d1",
     "serverUrl": "https://swamp-club.com",
     "publishedChannel": "stable"
+  },
+  "@maphew/housekeeping": {
+    "version": "2026.10.21.1",
+    "pulledAt": "2026-10-22T05:06:21.470Z",
+    "files": [
+      ".swamp/pulled-extensions/@maphew/housekeeping/files/LICENSE",
+      ".swamp/pulled-extensions/@maphew/housekeeping/files/README.md",
+      ".swamp/pulled-extensions/@maphew/housekeeping/manifest.yaml",
+      ".swamp/pulled-extensions/@maphew/housekeeping/models/src/housekeeping.ts",
+      ".swamp/pulled-extensions/@maphew/housekeeping/workflows/workflow-housekeeping.yaml"
+    ],
+    "checksum": "1020b2c3dee8325bb044fd502940be80bb97d2b1a32017bc58120150f6abb4b1",
+    "filesChecksum": "f525822d6f8b7657c90c07882ea36b8ff54f42e828daa32649c0ad502f6f11ae",
+    "serverUrl": "https://swamp-club.com",
+    "publishedChannel": "stable"
   }
 }
