@@ -31,10 +31,8 @@ Opens once `left_cottage_first` is set.
 | `settle_in` (entry) | `sit_by_the_fire`, `look_around`, `make_tea`, `pick_up_journal` |
 | each of those four | the other three |
 
-Arriving by a path shows the path's own journal page. The `settle_in` page shows
-on the next enter (`POST /v1/sessions/{id}/enter`); the web client does not call
-enter yet, so web players see the scene's choices but not its text until resume
-re-renders the current node (priorities row 2).
+Arriving by a path writes one journal page that tells the walk and then the
+`settle_in` text (ic-23), so no extra enter is needed to see it.
 
 ## Once-only actions
 

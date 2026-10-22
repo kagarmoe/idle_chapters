@@ -275,9 +275,9 @@ def test_coming_home_settles_in_rather_than_waking_again(monkeypatch) -> None:
     home = take("wander_home")
     assert home["scene_id"] == "cottage_home_return_v1"
     assert "sit_by_the_fire" in {a["action_id"] for a in home["eligible_actions"]}
-
-    entered = client.post(f"/v1/sessions/{session_id}/enter").json()["view"]
-    assert "You ease the door shut behind you." in entered["prompt"]
+    # The walk's page also tells the arrival, so settling in needs no extra /enter.
+    assert "You take the long way home" in home["prompt"]
+    assert "You ease the door shut behind you." in home["prompt"]
     assert "bed" not in take("look_around")["prompt"]
 
 
@@ -291,9 +291,18 @@ def test_get_session_resumes_the_view_it_left(monkeypatch) -> None:
 
     client = TestClient(server)
     created = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()
-    assert created["view"]["eligible_actions"]
+    session_id = created["session_id"]
 
-    resumed = client.get(f"/v1/sessions/{created['session_id']}")
-    assert resumed.status_code == 200, resumed.text
-    assert resumed.json()["view"]["eligible_actions"] == created["view"]["eligible_actions"]
-    assert resumed.json()["journal_page"] == created["journal_page"]
+    def assert_resumes(step: dict) -> None:
+        assert step["view"]["eligible_actions"]
+        resumed = client.get(f"/v1/sessions/{session_id}")
+        assert resumed.status_code == 200, resumed.text
+        assert resumed.json()["view"]["eligible_actions"] == step["view"]["eligible_actions"]
+        assert resumed.json()["journal_page"] == step["journal_page"]
+
+    assert_resumes(created)
+    # After an authored action, then in a procedural place (town has no authored scene).
+    for action_id in ("look_around", "head_to_town"):
+        step = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
+        assert step.status_code == 200, step.text
+        assert_resumes(step.json())

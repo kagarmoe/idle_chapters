@@ -452,7 +452,9 @@ def test_resume_without_an_authored_node_returns_no_choices_and_writes_nothing(s
 
     session_id, _ = service.create_session()
     state_store = stores[0]
-    state_store.upsert_state(session_id, replace(state_store.get_state(session_id), current_node_id=None))
+    saved = state_store.get_state(session_id)
+    # A scene the saved seed does not roll: nothing to rebuild.
+    state_store.upsert_state(session_id, replace(saved, current_scene_id="gone", current_node_id=None))
     before = _store_snapshot(stores, session_id)
 
     resumed = service.resume(session_id)
@@ -460,5 +462,19 @@ def test_resume_without_an_authored_node_returns_no_choices_and_writes_nothing(s
     assert resumed.choices == []
     assert resumed.journal_page is not None
     assert _store_snapshot(stores, session_id) == before
+
+
+def test_resume_reports_an_engine_failure_as_a_game_error(service, monkeypatch) -> None:
+    from idle_chapters.services.errors import ErrorKind, GameError
+
+    session_id, _ = service.create_session()
+
+    def boom(*args, **kwargs):
+        raise RuntimeError("broken content")
+
+    monkeypatch.setattr(service._engine, "choices_at", boom)
+    with pytest.raises(GameError) as caught:
+        service.resume(session_id)
+    assert caught.value.kind == ErrorKind.ENGINE_FAILURE
 
 

@@ -133,9 +133,15 @@ class SessionService:
         page = None
         if pages:
             page = {k: v for k, v in pages[-1].items() if k not in ("session_id", "created_at")}
+        # The last step rolled with the seed from before its page was written.
+        seed = self._seed_at(session_id, len(pages) - 1) if pages else None
+        try:
+            choices = self._engine.choices_at(state, self._repo, seed=seed) or []
+        except Exception as e:
+            raise self._engine_error(session_id, e) from e
         return StepResult(
             journal_page=page,
-            choices=self._engine.choices_at(state, self._repo) or [],
+            choices=choices,
             new_state=state,
             debug={"selected_scene_id": state.current_scene_id},
         )
@@ -148,7 +154,10 @@ class SessionService:
 
     def _seed(self, session_id: str) -> int:
         """Same session at the same step rolls the same scene, template and variant."""
-        step = self._journal_store.count_pages(session_id)
+        return self._seed_at(session_id, self._journal_store.count_pages(session_id))
+
+    @staticmethod
+    def _seed_at(session_id: str, step: int) -> int:
         return int.from_bytes(hashlib.sha256(f"{session_id}:{step}".encode()).digest()[:8], "big")
 
     def _load_state(self, session_id: str) -> PlayerState:
