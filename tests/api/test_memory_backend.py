@@ -306,3 +306,29 @@ def test_get_session_resumes_the_view_it_left(monkeypatch) -> None:
         step = client.post(f"/v1/sessions/{session_id}/action", json={"action_id": action_id})
         assert step.status_code == 200, step.text
         assert_resumes(step.json())
+
+
+def test_free_text_does_each_thing_in_turn_until_you_leave(monkeypatch) -> None:
+    from idle_chapters.persistence import mongo
+
+    monkeypatch.setenv("MONGO_URL", "memory://")
+    monkeypatch.setattr(mongo, "_CLIENT", None)
+
+    from idle_chapters.api.server import server
+
+    client = TestClient(server)
+
+    def say(text: str) -> tuple[dict, list]:
+        session_id = client.post("/v1/sessions", json={"place_id": "cottage_home"}).json()["session_id"]
+        response = client.post(f"/v1/sessions/{session_id}/intent", json={"input": text})
+        assert response.status_code == 200, response.text
+        return response.json(), client.get(f"/v1/sessions/{session_id}/journal").json()
+
+    step, pages = say("I'd like a cup of tea, then I'll pick up the journal.")
+    assert len(pages) == 3
+    assert "You lift the journal from the table." in step["view"]["prompt"]
+
+    # Leaving ends the turn: nothing after "town" happens at the cottage or in town.
+    step, pages = say("head to town and then make tea")
+    assert len(pages) == 2
+    assert "wander_home" in {a["action_id"] for a in step["view"]["eligible_actions"]}

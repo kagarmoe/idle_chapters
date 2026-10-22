@@ -189,10 +189,13 @@ def submit_action(
     "/{session_id}/intent",
     response_model=StepResponse,
     responses={**SESSION_NOT_FOUND_RESPONSES, **INTENT_NO_MATCH_RESPONSES},
-    description="""Match free-text input to an eligible action and execute it.
+    description="""Match free-text input to eligible actions and execute them in order.
 
-The input is matched against the labels of currently eligible actions.
-If no match is found, a 422 error is returned with the available actions.
+The input is split on "and", "then" and commas. Each part is matched against the
+eligible actions' phrases, labels and keywords (a phrase or label beats a keyword).
+The parts run in order and stop at one that matches nothing, or when the player leaves
+the place. The response is the last step. If nothing matches, a 422 error lists the
+available actions.
 
 **curl:**
 ```bash
