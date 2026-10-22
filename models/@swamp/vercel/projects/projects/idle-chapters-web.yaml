@@ -10,5 +10,8 @@ globalArguments:
   # One project serves web and API: vercel.json at the repo root declares both services.
   # Root Directory is the repo root (null), set by the useRepoRoot method; update cannot send null.
   framework: services
+  # Beads' Dolt remote force-pushes a __dolt_remote_info__ branch (one DOLT_REMOTE.md) on every
+  # sync; it has no vercel.json, so its preview build always fails. Exit 0 skips, 1 builds.
+  commandForIgnoringBuildStep: '[ "$VERCEL_GIT_COMMIT_REF" = "__dolt_remote_info__" ]'
   token: ${{ vault.get("default", "vercel_token") }}
 methods: {}
