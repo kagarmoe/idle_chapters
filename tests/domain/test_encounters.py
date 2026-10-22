@@ -75,7 +75,7 @@ def test_lingering_in_a_procedural_place_is_not_arriving() -> None:
     repo, engine = ContentRepo(), Engine()
     entered = engine.step(_state("forest_trail"), "enter", None, repo, seed=3)
     assert entered.debug["interaction_id"]
-    lingered = engine.step(entered.new_state, "choose option", "1", repo, seed=4)
+    lingered = engine.step(entered.new_state, "choose option", "pause_and_breathe", repo, seed=4)
     assert lingered.debug["interaction_id"] is None
     assert lingered.new_state.seen_interactions == entered.new_state.seen_interactions
 
