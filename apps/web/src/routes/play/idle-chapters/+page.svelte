@@ -5,6 +5,7 @@
 	import JournalCard from '$lib/JournalCard.svelte';
 	import InventoryPanel from '$lib/InventoryPanel.svelte';
 	import { sessions, type ViewModel, type ViewAction, ApiError } from '$lib/api';
+	import { reportError } from '$lib/report';
 
 	// ── Game states ────────────────────────────────────────────
 	type GameScreen = 'splash' | 'loading' | 'playing' | 'error';
@@ -141,6 +142,9 @@
 
 	// ── Error handling ─────────────────────────────────────────
 	function handleError(err: unknown) {
+		// The player sees a gentle line; the logs still hear about it.
+		if (err instanceof ApiError) reportError('warning', 'ApiError', `${err.status} ${err.message}`);
+		else reportError('error', 'unexpected', err);
 		if (err instanceof ApiError) {
 			errorMsg = err.problemDetail?.title ?? `Something went quiet (${err.status}). The world rests.`;
 		} else {

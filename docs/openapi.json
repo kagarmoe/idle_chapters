@@ -1141,6 +1141,41 @@
         }
       }
     },
+    "/v1/client-errors": {
+      "post": {
+        "tags": [
+          "client-errors"
+        ],
+        "summary": "Report a browser error",
+        "description": "The web client reports its errors, handled or not, so they reach the logs. Nothing the player typed is sent.",
+        "operationId": "report_client_error_v1_client_errors_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientErrorReport"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "summary": "Root",
@@ -1192,6 +1227,49 @@
           "action_id"
         ],
         "title": "ActionRequest"
+      },
+      "ClientErrorReport": {
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "warning",
+              "error"
+            ],
+            "title": "Level"
+          },
+          "kind": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Kind"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Message"
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 200,
+            "title": "Path"
+          },
+          "stack": {
+            "type": "string",
+            "maxLength": 4000,
+            "title": "Stack",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "level",
+          "kind",
+          "message",
+          "path"
+        ],
+        "title": "ClientErrorReport",
+        "description": "What the browser may say about an error. Unauthenticated, so every field is capped and nothing else is accepted."
       },
       "HTTPValidationError": {
         "properties": {
