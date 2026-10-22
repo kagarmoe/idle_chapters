@@ -24,6 +24,10 @@ const GlobalArgsSchema = z.object({
   webUrl: z.string().default("https://idle-chapters.vercel.app"),
   deployWaitMs: z.number().default(600_000),
   deployPollMs: z.number().default(15_000),
+  // A dedicated clone the gates run in. Unset, they run in the swamp repo itself. A worker
+  // has no checkout of its own, and the gates must never touch someone's working copy.
+  checkoutDir: z.string().optional(),
+  repoUrl: z.string().default("https://github.com/kagarmoe/idle_chapters.git"),
 });
 
 type GlobalArgs = z.infer<typeof GlobalArgsSchema>;
@@ -97,6 +101,11 @@ async function runGate(gate: string, steps: Step[], context: Context) {
   return { dataHandles: [handle] };
 }
 
+/** Where the gates run: the dedicated clone when one is configured. */
+function workDir(context: Context) {
+  return context.globalArgs.checkoutDir ?? context.repoDir;
+}
+
 async function expectOk(url: string, init?: RequestInit) {
   const res = await fetch(url, init);
   const body = await res.text();
@@ -107,7 +116,7 @@ async function expectOk(url: string, init?: RequestInit) {
 /** Quality gates and shipping for the Idle Chapters repo. */
 export const behavior = {
   type: "@kagarmoe/idle-chapters-checks",
-  version: "2026.10.22.1",
+  version: "2026.10.22.2",
   globalArguments: GlobalArgsSchema,
   resources: {
     "gate": {
@@ -133,8 +142,34 @@ export const behavior = {
       description: "One Vercel project serves web and API: deployApi and the API-project globals go; smoke waits for the commit",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.10.22.2",
+      description: "Adds prepare and the optional checkoutDir/repoUrl globals: gates can run in a dedicated clone",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   methods: {
+    prepare: {
+      description:
+        "Put checkoutDir on ref (cloning it if missing), discard any local changes, and install the web app's dependencies; without checkoutDir, nothing to do",
+      arguments: z.object({ ref: z.string().default("origin/main") }),
+      execute: async (args: { ref: string }, context: Context) => {
+        const { checkoutDir, repoUrl, webDir } = context.globalArgs;
+        // Gates then run on the swamp repo's own checkout, as it stands.
+        if (!checkoutDir) return await runGate("prepare", [], context);
+        const exists = await Deno.stat(`${checkoutDir}/.git`).then(() => true, () => false);
+        const steps: Step[] = [];
+        if (!exists) steps.push({ argv: ["git", "clone", "--quiet", repoUrl, checkoutDir], cwd: "/" });
+        steps.push(
+          { argv: ["git", "fetch", "--quiet", "--prune", "origin"], cwd: checkoutDir },
+          { argv: ["git", "checkout", "--quiet", "--force", "--detach", args.ref], cwd: checkoutDir },
+          // Keep the installed node_modules; drop everything else untracked.
+          { argv: ["git", "clean", "-fdq", "-e", "node_modules"], cwd: checkoutDir },
+          { argv: ["npm", "ci", "--no-audit", "--no-fund"], cwd: `${checkoutDir}/${webDir}` },
+        );
+        return await runGate("prepare", steps, context);
+      },
+    },
     validateAssets: {
       description:
         "Validate assets/ JSON against schemas/ and check cross-file references",
@@ -142,7 +177,7 @@ export const behavior = {
       execute: (_args: Record<string, never>, context: Context) =>
         runGate("validateAssets", [{
           argv: [...context.globalArgs.python, "-c", VALIDATE_ASSETS],
-          cwd: context.repoDir,
+          cwd: workDir(context),
         }], context),
     },
     test: {
@@ -151,7 +186,7 @@ export const behavior = {
       execute: (_args: Record<string, never>, context: Context) =>
         runGate("test", [{
           argv: [...context.globalArgs.python, "-m", "pytest", "-q"],
-          cwd: context.repoDir,
+          cwd: workDir(context),
           // CI runs the Mongo-gated tests against mongo:7; mongomock runs them here (close, not identical).
           env: { MONGO_URL: "memory://" },
         }], context),
@@ -160,7 +195,7 @@ export const behavior = {
       description: "Type-check and build the SvelteKit web app",
       arguments: z.object({}),
       execute: (_args: Record<string, never>, context: Context) => {
-        const cwd = `${context.repoDir}/${context.globalArgs.webDir}`;
+        const cwd = `${workDir(context)}/${context.globalArgs.webDir}`;
         return runGate("buildWeb", [
           { argv: ["npm", "run", "check"], cwd },
           { argv: ["npm", "run", "build"], cwd },
@@ -173,7 +208,7 @@ export const behavior = {
       execute: (_args: Record<string, never>, context: Context) =>
         runGate("e2eWeb", [{
           argv: ["npx", "playwright", "test"],
-          cwd: `${context.repoDir}/${context.globalArgs.webDir}`,
+          cwd: `${workDir(context)}/${context.globalArgs.webDir}`,
           env: { CI: "1", PW_CHANNEL: context.globalArgs.playwrightChannel },
         }], context),
     },
