@@ -8,7 +8,7 @@ authors = [
     {name = "Kimberly Garmoe"}]
 # Runtime deps for the API (Vercel installs these); requirements.txt is the full dev lock.
 dependencies = [
-    "fastapi==0.128.0",
+    "fastapi==0.161.1",
     "httpx==0.28.1",
     "jsonschema==4.25.1",
     "mongomock==4.3.0",
