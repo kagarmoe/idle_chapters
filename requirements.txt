@@ -37,7 +37,7 @@ opentelemetry-semantic-conventions==0.66b1
 packaging==25.0
 pluggy==1.6.0
 protobuf==6.33.2
-pyarrow==22.0.0
+pyarrow==23.0.1
 pydantic==2.12.5
 pydantic_core==2.41.5
 Pygments==2.20.0
