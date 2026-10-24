@@ -1,0 +1,49 @@
+id: 0b6f4e3a-8c2d-4f1e-9a7b-5d3c2e1f0a9b
+name: ic-uptime
+description: >-
+  Ping production /health every 15 minutes. The steady requests feed Axiom's
+  heartbeat monitor; a failed ping posts to Discord. Fires only while
+  `swamp serve` runs on this repo (no catch-up for missed slots).
+trigger:
+  schedule: "*/15 * * * *"
+tags: {}
+# The serve on Hestia is remote-only: every step needs placement.
+labels:
+  host: hippolyta
+jobs:
+  - name: ping
+    description: Production /health answers ok
+    steps:
+      - name: uptime
+        task:
+          type: behavior
+          behavior: idle-chapters-checks
+          methodName: uptime
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+    dependsOn: []
+    weight: 0
+  # A Discord outage must not mask the ping result itself.
+  - name: notify-down
+    description: Tell Discord production /health failed
+    dependsOn:
+      - job: ping
+        condition:
+          type: not
+          condition:
+            type: succeeded
+    steps:
+      - name: post-down
+        task:
+          type: behavior
+          behavior: ic-alerts
+          methodName: send
+          inputs:
+            content: "🔴 idle-chapters /health failed. Details: swamp report get @swamp/workflow-summary --workflow ic-uptime"
+            username: idle-chapters uptime
+        dependsOn: []
+        weight: 0
+        allowFailure: true
+    weight: 0
+version: 1
