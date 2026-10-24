@@ -1,0 +1,24 @@
+name: Extensions CI
+
+on:
+  push:
+    paths:
+      - 'extensions/**'
+  pull_request:
+    paths:
+      - 'extensions/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same deno swamp bundles (~/.swamp/deno/deno --version).
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: 2.9.8
+
+      - name: Test extension behaviors
+        run: deno test extensions/
