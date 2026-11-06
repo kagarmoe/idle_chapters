@@ -5,7 +5,7 @@
  *
  * @module
  */
-import { z } from "npm:zod@4";
+import { z } from "npm:zod@4.3.6";
 
 type Context = {
   globalArgs: { name: string; teamId?: string; token?: string };
@@ -34,25 +34,39 @@ export const extension = {
   methods: [
     {
       useRepoRoot: {
-        description: "Set the project's Root Directory to the repository root (null)",
+        description:
+          "Set the project's Root Directory to the repository root (null)",
         arguments: z.object({}),
         execute: async (_args: Record<string, never>, context: Context) => {
           const { name, teamId, token } = context.globalArgs;
           const qs = teamId ? `?teamId=${encodeURIComponent(teamId)}` : "";
           const res = await fetch(
-            `https://api.vercel.com/v9/projects/${encodeURIComponent(name)}${qs}`,
+            `https://api.vercel.com/v9/projects/${
+              encodeURIComponent(name)
+            }${qs}`,
             {
               method: "PATCH",
-              headers: { Authorization: `Bearer ${token}`, "content-type": "application/json" },
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "content-type": "application/json",
+              },
               body: JSON.stringify({ rootDirectory: null }),
             },
           );
           const body = await res.json();
           if (!res.ok) {
-            throw new Error(`useRepoRoot: PATCH returned ${res.status}: ${JSON.stringify(body).slice(0, 500)}`);
+            throw new Error(
+              `useRepoRoot: PATCH returned ${res.status}: ${
+                JSON.stringify(body).slice(0, 500)
+              }`,
+            );
           }
           if (body.rootDirectory !== null) {
-            throw new Error(`useRepoRoot: Vercel kept rootDirectory=${JSON.stringify(body.rootDirectory)}`);
+            throw new Error(
+              `useRepoRoot: Vercel kept rootDirectory=${
+                JSON.stringify(body.rootDirectory)
+              }`,
+            );
           }
           const handle = await context.writeResource("root", "root", {
             id: body.id,
