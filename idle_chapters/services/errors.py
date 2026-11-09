@@ -19,6 +19,8 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+from idle_chapters.content.repo import find_content_root
+
 
 class ErrorKind(StrEnum):
     SESSION_NOT_FOUND = "session_not_found"
@@ -109,18 +111,9 @@ def _derive_signal(effect: Effect, recovery: Recovery) -> Signal:
     return Signal.CAUTION
 
 
-def _find_repo_root() -> Path:
-    """Walk up from this file to find the repository root (.git directory)."""
-    path = Path(__file__).resolve()
-    for parent in path.parents:
-        if (parent / ".git").is_dir():
-            return parent
-    return path.parents[3]
-
-
 @lru_cache(maxsize=1)
 def _load_templates() -> dict[str, dict[str, str]]:
-    path = _find_repo_root() / "assets" / "error_templates.json"
+    path = find_content_root(Path(__file__)) / "assets" / "error_templates.json"
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
     return {}

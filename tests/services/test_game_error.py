@@ -178,3 +178,20 @@ class TestPlayerMessage:
             context={"input": "dance"},
         )
         assert err.player_message == "Something unexpected happened."
+
+
+class TestContentRoot:
+    # Regression: errors.py looked for .git, which Vercel deployments don't have.
+    def test_finds_root_without_git(self, tmp_path):
+        from idle_chapters.content.repo import find_content_root
+
+        (tmp_path / "assets").mkdir()
+        (tmp_path / "schemas").mkdir()
+        module = tmp_path / "idle_chapters" / "services" / "errors.py"
+        module.parent.mkdir(parents=True)
+        module.touch()
+        assert find_content_root(module) == tmp_path
+
+    def test_templates_load_from_content_root(self):
+        errors_mod._load_templates.cache_clear()
+        assert ErrorKind.SESSION_NOT_FOUND.value in errors_mod._load_templates()

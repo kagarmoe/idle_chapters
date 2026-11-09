@@ -20,16 +20,17 @@ def _index_by_id(items: Iterable[dict[str, Any]], id_key: str, source: str) -> d
     return index
 
 
+def find_content_root(start: Path) -> Path:
+    """Nearest ancestor holding assets/ and schemas/ — no .git needed (Vercel has none)."""
+    for parent in start.resolve().parents:
+        if (parent / "assets").is_dir() and (parent / "schemas").is_dir():
+            return parent
+    raise FileNotFoundError(f"no assets/ and schemas/ above {start}")
+
+
 class ContentRepo:
     def __init__(self, root: Path | str | None = None, manifest: ContentManifest | None = None) -> None:
-        if root:
-            self.root = Path(root)
-        else:
-            here = Path(__file__).resolve()
-            self.root = next(
-                (p for p in here.parents if (p / "assets").is_dir() and (p / "schemas").is_dir()),
-                here.parents[4],
-            )
+        self.root = Path(root) if root else find_content_root(Path(__file__))
         self.manifest = manifest or ContentManifest()
 
         self.places_by_id: dict[str, dict[str, Any]] = {}
