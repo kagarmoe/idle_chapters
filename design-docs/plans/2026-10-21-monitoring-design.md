@@ -103,16 +103,20 @@ of our own; every query filters to this project.
 
 - The heartbeat window was 35 min and false-alarmed on the first night: GitHub had not yet
   started the new `*/15` cron, and its scheduled runs routinely start late or are skipped.
-  At 120 min it fires only when the uptime job has really stopped.
+  At 120 min it fires only when the uptime job has really stopped. In practice GitHub ran it
+  only every 4–5 hours, so the ping moved to a swamp schedule (§4).
 - The handled-error monitor is a plain threshold, not anomaly detection: there is no
   history yet to learn a baseline from. Revisit once a few weeks of data exist.
 
 ### 4. Uptime
 
-Axiom only sees traffic that happens. A scheduled GitHub Actions job requests `/health`
-every 15 minutes; a failure fails the run, and GitHub emails the owner. It also keeps a
-steady heartbeat in the logs, so an Axiom monitor with `alertOnNoData` on `/health` catches
-an outage the job itself misses.
+Axiom only sees traffic that happens. The `ic-uptime` swamp workflow
+(`trigger.schedule: "*/15 * * * *"`) runs `idle-chapters-checks.uptime`, which requests
+`/health`; a failure posts to Discord through `ic-alerts`. It also keeps a steady heartbeat
+in the logs, so an Axiom monitor with `alertOnNoData` on `/health` catches an outage the
+job itself misses — including `swamp serve` not running, since schedules fire only under
+serve and never catch up. (It replaced a GitHub Actions cron that GitHub ran only every
+4–5 hours.)
 
 ### 5. Reading it from swamp
 

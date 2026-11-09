@@ -122,7 +122,7 @@ async function expectOk(url: string, init?: RequestInit) {
 /** Quality gates and shipping for the Idle Chapters repo. */
 export const behavior = {
   type: "@kagarmoe/idle-chapters-checks",
-  version: "2026.10.22.2",
+  version: "2026.10.22.3",
   globalArguments: GlobalArgsSchema,
   resources: {
     "gate": {
@@ -155,6 +155,11 @@ export const behavior = {
       toVersion: "2026.10.22.2",
       description:
         "Adds prepare and the optional checkoutDir/repoUrl globals: gates can run in a dedicated clone",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.10.22.3",
+      description: "Adds uptime, the scheduled /health ping",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -205,6 +210,26 @@ export const behavior = {
           },
         );
         return await runGate("prepare", steps, context);
+      },
+    },
+    uptime: {
+      description: "Production /health answers status ok (the ic-uptime heartbeat Axiom watches)",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: Context) => {
+        const started = Date.now();
+        const url = `${context.globalArgs.webUrl}/health`;
+        const body = await expectOk(url, {
+          signal: AbortSignal.any([context.signal, AbortSignal.timeout(20_000)]),
+        });
+        if (JSON.parse(body).status !== "ok") throw new Error(`uptime: ${url} answered ${body.slice(0, 500)}`);
+        const handle = await context.writeResource("gate", "uptime", {
+          gate: "uptime",
+          commands: [`GET ${url}`],
+          durationMs: Date.now() - started,
+          outputTail: body.slice(-TAIL_CHARS),
+          checkedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
       },
     },
     validateAssets: {

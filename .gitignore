@@ -223,7 +223,11 @@ __marimo__/
 
 # Local agent tooling, ignored so `git clean -fd` leaves it alone
 .claude/CLAUDE.md
-.claude/skills/
+.claude/skills/*
+!.claude/skills/close-out/
+# Codex's counterpart of .claude/skills: extension-installed skills stay local
+.agents/skills/*
+!.agents/skills/close-out/
 .playwright-mcp/
 graphify-out/
 .beads.gate.lock
